@@ -1,6 +1,6 @@
 <?php
 
-define('APP_NAME', 'EEC rezervacije');
+define('APP_NAME', 'Termini');
 
 define('DS', DIRECTORY_SEPARATOR);
 define('DIR', dirname(__DIR__) . DS);
