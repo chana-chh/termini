@@ -1,0 +1,900 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+<style>
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+</style>
+{% endblock stil %}
+
+{% block naslov %}
+<div class="row">
+  <div class="col">
+    <h1>
+      <i class="fas fa-file-signature text-secondary"></i> Dodavanje ugovora
+    </h1>
+  </div>
+  <div class="col text-right pt-3">
+    <div class="btn-group btn-group-sm">
+      <button type="button" class="btn btn-secondary" onclick="window.history.back();"
+        title="Povratak na prethodnu stranu"><i class="fas fa-chevron-circle-left"></i> Nazad</button>
+      <a href="{{ path_for('termin.detalj.get', { id: termin.id }) }}" class="btn btn-secondary"><i
+          class="fas fa-arrow-alt-circle-left"></i> Termin</a>
+    </div>
+  </div>
+</div>
+<hr />
+{% endblock naslov %}
+{% block sadrzaj %}
+<div class="card border-dark mb-3">
+  <div class="card-header text-primary">
+    <h4>
+      Termin: {{ termin.datum|date() }} od {{ termin.pocetak|date("H:i") }} do {{ termin.kraj|date("H:i") }} -
+      {{termin.tip.tip}} [{{ termin.opis }}]
+    </h4>
+  </div>
+  <div class="card-body text-dark">
+    <form id="glavna" action="{{ path_for('termin.dodavanje.ugovor.post') }}" method="POST" class="needs-validation"
+      id="forma" novalidate>
+      {{ csrf | raw }}
+      <input type="hidden" name="termin_id" value="{{ termin.id }}">
+      <div class="form-row">
+        <div class="col-md-3">
+          <i class="fas fa-file-contract fa-lg text-info"></i>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="broj_ugovora">Broj ugovora</label>
+          <input type="text" name="broj_ugovora" id="broj_ugovora" autocomplete="off"
+            class="form-control{{ errors.broj_ugovora[0] ? ' is-invalid' : '' }}" value="{{ old.broj_ugovora ? : '' }}"
+            maxlength="50" />
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.broj_ugovora[0] ? : 'Maksimalno 50 karaktera' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label class="text-danger" for="datum">Datum sklapanja ugovora</label>
+          <input name="datum" type="date" id="datum" class="form-control{{ errors.datum[0] ? ' is-invalid' : '' }}"
+            value="{{ old.datum ? : 'now'|date('Y-m-d') }}" />
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.datum[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="meni_id">Meni</label>
+          <div class="input-group">
+            <select class="custom-select" name="meni_id" id="meni_id"
+              class="form-control{{ errors.meni_id[0] ? ' is-invalid' : '' }}" required>
+              <option value=""></option>
+              {% for meni in meniji %}
+              <option value="{{ meni.id }}" {{ old.meni_id == meni.id ? ' selected' : '' }}
+                data-cenamenija="{{ meni.cena }}">
+                {{ meni.naziv }} - ({{ meni.cena|number_format() }})
+              </option>
+              {% endfor %}
+            </select>
+            <div class="input-group-append">
+              <button class="btn btn-primary otvori-dodavanje" data-toggle="modal" data-target="#meniModal"
+                type="button" id="dodaj_meni" name="dodaj_meni"><i class="fas fa-plus-square"></i>&emsp;Dodaj</button>
+            </div>
+          </div>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.meni_id[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="prosek_godina">Prosečna starost</label>
+          <input type="number" class="form-control{{ errors.prosek_godina[0] ? ' is-invalid' : '' }}"
+            name="prosek_godina" id="prosek_godina" value="{{ old.prosek_godina ? : 0 }}" min="0" step="1"
+            autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.prosek_godina[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      <hr>
+      <div class="form-row">
+        <div class="col-md-3">
+          <i class="fas fa-user fa-lg text-info"></i>
+        </div>
+        <div class="col-md-9 justify-content-end text-right">
+          <label class="mt-4 ml-3">
+            <input type="checkbox" name="fizicko_pravno" id="fizicko_pravno" title="Fizičko ili pravno lice">
+            Pravno lice
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="ime">Ime</label>
+          <input type="text" class="form-control{{ errors.ime[0] ? ' is-invalid' : '' }}" value="{{ old.ime ? : '' }}"
+            name="ime" id="ime" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.ime[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="prezime">Prezime</label>
+          <input type="text" class="form-control{{ errors.prezime[0] ? ' is-invalid' : '' }}"
+            value="{{ old.prezime ? : '' }}" name="prezime" id="prezime" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.prezime[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="telefon">Telefon</label>
+          <input type="text" class="form-control{{ errors.telefon[0] ? ' is-invalid' : '' }}"
+            value="{{ old.telefon ? : '' }}" name="telefon" id="telefon" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.telefon[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="email">E-mail</label>
+          <input type="email" class="form-control{{ errors.email[0] ? ' is-invalid' : '' }}"
+            value="{{ old.email ? : '' }}" name="email" id="email" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.email[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="mesto_firme">Mesto</label>
+          <input type="mesto_firme" class="form-control{{ errors.mesto_firme[0] ? ' is-invalid' : '' }}"
+            value="{{ old.mesto_firme ? : '' }}" name="mesto_firme" id="mesto_firme" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.mesto_firme[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="adresa_firme">Adresa</label>
+          <input type="text" class="form-control{{ errors.adresa_firme[0] ? ' is-invalid' : '' }}"
+            value="{{ old.adresa_firme ? : '' }}" name="adresa_firme" id="adresa_firme" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.adresa_firme[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      <hr>
+      <div class="form-row fizicko_pravno" style="display: none;">
+        <div class="col-md-3">
+          <i class="fas fa-industry text-info"></i>
+        </div>
+      </div>
+      {# Pravno I #}
+      <div class="form-row fizicko_pravno" style="display: none;">
+        <div class="form-group col-md-6">
+          <label for="naziv_firme">Nazviv firme</label>
+          <input type="text" class="form-control{{ errors.naziv_firme[0] ? ' is-invalid' : '' }}"
+            value="{{ old.naziv_firme ? : '' }}" name="naziv_firme" id="naziv_firme" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.naziv_firme[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="pib_firme">PIB</label>
+          <input type="text" class="form-control{{ errors.pib_firme[0] ? ' is-invalid' : '' }}"
+            value="{{ old.pib_firme ? : '' }}" name="pib_firme" id="pib_firme" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.pib_firme[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="mb_firme">Matični broj</label>
+          <input type="text" class="form-control{{ errors.mb_firme[0] ? ' is-invalid' : '' }}"
+            value="{{ old.mb_firme ? : '' }}" name="mb_firme" id="mb_firme" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.mb_firme[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      {# Pravno II #}
+      <div class="form-row fizicko_pravno" style="display: none;">
+        <div class="form-group col-md-3">
+          <label for="banka_firme">Banka</label>
+          <input type="text" class="form-control{{ errors.banka_firme[0] ? ' is-invalid' : '' }}"
+            value="{{ old.banka_firme ? : '' }}" name="banka_firme" id="banka_firme" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.banka_firme[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="racun_firme">Račun</label>
+          <input type="racun_firme" class="form-control{{ errors.racun_firme[0] ? ' is-invalid' : '' }}"
+            value="{{ old.racun_firme ? : '' }}" name="racun_firme" id="racun_firme" autocomplete="off">
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.racun_firme[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      <hr class="fizicko_pravno" style="display: none;">
+      <div class="form-row">
+        <div class="col-md-3">
+          <i class="fas fa-chair fa-lg text-info"></i>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="broj_mesta">Broj mesta (zvanica)</label>
+          <input type="number" class="form-control{{ errors.broj_mesta[0] ? ' is-invalid' : '' }}" name="broj_mesta"
+            id="broj_mesta" value="{{ old.broj_mesta ? : 0 }}" min="1" step="1" autocomplete="off" title="Broj mesta"
+            required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.broj_mesta[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="broj_mesta_po_stolu">Broj stolica za stolom</label>
+          <input type="number" class="form-control{{ errors.broj_mesta_po_stolu[0] ? ' is-invalid' : '' }}"
+            name="broj_mesta_po_stolu" id="broj_mesta_po_stolu" value="{{ old.broj_mesta_po_stolu ? : 0 }}" min="1"
+            step="1" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.broj_mesta[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="broj_stolova">Broj stolova</label>
+          <input type="number" class="form-control{{ errors.broj_stolova[0] ? ' is-invalid' : '' }}" name="broj_stolova"
+            id="broj_stolova" value="{{ old.broj_stolova ? : 0 }}" min="1" step="1" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.broj_stolova[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="iznos">Cena (iznos)</label>
+          <input type="number" class="form-control{{ errors.iznos[0] ? ' is-invalid' : '' }}" name="iznos" id="iznos"
+            value="{{ old.iznos ? : 0.00 }}" min="0" step="0.01" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      {# CHEKBOXOVI POCETAK #}
+      <hr>
+      <div class="form-row">
+        <div class="col-md-3">
+          <i class="fas fa-tasks fa-lg text-info"></i>
+        </div>
+        <div class="col-md-9 justify-content-end text-right">
+          <label class="mt-4 ml-3">
+            <input type="checkbox" name="cekiraj_sve" id="cekiraj_sve" title="Izaberi sve!">
+            <i class="fas fa-check-double text-success"></i> Čekiraj sve!
+          </label>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-1">
+          Muzika<br>
+          <label class="pl-4">
+            <input type="checkbox" name="muzika_chk" id="muzika_chk"
+              class="mt-0 cekiraj form-check-input{{ errors.muzika_chk[0] ? ' is-invalid' : '' }}" value="1"
+              {{ old.muzika_chk ? 'checked' : '' }}>
+          </label>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="muzika_ugovor">Muzika ugovor</label>
+          <input type="text" class="form-control" name="muzika_ugovor" id="muzika_ugovor"
+            value="{{ old.muzika_ugovor ? : '' }}" autocomplete="off">
+        </div>
+        <div class="form-group col-md-3">
+          <label for="muzika_iznos">Muzika iznos</label>
+          <input type="number" class="form-control{{ errors.muzika_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="muzika_iznos" id="muzika_iznos" value="{{ old.muzika_iznos ? : 0.00 }}" min="0" step="0.01"
+            autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.muzika_iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-5">
+          <label for="muzika_opis">Muzika opis</label>
+          <input type="text" class="form-control" name="muzika_opis" id="muzika_opis"
+            value="{{ old.muzika_opis ? : '' }}" autocomplete="off">
+        </div>
+      </div>
+      <div class="form-row bg-light">
+        <div class="form-group col-md-1">
+          Fotograf<br>
+          <label class="pl-4">
+            <input type="checkbox" name="fotograf_chk" id="fotograf_chk"
+              class="mt-0 cekiraj form-check-input{{ errors.fotograf_chk[0] ? ' is-invalid' : '' }}" value="1"
+              {{ old.fotograf_chk ? 'checked' : '' }}>
+          </label>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="fotograf_iznos">Fotograf iznos</label>
+          <input type="number" class="form-control{{ errors.fotograf_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="fotograf_iznos" id="fotograf_iznos" value="{{ old.fotograf_iznos ? : 0.00 }}" min="0" step="0.01"
+            autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.fotograf_iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="fotograf_opis">Fotograf opis</label>
+          <input type="text" class="form-control" name="fotograf_opis" id="fotograf_opis"
+            value="{{ old.fotograf_opis ? : '' }}" autocomplete="off">
+        </div>
+        <div class="form-group col-md-1">
+          Torta<br>
+          <label class="pl-4">
+            <input type="checkbox" name="torta_chk" id="torta_chk"
+              class="mt-0 cekiraj form-check-input{{ errors.torta_chk[0] ? ' is-invalid' : '' }}" value="1"
+              {{ old.torta_chk ? 'checked' : '' }}>
+          </label>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="torta_iznos">Torta iznos</label>
+          <input type="number" class="form-control{{ errors.torta_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="torta_iznos" id="torta_iznos" value="{{ old.torta_iznos ? : 0.00 }}" min="0" step="0.01"
+            autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.torta_iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="torta_opis">Torta opis</label>
+          <input type="text" class="form-control" name="torta_opis" id="torta_opis" value="{{ old.torta_opis ? : '' }}"
+            autocomplete="off">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-1">
+          <small>Dekoracija</small><br>
+          <label class="pl-4">
+            <input type="checkbox" name="dekoracija_chk" id="dekoracija_chk"
+              class="mt-0 cekiraj form-check-input{{ errors.dekoracija_chk[0] ? ' is-invalid' : '' }}" value="1"
+              {{ old.dekoracija_chk ? 'checked' : '' }}>
+          </label>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="dekoracija_iznos">Dekoracija iznos</label>
+          <input type="number" class="form-control{{ errors.dekoracija_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="dekoracija_iznos" id="dekoracija_iznos" value="{{ old.dekoracija_iznos ? : 0.00 }}" min="0"
+            step="0.01" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.dekoracija_iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="dekoracija_opis">Dekoracija opis</label>
+          <input type="text" class="form-control" name="dekoracija_opis" id="dekoracija_opis"
+            value="{{ old.dekoracija_opis ? : '' }}" autocomplete="off">
+        </div>
+        <div class="form-group col-md-1">
+          Kokteli<br>
+          <label class="pl-4">
+            <input type="checkbox" name="kokteli_chk" id="kokteli_chk"
+              class="mt-0 cekiraj form-check-input{{ errors.kokteli_chk[0] ? ' is-invalid' : '' }}" value="1"
+              {{ old.kokteli_chk ? 'checked' : '' }}>
+          </label>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="kokteli_iznos">Kokteli iznos</label>
+          <input type="number" class="form-control{{ errors.kokteli_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="kokteli_iznos" id="kokteli_iznos" value="{{ old.kokteli_iznos ? : 0.00 }}" min="0" step="0.01"
+            autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.kokteli_iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="kokteli_opis">Kokteli opis</label>
+          <input type="text" class="form-control" name="kokteli_opis" id="kokteli_opis"
+            value="{{ old.kokteli_opis ? : '' }}" autocomplete="off">
+        </div>
+      </div>
+      <div class="form-row bg-light">
+        <div class="form-group col-md-1">
+          Slatki sto<br>
+          <label class="pl-4">
+            <input type="checkbox" name="slatki_sto_chk" id="slatki_sto_chk"
+              class="mt-0 cekiraj form-check-input{{ errors.slatki_sto_chk[0] ? ' is-invalid' : '' }}" value="1"
+              {{ old.slatki_sto_chk ? 'checked' : '' }}>
+          </label>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="slatki_sto_iznos">Slatki sto iznos</label>
+          <input type="number" class="form-control{{ errors.slatki_sto_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="slatki_sto_iznos" id="slatki_sto_iznos" value="{{ old.slatki_sto_iznos ? : 0.00 }}" min="0"
+            step="0.01" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.slatki_sto_iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="slatki_sto_opis">Slatki sto opis</label>
+          <input type="text" class="form-control" name="slatki_sto_opis" id="slatki_sto_opis"
+            value="{{ old.slatki_sto_opis ? : '' }}" autocomplete="off">
+        </div>
+        <div class="form-group col-md-1">
+          Voćni sto<br>
+          <label class="pl-4">
+            <input type="checkbox" name="vocni_sto_chk" id="vocni_sto_chk"
+              class="mt-0 cekiraj form-check-input{{ errors.vocni_sto_chk[0] ? ' is-invalid' : '' }}" value="1"
+              {{ old.vocni_sto_chk ? 'checked' : '' }}>
+          </label>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="vocni_sto_iznos">Voćni sto iznos</label>
+          <input type="number" class="form-control{{ errors.vocni_sto_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="vocni_sto_iznos" id="vocni_sto_iznos" value="{{ old.vocni_sto_iznos ? : 0.00 }}" min="0" step="0.01"
+            autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.vocni_sto_iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="vocni_sto_opis">Voćni sto opis</label>
+          <input type="text" class="form-control" name="vocni_sto_opis" id="vocni_sto_opis"
+            value="{{ old.vocni_sto_opis ? : '' }}" autocomplete="off">
+        </div>
+      </div>
+      <hr>
+      <div class="form-row">
+        <div class="form-group col-md-5">
+          <label for="posebni_zahtevi">Posebni zahtevi</label>
+          <textarea class="form-control" name="posebni_zahtevi" id="posebni_zahtevi"
+            rows="3">{{ old.posebni_zahtevi ?  : '' }}</textarea>
+        </div>
+        <div class="form-group col-md-2">
+          <label for="posebni_zahtevi_iznos">Posebni zahtevi iznos</label>
+          <input type="number" class="form-control{{ errors.posebni_zahtevi_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="posebni_zahtevi_iznos" id="posebni_zahtevi_iznos" value="{{ old.posebni_zahtevi_iznos ? : 0.00 }}"
+            min="0" step="0.01" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.posebni_zahtevi_iznos[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-5">
+          <label for="napomena">Napomena</label>
+          <textarea class="form-control" name="napomena" id="napomena" rows="3">{{ old.napomena ?  : '' }}</textarea>
+        </div>
+      </div>
+      <hr>
+      <div class="form-row justify-content-between mt-2">
+        <div class="col-12 text-right align-self-end">
+          <button type="submit" id="dugme-submit" class="btn btn-primary" title="Dodaj novi ugovor"><i
+              class="fas fa-plus-square"></i> Dodaj</button>
+          <a href="{{ path_for('termin.detalj.get', { id: termin.id }) }}" class="btn btn-secondary">
+            <i class="fas fa-ban"></i> Otkaži</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{# Modal za dodavanje menija #}
+<div id="meniModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Dodaj meni sa osnovnim podacima</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="meni-forma" class="needs-validation" novalidate>
+          {{ csrf | raw }}
+          <div class="form-group">
+            <label for="nazivMenija">Naziv</label>
+            <input type="text" class="form-control{{ errors.nazivMenija[0] ? ' is-invalid' : '' }}"
+              value="{{ old.nazivMenija ? : '' }}" name="nazivMenija" id="nazivMenija" aria-describedby="Naziv menija"
+              autocomplete="off" required minlength="5">
+            <div class="valid-feedback">Odgovarajući podatak</div>
+            <div class="invalid-feedback naziv-invalid">
+              {{ errors.nazivMenija[0] ? : 'Obavezno polje sa najmanje 5 karaktera. Naziv mora biti jedinstven u listi menija.' }}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cenaMenija">Cena</label>
+            <input type="number" class="form-control{{ errors.cenaMenija[0] ? ' is-invalid' : '' }}"
+              value="{{ old.cenaMenija ? : 0 }}" name="cenaMenija" id="cenaMenija" min="0" step="0.01"
+              autocomplete="off" required>
+            <div class="valid-feedback">Odgovarajući podatak</div>
+            <div class="invalid-feedback cena-invalid">
+              {{ errors.cenaMenija[0] ? : 'Obavezno polje' }}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="napomenaMenija">Napomena</label>
+            <textarea class="form-control" name="napomenaMenija" id="napomenaMenija" rows="3"></textarea>
+          </div>
+          <hr style="margin-top: 30px;" />
+          <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+            <div class="form-group">
+              <button type="button" class="btn btn-primary dodaj-meni" title="Dodaj novi meni">
+                <i class="fas fa-plus-square"></i> &emsp;Dodaj</button>
+
+              <a class="btn btn-secondary" data-dismiss="modal" id="modal-meni-otkazi">
+                <i class="fas fa-ban"></i>&emsp;Otkaži
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{# Kraj modala za dodavanje menija #}
+{% endblock sadrzaj %}
+{% block traka %}
+<div class="card border-dark">
+  <div class="card-header">Kalkulacije/preporuke</div>
+  <div class="card-body text-dark">
+    <div class="row">
+      <div class="col">
+        <h5 class="text-primary">Kapacitet</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <ul>
+          <li>Maksimalni kapacitet sale (stolovi) : <strong
+              class="text-info">{{ termin.sala().max_kapacitet_stolova }}</strong></li>
+          <li>Maksimalni kapacitet sale (zvanice) : <strong
+              class="text-info">{{ termin.sala().max_kapacitet_mesta }}</strong></li>
+          <li>Iskorišćeno stolova : <strong class="text-info">{{ termin.popunjeniStolovi() }}</strong></li>
+          <li>Iskorišćeno zvanica : <strong class="text-info">{{ termin.popunjenaMesta() }}</strong></li>
+        </ul>
+        <ul class="mb-1">
+          <li>Slobodnih stolova : <strong class="text-success">{{ termin.slobodniStolovi() }}</strong></li>
+          <li>Slobodnih mesta za zvanice : <strong class="text-success">{{ termin.slobodnaMesta() }}</strong></li>
+        </ul>
+      </div>
+    </div>
+    <hr>
+    <div class="row mb-2">
+      <div class="col-lg-6">
+        <h5 class="text-primary">Preporučena cena (iznos)</h5>
+      </div>
+      <div class="col-lg-6 text-right">
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary" id="dugme-prebaci-iznos">
+            <i class="fas fa-angle-left"></i>
+            Prebaci iznos
+          </button>
+          <button class="btn btn-sm btn-success" id="dugme-izracunaj-iznos">
+            <i class="fas fa-calculator"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 pt-2">
+        <h6 class="text-info">Cena menija</h6>
+      </div>
+      <div class="col-lg-6">
+        <input type="number" class="form-control" name="cena_menija" id="cena_menija" value="0" min="0" step="0.01"
+          autocomplete="off" readonly>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 pt-2">
+        <h6 class="text-info">Cena usluga</h6>
+      </div>
+      <div class="col-lg-6">
+        <input type="number" class="form-control" name="cena_usluga" id="cena_usluga" value="0" min="0" step="0.01"
+          autocomplete="off" readonly>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 pt-2">
+        <h6 class="text-success">Ukupna cena</h6>
+      </div>
+      <div class="col-lg-6">
+        <input type="number" class="form-control" name="cena_ukupna" id="cena_ukupna" value="0" min="0" step="0.01"
+          autocomplete="off" readonly>
+      </div>
+    </div>
+    <hr>
+    <div class="row mb-2">
+      <div class="col-lg-6">
+        <h5 class="text-primary">Predlog raspodele stolica</h5>
+      </div>
+      <div class="col-lg-6 text-right">
+        <div class="btn-group">
+          <button class="btn btn-sm btn-primary" id="dugme-prebaci-raspored">
+            <i class="fas fa-angle-left"></i>
+            Prebaci raspored
+          </button>
+          <button class="btn btn-sm btn-success" id="dugme-izracunaj-raspored">
+            <i class="fas fa-calculator"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-lg-6">
+        <label for="stolovi">Popunjeni stolovi</label>
+        <input type="number" class="form-control" name="stolovi" id="stolovi" min="0" step="1" value="0" readonly>
+      </div>
+      <div class="form-group col-lg-6">
+        <label for="stolice">Stolice za popunjenim stolovima</label>
+        <input type="number" class="form-control" name="stolice" id="stolice" min="0" step="1" value="0" readonly>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-lg-6 ekstra_stolice">
+        <label for="ekstra_stolice">Stolice za dodatnim stolom</label>
+        <input type="number" class="form-control" name="ekstra_stolice" id="ekstra_stolice" min="0" step="1" value="0"
+          readonly>
+      </div>
+      <div class="form-group col-lg-6">
+        <label for="ukupno_stolova" class="text-success">Ukupan broj stolova</label>
+        <input type="number" class="form-control" name="ukupno_stolova" id="ukupno_stolova" min="0" step="1" value="0"
+          readonly>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col">
+        <textarea class="form-control text-danger" name="greska" id="greske" rows="5" readonly></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock traka %}
+{% block skripta %}
+<script>
+  $(document).ready(function () {
+    const m = "{{ termin.multiUgovori() == true ? 1 : 0 }}";
+    const multi = (parseInt(m) === 1) ? true : false;
+
+    const maxStolova = parseInt("{{ termin.sala().max_kapacitet_stolova }}");
+    const maxMesta = parseInt("{{ termin.sala().max_kapacitet_mesta }}");
+
+    const pocetnaMesta = parseInt("{{ ugovor.broj_mesta ? : 0 }}");
+    const pocetniStolovi = parseInt("{{ ugovor.broj_stolova ? : 0 }}");
+    const pocetneStolice = parseInt("{{ ugovor.broj_mesta_po_stolu ? : 0 }}");
+
+    const slobodnaMesta = parseInt("{{ termin.slobodnaMesta() }}") + pocetnaMesta;
+    const slobodniStolovi = parseInt("{{ termin.slobodniStolovi() }}") + pocetniStolovi;
+
+    var provera = true;
+
+    $('#cekiraj_sve').click(function () {
+      $(':checkbox.cekiraj').not(this).prop('checked', this.checked);
+    });
+
+    $('#fizicko_pravno').click(function () {
+      $('.fizicko_pravno').toggle(this.checked);
+    });
+
+    $("#dugme-izracunaj-iznos").click(function (event) {
+      izracunajCenuMenija();
+      izracunajCenuUsluga();
+      const m = parseFloat($('#cena_menija').val());
+      const u = parseFloat($('#cena_usluga').val());
+      $('#cena_ukupna').val((m + u).toFixed(2));
+    });
+
+    $("#dugme-prebaci-iznos").click(function (event) {
+      $("#iznos").val($('#cena_ukupna').val());
+    });
+
+    $("#dugme-izracunaj-raspored").click(function (event) {
+      proveriMatematiku();
+      izracunajRaspodelu();
+    });
+
+    $("#dugme-prebaci-raspored").click(function (event) {
+      $("#broj_mesta_po_stolu").val($("#stolice").val());
+      $("#broj_stolova").val($("#ukupno_stolova").val());
+      proveriMatematiku();
+    });
+
+    $('#broj_mesta').change(function (event) {
+      proveriMatematiku();
+    });
+
+    $('#broj_mesta_po_stolu').change(function (event) {
+      proveriMatematiku();
+    });
+
+    $('#broj_stolova').change(function (event) {
+      proveriMatematiku();
+    });
+
+    function izracunajCenuMenija() {
+      const cm = $('#meni_id').children('option:selected').data('cenamenija');
+      const br = $('#broj_mesta').val();
+      let cena = (cm === undefined) ? 0 : parseFloat(cm);
+      let broj = (cm === "") ? 0 : parseInt(br);
+
+      $('#cena_menija').val((cena * broj).toFixed(2));
+    }
+
+    function izracunajCenuUsluga() {
+      let cenaUsluga = 0;
+
+      if ($("#muzika_chk").prop("checked") == true) {
+        cenaUsluga += parseFloat($("#muzika_iznos").val());
+      }
+
+      if ($("#fotograf_chk").prop("checked") == true) {
+        cenaUsluga += parseFloat($("#fotograf_iznos").val());
+      }
+
+      if ($("#dekoracija_chk").prop("checked") == true) {
+        cenaUsluga += parseFloat($("#dekoracija_iznos").val());
+      }
+
+      if ($("#torta_chk").prop("checked") == true) {
+        cenaUsluga += parseFloat($("#torta_iznos").val());
+      }
+
+      if ($("#kokteli_chk").prop("checked") == true) {
+        cenaUsluga += parseFloat($("#kokteli_iznos").val());
+      }
+
+      if ($("#slatki_sto_chk").prop("checked") == true) {
+        cenaUsluga += parseFloat($("#slatki_sto_iznos").val());
+      }
+
+      if ($("#vocni_sto_chk").prop("checked") == true) {
+        cenaUsluga += parseFloat($("#vocni_sto_iznos").val());
+      }
+
+      if ($("#posebni_zahtevi_iznos").val() !== "" && $("#posebni_zahtevi").val() !== "") {
+        cenaUsluga += parseFloat($("#posebni_zahtevi_iznos").val());
+      }
+
+      $('#cena_usluga').val(cenaUsluga.toFixed(2));
+    }
+
+    function proveriMatematiku() {
+      const bm = $('#broj_mesta').val();
+      const bss = $('#broj_mesta_po_stolu').val();
+      const bs = $('#broj_stolova').val();
+
+      let brojMesta = (bm === "") ? 0 : parseInt(bm);
+      let brojStolica = (bss === "") ? 0 : parseInt(bss);
+      let brojStolova = (bs === "") ? 0 : parseInt(bs);
+
+      const razlika = (brojStolica * brojStolova) - brojMesta;
+      provera = true;
+      let proveraTekst = "";
+
+      if (brojMesta > slobodnaMesta) {
+        provera = false;
+        proveraTekst += "Broj zvanica je veci od broja slobodnih mesta!\n";
+      }
+
+      if (brojStolova > slobodniStolovi) {
+        provera = false;
+        proveraTekst += "Broj stolova je veci od broja slobodnih stolova!\n";
+      }
+
+      if (razlika < 0) {
+        provera = false;
+        proveraTekst += `Broj zvanica je (za ${razlika * -1}) veci od broja mesta za stolovima!\n`;
+      }
+
+      if (razlika >= brojStolica) {
+        provera = false;
+        proveraTekst += "Broj stolova je veci od potrebnog za uneti broj zvanica!\n";
+      }
+
+      if (!provera) {
+        $("#greske").text(proveraTekst);
+      } else {
+        $("#greske").text("");
+      }
+    }
+
+    function izracunajRaspodelu() {
+      const minStolicaSingle = 8; // min stolica po stolu za single ugovor
+      const minStolicaMulti = 10; // min stolica po stolu za multi ugovor
+      const optStolica = 12; // optimalno stolica po stolu
+      const maxStolicaSingle = 12; // max stolica po stolu
+      const maxStolicaMulti = 13; // max stolica po stolu
+
+      const bm = $('#broj_mesta').val();
+      const bss = $('#broj_mesta_po_stolu').val();
+      const bs = $('#broj_stolova').val();
+
+      let brojMesta = (bm === "") ? 0 : parseInt(bm);
+      let brojStolica = (bss === "") ? 0 : parseInt(bss);
+
+      if (brojMesta === 0) {
+        $("#greske").text("Nije unet broj mesta (zvanica)!\n");
+        return false;
+      }
+
+      if (brojStolica === 0) {
+        $("#greske").text("Nije unet broj stolica za stolom!\n");
+        return false;
+      }
+
+      let predlogStolica = 0;
+      let predlogStolova = 0;
+      let stolovi = 0;
+      let stoPlus = 0;
+      let ostatak = 0;
+
+      if (multi) // PRORACUN MESTA ZA VISE UGOVORA
+      {
+        stolovi = Math.floor(brojMesta / brojStolica);
+        ostatak = brojMesta - (stolovi * brojStolica);
+        if (ostatak > 0 && ostatak <= stolovi && brojStolica < maxStolicaMulti) {
+          const tmpStolice = brojStolica + 1;
+          const tmpStolovi = Math.floor(brojMesta / tmpStolice);
+          if (tmpStolovi < stolovi) {
+            alert("Moguće je smanjiti broj stolova dodavanjem još jednog mesta za stolom.");
+          }
+        }
+        if (ostatak > 0) {
+          stoPlus = 1;
+        }
+      }
+      else // PRORACUN MESTA ZA JEDAN UGOVOR
+      {
+        stolovi = Math.floor(brojMesta / brojStolica);
+        ostatak = brojMesta - (stolovi * brojStolica);
+        if (ostatak > 0) {
+          stoPlus = 1;
+        }
+      }
+
+      $("#stolovi").val(stolovi);
+      $("#stolice").val(brojStolica);
+      $("#ekstra_stolice").val(ostatak);
+      $("#ukupno_stolova").val(stolovi + stoPlus);
+    }
+
+    $('#meniModal').on('hide.bs.modal', function (e) {
+      $('#meni-forma').removeClass("was-validated");
+      $("#nazivMenija").removeClass("is-invalid");
+    })
+
+    $(document).on("click", ".dodaj-meni", function () {
+      var csrfName = $(".csrf_name").val();
+      var csrfValue = $(".csrf_value").val();
+      var nazivMenija = $('#nazivMenija').val();
+      var cenaMenija = $('#cenaMenija').val();
+      var napomenaMenija = $('#napomenaMenija').val();
+
+      var csrfAndData = {
+        csrf_name: csrfName,
+        csrf_value: csrfValue,
+        nazivMenija: nazivMenija,
+        cenaMenija: cenaMenija,
+        napomenaMenija: napomenaMenija
+      };
+
+      var ruta = ["{{ path_for('meni.dodavanje.ajax') }}"];
+
+      $.ajax({
+        url: ruta,
+        type: "POST",
+        data: csrfAndData,
+        success: function (data) {
+          updateCsrfToken(data);
+          if (data.greska) {
+            $('#meni-forma').addClass("was-validated");
+            // $("#nazivMenija").removeClass("valid");
+            $("#nazivMenija").addClass("is-invalid");
+          } else {
+            $('#meni_id').find('option').remove();
+            $.each(data.meniji, function (index, lokObjekat) {
+              let chkd = lokObjekat.id == data.id_menija ? " selected" : "";
+              $("#meni_id").append(
+                '<option value="' +
+                lokObjekat.id +
+                '"' + chkd + '>' +
+                lokObjekat.naziv + '- (' +
+                lokObjekat.cena +
+                ") </option>"
+              );
+            });
+            $('#meniModal').modal('hide');
+          }
+        }
+      });
+    });
+
+    window.addEventListener(
+      "load",
+      function () {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName("needs-validation");
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function (form) {
+          form.addEventListener(
+            "submit",
+            function (event) {
+              if (form.checkValidity() === false || !provera) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      },
+      false
+    );
+  });
+</script>
+{% endblock skripta %}

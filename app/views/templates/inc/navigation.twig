@@ -1,0 +1,164 @@
+<nav class="navbar navbar-dark bg-dark text-light navbar-expand-lg sticky-top">
+  <a href="{{ path_for('pocetna') }}" class="navbar-brand text-uppercase">
+    <img src="{{ base_url() }}/img/EEC-logo-24.png" alt="EEC logo">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('pocetna') }}"><i class="fas fa-home"></i> Početna</a>
+      </li>
+      {% if auth.logged %}
+      {% if auth.user.nivo == 100 %}
+      {# meni za vlasnika #}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('vlasnik.kalendar') }}"><i class="fas fa-calendar-alt"></i> Termini</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('vlasnik.ugovori') }}"><i class="fas fa-file-signature"></i> Ugovori</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-chart-line"></i> Izveštaji
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ path_for('izvestaji.sale') }}">Zbirni po salama</a>
+          <a class="dropdown-item" href="{{ path_for('izvestaji.tipovi') }}">Zbirni po tipovima proslava</a>
+          <a class="dropdown-item" href="{{ path_for('izvestaji.vrste') }}">Zbirni po načinu plaćanja</a>
+        </div>
+      </li>
+      {% endif %}
+      {% if auth.user.nivo == 300 %}
+      {# meni za osoblje #}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('osoblje.kalendar') }}"><i class="fas fa-calendar-alt"></i> Kalendar</a>
+      </li>
+      {% endif %}
+      {% if auth.user.nivo == 200 %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('kalendar') }}"><i class="fas fa-calendar-alt"></i> Termini</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('ugovori') }}"><i class="fas fa-file-signature"></i> Ugovori</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('termin.pregled.get') }}"><i class="fas fa-calendar-plus"></i>
+          Zakazivanje
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('meni') }}"><i class="fas fa-drumstick-bite"></i> Meni</a>
+      </li>
+      {% endif %}
+      {% if auth.user.nivo == 0 %}
+      {# meni za admina #}
+      {# osoblje #}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('osoblje.kalendar') }}"><i class="fas fa-calendar-alt"></i> Kalendar</a>
+      </li>
+      {# zakazivac #}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('kalendar') }}"><i class="fas fa-calendar-alt"></i> Termini</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('ugovori') }}"><i class="fas fa-file-signature"></i> Ugovori</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('termin.pregled.get') }}"><i class="fas fa-calendar-plus"></i>
+          Zakazivanje</a>
+      </li>
+      {# admin #}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-user-lock"></i> Administrator
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ path_for('sale') }}">Sale</a>
+          <a class="dropdown-item" href="{{ path_for('meni') }}">Meni</a>
+          <a class="dropdown-item" href="{{ path_for('tip_dogadjaja') }}">Tipovi događaja</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ path_for('admin.korisnik.lista') }}">Korisnici</a>
+          <a class="dropdown-item" href="{{ path_for('logovi') }}">Logovi</a>
+        </div>
+      </li>
+      {% endif %}
+      {% if auth.user.nivo == 1000 %}
+      {# meni za super admina #}
+      {# osoblje #}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('osoblje.kalendar') }}"><i class="fas fa-calendar-alt"></i>
+          Kalendar(O)</a>
+      </li>
+      {# vlasnik #}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('vlasnik.kalendar') }}"><i class="fas fa-calendar-alt"></i> Termini(V)</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('vlasnik.ugovori') }}"><i class="fas fa-file-signature"></i>
+          Ugovori(V)</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-chart-line"></i> Izveštaji(V)
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ path_for('izvestaji.sale') }}">Zbirni po salama</a>
+          <a class="dropdown-item" href="{{ path_for('izvestaji.tipovi') }}">Zbirni po tipovima proslava</a>
+          <a class="dropdown-item" href="{{ path_for('izvestaji.vrste') }}">Zbirni po načinu plaćanja</a>
+        </div>
+      </li>
+      {# zakazivac #}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('kalendar') }}"><i class="fas fa-calendar-alt"></i> Termini(Z)</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('ugovori') }}"><i class="fas fa-file-signature"></i> Ugovori(Z)</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('termin.pregled.get') }}"><i class="fas fa-calendar-plus"></i>
+          Zakazivanje(Z)
+        </a>
+      </li>
+      {# admin #}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-user-lock"></i> Administrator
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ path_for('sale') }}">Sale</a>
+          <a class="dropdown-item" href="{{ path_for('meni') }}">Meni</a>
+          <a class="dropdown-item" href="{{ path_for('tip_dogadjaja') }}">Tipovi događaja</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ path_for('admin.korisnik.lista') }}">Korisnici</a>
+          <a class="dropdown-item" href="{{ path_for('logovi') }}">Logovi</a>
+        </div>
+      </li>
+      {% endif %}
+      {% endif %}
+      {% if auth.logged %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-user"></i> {{ auth.user.ime }}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ path_for('odjava') }}">Odjava</a>
+          <a class="dropdown-item" href="{{ path_for('promena') }}">Promena lozinke</a>
+        </div>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path_for('prijava') }}"><i class="fas fa-sign-in-alt"></i> Prijava</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

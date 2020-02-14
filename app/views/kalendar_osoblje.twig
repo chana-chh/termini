@@ -1,0 +1,246 @@
+{% extends "templates/app.twig" %} {% block stil %}
+<link href="{{ base_url() }}/css/fullcalendar.css" rel="stylesheet" />
+<link href="{{ base_url() }}/css/fullcalendar.print.css" rel="stylesheet" media="print" />
+<style>
+  @media (max-width: 575.98px) {
+  .mobilni{
+    font-size: 0.75rem !important;
+  }
+  h2{
+    font-size: 1.25rem !important;
+  }
+  .btn-primary{
+    padding: .25rem .4rem !important;
+    font-size: .875rem !important;
+    line-height: .5 !important;
+    border-radius: .2rem !important;
+  }
+  #datumb{
+    width: 50% !important;
+  }
+  }
+  .fc-day-grid-event:hover {
+    background-color: #ffc107 !important;
+    cursor: pointer;
+  }
+  .fc-event-dot{
+    color: #5cb85c !important;
+    background-color: #5cb85c !important;
+  }
+  a.fc-day-number {
+    margin: 0.2rem;
+    border-radius: 50%;
+    text-decoration: none !important;
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    background-color: #6c757d;
+    color: #ffffff;
+  }
+  a.fc-day-number:hover {
+    background-color: #ffc107;
+  }
+  .kalendar{
+    min-width: 576px;
+  }
+</style>
+{% endblock stil %} {% block naslov %}
+<div class="row d-none d-sm-flex">
+  <div class="col">
+    <h1><i class="fas fa-calendar-alt text-secondary"></i> Pregled zakazanih termina</h1>
+    <hr>
+  </div>
+</div>
+<div class="row d-none d-sm-flex">
+  <div class="col-lg-2">
+    <input name="datum" type="date" id="datum" class="form-control"/>
+  </div>
+  <div class="col-lg-2">
+    <button class="btn btn-primary btn-sm" id="idi" title="Prelazak na datum">
+            <i class="fas fa-rocket"></i>&emsp;Idi na datum
+          </button>
+  </div>
+  <div class="col-lg-8 text-right">
+    <ul class="list-unstyled">
+      <li>
+        <i class="fas fa-question-circle text-primary"></i> Informacija o terminu
+      </li>
+      <li>
+        <i class="fas fa-calendar-plus text-danger"></i> Termin u pripremi
+      </li>
+      <li>
+        <i class="fas fa-calendar-check text-success"></i> Zaključen termin
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="row d-sm-none ">
+  <div class="col">
+    <h4><i class="fas fa-calendar-check text-secondary"></i> Pregled zakazanih termina</h4>
+  </div>
+</div>
+<div class="row d-sm-none" style="font-size: 0.75rem;">
+  <div class="col-lg-2">
+    <input name="datum" type="date" id="datumb" class="form-control"/>
+  </div>
+  <div class="col-lg-2">
+    <button class="btn btn-primary btn-sm" id="idib" title="Prelazak na datum">
+            <i class="fas fa-rocket"></i>&emsp;Idi na datum
+          </button>
+  </div>
+  <div class="col-lg-8 text-left">
+    <ul class="list-unstyled">
+      <li>
+        <i class="fas fa-question-circle text-primary"></i> Informacija o terminu
+      </li>
+      <li>
+        <i class="fas fa-calendar-plus text-danger"></i> Termin u pripremi
+      </li>
+      <li>
+        <i class="fas fa-calendar-check text-success"></i> Zaključen termin
+      </li>
+    </ul>
+  </div>
+</div>
+<hr />
+<div class="row mb-2">
+  <div class="col-lg-12" id="kalendar"></div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="cenaModal">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Dodatne informacije o događaju</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="modalBody"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zatvori</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock naslov %} {% block skripta %}
+<script src="{{ base_url() }}/js/moment.min.js"></script>
+<script src="{{ base_url() }}/js/fullcalendar.min.js"></script>
+<script src="{{ base_url() }}/js/sr.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+      $('#idi').click(function() {
+        if($('#datum').val()){
+        $("#kalendar").fullCalendar('gotoDate', $('#datum').val());
+        $("#kalendar").fullCalendar('select', $('#datum').val());
+        }
+        else{
+          alert('Odaberite željeni datum!')
+        }
+      });
+      $('#idib').click(function() {
+        if($('#datumb').val()){
+        $("#kalendar").fullCalendar('gotoDate', $('#datumb').val());
+        $("#kalendar").fullCalendar('select', $('#datumb').val());
+        }
+        else{
+          alert('Odaberite željeni datum!')
+        }
+      });
+    $("#kalendar").fullCalendar({
+      themeSystem: "bootstrap4",
+      header: {
+        left: "prev,next today",
+        center: "title",
+        right: " "
+      },
+      defaultView: "month",
+      weekends: true,
+      height: 750,
+      events: JSON.parse(`{{ data|raw }}`),
+      slotEventOverlap:false,
+      slotDuration:'01:00:00',
+      minTime:'07:00:00',
+      showNonCurrentDates: false,
+      eventBackgroundColor: "#f8f9fa",
+      eventBorderColor: "#000000",
+      eventTextColor: "#000000",
+      eventClick: function(event, jsEvent, view) {
+        const loc = "{{ path_for('osoblje.termin') }}" + "/" + event.id;
+        window.location = loc;
+      },
+      eventRender: function (event, element, view) {
+        if (view.name == "month"){
+            let title = element.find(".fc-title");
+            element.find('.fc-time').hide();
+            const html = `
+            <div class="clearfix">
+              <div class="d-none d-sm-flex float-left text-wrap">
+                ${event.start.format("HH:mm")} ${event.end.format("HH:mm")}
+              </div>
+              <div class="d-sm-none float-left text-wrap">
+                <small>${event.start.format("HH:mm")} ${event.end.format("HH:mm")}</small>
+              </div>
+              <div class="d-none d-sm-flex float-right mt-1">
+                <i class="${event.description}"></i>
+              </div>
+            </div>
+            <div class="d-none d-sm-flex text-wrap">
+              ${event.title}
+            </div>
+            <div class="d-sm-none text-wrap text-truncate">
+              <small><strong>${event.title}</strong></small>
+            </div>
+            <div class="d-sm-none float-right">
+                <i class="${event.description}"></i>
+            </div>
+            `;
+            title.html(html);
+            element.addClass("p-1");}
+        },
+      dayNames: ["nedelja", "ponedeljak", "utorak", "sreda", "četvrtak", "petak", "subota"],
+      dayNamesShort: ["ned", "pon", "uto", "sre", "čet", "pet", "sub"],
+      monthNames: [
+        "januar",
+        "februar",
+        "mart",
+        "april",
+        "maj",
+        "jun",
+        "jul",
+        "avgust",
+        "septembar",
+        "oktobar",
+        "novembar",
+        "decembar"
+      ],
+      monthNamesShort: [
+        "januar",
+        "februar",
+        "mart",
+        "april",
+        "maj",
+        "jun",
+        "jul",
+        "avgust",
+        "septembar",
+        "oktobar",
+        "novembar",
+        "decembar"
+      ],
+    });
+    var cal = $("#kalendar").fullCalendar("getCalendar");
+    var d = window.location.href.substr(-10);
+    var crtica = d.search("-");
+    if (crtica !== -1) {
+      var datum = cal.moment(d);
+      cal.gotoDate(datum);
+      cal.select(datum);
+    }
+  });
+</script>
+{% endblock skripta %}

@@ -1,0 +1,279 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+  <style>
+  @media (max-width: 575.98px) {
+  .mobilni{
+    font-size: 0.75rem !important;
+  }
+  .btn, .btn-sm{
+    padding: .25rem .4rem;
+    font-size: .875rem;
+    line-height: .5;
+    border-radius: .2rem;
+  }
+  }
+  </style>
+{% endblock stil %}
+{% block naslov %}
+<div class="row mt-md-2 d-none d-sm-flex">
+  <div class="col">
+    <h1>
+      <i class="fas fa-warehouse text-secondary"></i> Pregled sala
+    </h1>
+  </div>
+</div>
+<div class="row mt-2 d-sm-none">
+  <div class="col">
+    <h4>
+      <i class="fas fa-warehouse text-secondary"></i> Pregled sala
+    </h4>
+  </div>
+</div>
+<hr />
+{% endblock naslov %} 
+{% block sadrzaj %}
+<div class="table-responsive">
+  <table class="table mobilni">
+    <thead class="thead-dark">
+      <tr>
+        <th class="w-5" scope="col">ID</th>
+        <th class="w-20" scope="col">Naziv</th>
+        <th class="w-15" scope="col">Kapacitet (mesta)</th>
+        <th class="w-15" scope="col">Kapacitet (stolovi)</th>
+        <th class="w-30" scope="col">Napomena</th>
+        <th class="w-10" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sala in sale %}
+      <tr>
+        <th scope="row" class="text-danger">{{ sala.id }}</th>
+        <td><strong>{{ sala.naziv }}</strong></td>
+        <td>{{ sala.max_kapacitet_mesta }}</td>
+        <td>{{ sala.max_kapacitet_stolova }}</td>
+        <td class="font-italic">{{ sala.napomena|length > 50 ? sala.napomena|slice(0, 50) ~ ' ...' : sala.napomena  }}</td>
+        <td style="text-align:right;">
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
+            data-id="{{ sala.id }}" title="Izmena podataka odabrane sale">
+            <i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
+            data-id="{{ sala.id }}" title="Brisanje odabrane sale">
+            <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+  {# Modal za brisanje #}
+  <div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Upozorenje!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4>Da li želite trajno da obrišete salu?</h4>
+          <p class="text-danger">* Ova akcija je nepovratna!</p>
+          <form id="brisanje-forma" action="{{ path_for('sale.brisanje') }}" method="POST">
+            {{ csrf|raw }}
+            <input type="hidden" id="idBrisanje" name="idBrisanje">
+            <hr style="margin-top: 30px;">
+
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-obrisi" type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash-alt"></i>&emsp;Obriši
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# Kraj modala za brisanje #}
+
+  {# Modal za izmenu #}
+  <div id="izmenaModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Izmeni stavku</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="izmena-forma" action="{{ path_for('sale.izmena') }}" method="POST" class="needs-validation" novalidate>
+            {{ csrf|raw }}
+            <input type="hidden" id="idIzmena" name="idIzmena">
+            <div class="form-group">
+              <label for="nazivModal">Naziv</label>
+              <input type="text" class="form-control{{ errors.nazivModal[0] ? ' is-invalid' : '' }}" name="nazivModal" id="nazivModal" aria-describedby="naziv sale" required>
+              <div class="valid-feedback">Odgovarajući podatak</div>
+              <div class="invalid-feedback">
+                {{ errors.naziv[0] ? : 'Obavezno polje' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="mk_mesta_Modal">Kapacitet sale (mesta)</label>
+              <input type="number" class="form-control{{ errors.mk_mesta_Modal[0] ? ' is-invalid' : '' }}" name="mk_mesta_Modal" id="mk_mesta_Modal" required>
+              <div class="valid-feedback">Odgovarajući podatak</div>
+              <div class="invalid-feedback">
+                {{ errors.mk_mesta_Modal[0] ? : 'Obavezno polje' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="mk_stolova_Modal">Kapacitet sale (stolovi)</label>
+              <input type="number" class="form-control{{ errors.mk_stolova_Modal[0] ? ' is-invalid' : '' }}" name="mk_stolova_Modal" id="mk_stolova_Modal" required>
+              <div class="valid-feedback">Odgovarajući podatak</div>
+              <div class="invalid-feedback">
+                {{ errors.mk_stolova_Modal[0] ? : 'Obavezno polje' }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="napomenaModal">Napomena</label>
+              <textarea class="form-control" name="napomenaModal" id="napomenaModal" rows="3"></textarea>
+            </div>
+            <hr style="margin-top: 30px;">
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-izmeni" type="submit" class="btn btn-warning">
+                  <i class="fas fa-save"></i>&emsp;Snimi
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# Kraj modala za izmenu #}
+
+{% endblock sadrzaj %} 
+{% block traka %}
+  <div class="card border-dark mb-3">
+    <div class="card-header">Dodavanje nove sale</div>
+    <div class="card-body text-dark mobilni">
+      <form action="{{ path_for('sale.dodavanje') }}" method="POST" class="needs-validation" novalidate>
+        {{ csrf|raw }}
+        <div class="form-group">
+          <label for="naziv">Naziv</label>
+          <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}" name="naziv" id="naziv" aria-describedby="Naziv sale" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.naziv[0] ? : 'Obavezno polje' }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="max_kapacitet_mesta">Kapacitet sale (mesta)</label>
+          <input type="number" class="form-control{{ errors.max_kapacitet_mesta[0] ? ' is-invalid' : '' }}" value="{{ old.max_kapacitet_mesta ? : '' }}" name="max_kapacitet_mesta" id="max_kapacitet_mesta" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.max_kapacitet_mesta[0] ? : 'Obavezno polje' }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="max_kapacitet_stolova">Kapacitet sale (stolovi)</label>
+          <input type="number" class="form-control{{ errors.max_kapacitet_stolova[0] ? ' is-invalid' : '' }}" value="{{ old.max_kapacitet_stolova ? : '' }}" name="max_kapacitet_stolova" id="max_kapacitet_stolova" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.max_kapacitet_stolova[0] ? : 'Obavezno polje' }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="napomena">Napomena</label>
+          <textarea class="form-control" name="napomena" id="napomena" rows="3"></textarea>
+        </div>
+         <div class="row justify-content-end text-right">
+            <div class="col">
+              <button type="submit" class="btn btn-primary text-right"><i class="fas fa-plus-square" title="Dodavanje nove sale"></i> &emsp;Dodaj</button>
+              <a href="{{ path_for('sale') }}" class="btn btn-secondary"><i class="fas fa-ban"></i> &emsp;Otkaži</a>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock traka %}
+{% block skripta %}
+  <script>
+    $(document).ready(function () {
+
+        (function() {
+            "use strict";
+            window.addEventListener(
+              "load",
+              function() {
+                var forms = document.getElementsByClassName("needs-validation");
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                  form.addEventListener(
+                    "submit",
+                    function(event) {
+                      if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }
+                      form.classList.add("was-validated");
+                    },
+                    false
+                  );
+                });
+              },
+              false
+            );
+          })();
+
+      $(document).on('click', '.otvori-brisanje', function () {
+        var id = $(this).data("id");
+        $('#idBrisanje').val(id);
+      });
+
+
+      $(document).on('click', '.otvori-izmenu', function () {
+
+        var csrfName = $(".csrf_name").val();
+        var csrfValue = $(".csrf_value").val();
+        var id = $(this).data("id");
+
+        var csrfAndData = {
+          "csrf_name": csrfName,
+          "csrf_value": csrfValue,
+          "id": id
+        };
+
+        var ruta = ["{{ path_for('sale.detalj') }}"];
+
+        $.ajax({
+          url: ruta,
+          type: "POST",
+          data: csrfAndData,
+          success: function (data) {
+            $(".csrf_name").val(data.cname);
+            $(".csrf_value").val(data.cvalue);
+            $("#idIzmena").val(data.sala.id);
+            $("#nazivModal").val(data.sala.naziv);
+            $("#mk_mesta_Modal").val(data.sala.max_kapacitet_mesta);
+            $("#mk_stolova_Modal").val(data.sala.max_kapacitet_stolova);
+            $("#napomenaModal").val(data.sala.napomena);
+          }
+        });
+
+      });
+
+    });
+  </script>
+{% endblock skripta %}
+

@@ -1,0 +1,119 @@
+{% extends "templates/app.twig" %} {% block stil %} {% endblock stil %}
+{% block naslov %}
+<h1><i class="fas fa-calendar-day"></i> Izmena termina</h1>
+<hr />
+<div class="card border-dark">
+  <div class="card-body">
+    <form action="{{ path_for('termin.izmena.post') }}" method="POST" class="needs-validation" novalidate>
+      {{ csrf | raw }}
+      <input type="hidden" name="termin_id" value="{{ termin.id }}">
+      <div class="form-row">
+        <div class="form-group col-lg-3">
+          <label for="sala_id">Sala</label>
+          <select name="sala_id" id="sala_id" class="custom-select{{ errors.sala_id[0] ? ' is-invalid' : '' }}" required>
+            {% for sala_id in sale %}
+            <option value="{{ sala_id.id }}"{{ (old.sala_id == sala_id.id or termin.sala_id == sala_id.id) ? ' selected' : '' }}>{{ sala_id.naziv }}</option>
+            {% endfor %}
+          </select>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.sala_id[0] ? : 'Obavezno polje' }}
+          </div>
+        </div>
+        <div class="form-group col-lg-3">
+          <label for="datum">Datum</label>
+          <input name="datum" type="date" id="datum" class="form-control{{ errors.datum[0] ? ' is-invalid' : '' }}" value="{{ old.datum ? : termin.datum }}" required/>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.datum[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-lg-3">
+          <label for="pocetak">Početak</label>
+          <input name="pocetak" type="time" id="pocetak" class="form-control{{ errors.pocetak[0] ? ' is-invalid' : '' }}" value="{{ old.pocetak ? : termin.pocetak }}" required/>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.pocetak[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-lg-3">
+          <label for="kraj">Kraj</label>
+          <input name="kraj" type="time" id="kraj" class="form-control{{ errors.kraj[0] ? ' is-invalid' : '' }}" value="{{ old.kraj ? : termin.kraj }}" required/>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.kraj[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col">
+          <label for="opis">Kratak opis događaja</label>
+          <input name="opis" type="text" id="opis" class="form-control{{ errors.opis[0] ? ' is-invalid' : '' }}" value="{{ old.opis ? : termin.opis }}" required/>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.opis[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-lg-3">
+          <label for="tip_dogadjaja_id">Vrsta</label>
+          <select name="tip_dogadjaja_id" id="tip_dogadjaja_id" class="custom-select{{ errors.tip_dogadjaja_id[0] ? ' is-invalid' : '' }}" required>
+            {% for tip in tipovi %}
+            <option value="{{ tip.id }}"{{ (old.tip_dogadjaja_id == tip.id or termin.tip_dogadjaja_id == tip.id) ? ' selected' : '' }}>{{ tip.tip }}</option>
+            {% endfor %}
+          </select>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.tip_dogadjaja_id[0] ? : 'Obavezno polje' }}
+          </div>
+        </div>
+        <div class="col-lg-2 pt-5 text-center">
+          <div class="form-check">
+            <input class="form-check-input{{ errors.zauzet[0] ? ' is-invalid' : '' }}" type="checkbox" id="zauzet" name="zauzet"{{ (old.zauzet or termin.zauzet) ? ' checked' : '' }}>
+            <label class="form-check-label" for="zauzet">Zaključen termin</label>
+            <div class="valid-feedback">Odgovarajući podatak</div>
+            <div class="invalid-feedback">{{ errors.zauzet[0] ? : 'Obavezno polje' }}</div>
+          </div>
+        </div>
+        <div class="form-group col">
+          <label for="napomena">Napomena</label>
+          <textarea name="napomena" type="text" id="napomena" class="form-control{{ errors.napomena[0] ? ' is-invalid' : '' }}">{{ old.napomena ? : termin.napomena }}</textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col text-right">
+          <button type="submit" class="btn btn-primary" title="Snimanje novog termina">
+            <i class="fas fa-save"></i> Snimi izmene
+          </button>
+          <a href="{{ path_for('termin.detalj.get', {id: termin.id}) }}"
+          class="btn btn-secondary">
+            <i class="fas fa-ban"></i> Otkaži
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock naslov %} {% block sadrzaj %} {% endblock sadrzaj %}
+{% block traka%} {% endblock traka %} {% block skripta %}
+<script>
+  (function() {
+    "use strict";
+    window.addEventListener(
+      "load",
+      function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName("needs-validation");
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener(
+            "submit",
+            function(event) {
+              if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add("was-validated");
+            },
+            false
+          );
+        });
+      },
+      false
+    );
+  })();
+</script>
+{% endblock skripta %}

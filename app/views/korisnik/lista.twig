@@ -1,0 +1,363 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+<style>
+  @media (max-width: 575.98px) {
+    .mobilni {
+      font-size: 0.75rem !important;
+    }
+
+    .btn,
+    .btn-sm {
+      padding: 0.25rem 0.4rem;
+      font-size: 0.875rem;
+      line-height: 0.5;
+      border-radius: 0.2rem;
+    }
+  }
+</style>
+{% endblock stil %}
+{% block naslov %}
+<div class="row mt-md-2 d-none d-sm-flex">
+  <div class="col">
+    <h1><i class="fas fa-users text-secondary"></i> Korisnici aplikacije</h1>
+  </div>
+</div>
+<div class="row mt-2 d-sm-none">
+  <div class="col">
+    <h4><i class="fas fa-users text-secondary"></i> Korisnici aplikacije</h4>
+  </div>
+</div>
+<hr />
+{% endblock naslov %}
+{% block sadrzaj %}
+<table class="table mobilni">
+  <thead class="thead-dark">
+    <tr>
+      <th class="w-10">ID</th>
+      <th class="w-40">Ime</th>
+      <th class="w-30">Korisničko ime</th>
+      <th class="w-10 text-right">Nivo</th>
+      <th class="w-10 text-right"><i class="fas fa-cogs text-warning"></i></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for korisnik in data.data %}
+    <tr>
+      <td class="text-danger">{{ korisnik.id }}</td>
+      <td>{{ korisnik.ime }}</td>
+      <td>{{ korisnik.korisnicko_ime }}</td>
+      <td class="text-right">
+        {% if korisnik.nivo == 0 %}
+        Admin
+        {% elseif korisnik.nivo == 100 %}
+        Vlasnik
+        {% elseif korisnik.nivo == 200 %}
+        Zakazivač
+        {% else %}
+        Osoblje
+        {% endif %}
+      </td>
+      <td class="text-right">
+          {% if korisnik.nivo == 100 %}
+            {% if auth.user.nivo == 1000 %}
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
+                data-id="{{ korisnik.id }}" title="Izmena podataka odabrane sale">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
+                value="{{ korisnik.id }}" title="Brisanje odabrane sale">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+            {% endif %}
+          {% else %}
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
+                data-id="{{ korisnik.id }}" title="Izmena podataka odabrane sale">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
+                value="{{ korisnik.id }}" title="Brisanje odabrane sale">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div class="row mobilni">
+  <nav class="col">
+    <ul class="pagination pagination-sm">
+      {% for button in data.links.buttons %}
+      <li class="page-item{{ button.current ? ' active' : '' }}">
+        <a class="page-link" href="{{ button.url }}">{{ button.page }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  <p class="col justify-content-end text-right text-info">
+    <strong>
+      Prikazani redovi od
+      <em>{{ data.links.row_from }}</em> do <em>{{ data.links.row_to }}</em> od
+      ukupno
+      <em>{{ data.links.total_rows }}</em>
+    </strong>
+  </p>
+</div>
+
+{# Modal za brisanje #}
+<div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Upozorenje!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4>Da li želite trajno da obrišete korisnika?</h4>
+        <p class="text-danger">* Ova akcija je nepovratna!</p>
+        <form id="brisanje-forma" action="{{ path_for('admin.korisnik.brisanje') }}" method="POST">
+          {{ csrf | raw }}
+          <input type="hidden" id="idBrisanje" name="idBrisanje" />
+          <hr style="margin-top: 30px;" />
+
+          <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+            <div class="form-group">
+              <button id="btn-brisanje-obrisi" type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i>&emsp;Obriši
+              </button>
+              <a class="btn btn-secondary" data-dismiss="modal">
+                <i class="fas fa-ban"></i>&emsp;Otkaži
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{# Kraj modala za brisanje #}
+{# Modal za izmenu #}
+<div id="izmenaModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Izmeni podatke korisnika</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="izmena-forma" action="{{ path_for('admin.korisnik.izmena') }}" method="POST">
+          {{ csrf | raw }}
+          <input type="hidden" id="idIzmena" name="idIzmena" />
+          <div class="form-group">
+            <label for="imeM">Ime</label>
+            <input class="form-control{{ errors.imeM[0] ? ' is-invalid' : '' }}" type="text" name="imeM" id="imeM"
+              autocomplete="off" required minlength=5 />
+            <div class="valid-feedback">Odgovarajući podatak</div>
+            <div class="invalid-feedback">
+              {{ errors.imeM[0] ? : 'Obavezno polje sa najmanje 5 karaktera' }}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="korisnicko_imeM">Korisničko ime</label>
+            <input class="form-control{{
+                errors.korisnicko_imeM[0] ? ' is-invalid' : ''
+              }}" type="text" name="korisnicko_imeM" id="korisnicko_imeM" autocomplete="off" required minlength=3 />
+            <div class="valid-feedback">Odgovarajući podatak</div>
+            <div class="invalid-feedback">
+              {{ errors.korisnicko_imeM[0] ? : 'Obavezno polje sa najmanje 3 karaktera' }}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lozinkaM" class="uk-form-label">Lozinka</label>
+            <input class="form-control" type="password" name="lozinkaM" id="lozinkaM" class="uk-input"
+              autocomplete="new-password" />
+          </div>
+          <div class="form-group">
+            <label for="lozinka_potvrdaM" class="uk-form-label">Potvrda lozinke</label>
+            <input class="form-control" type="password" name="lozinka_potvrdaM" id="lozinka_potvrdaM" class="uk-input"
+              autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="nivoM">Nivo korisničkih prava</label>
+            <select class="form-control{{ errors.nivoM[0] ? ' is-invalid' : '' }}" id="nivoM" name="nivoM" required>
+            </select>
+            <div class="valid-feedback">Odgovarajući podatak</div>
+            <div class="invalid-feedback">
+              {{ errors.nivoM[0] ? : 'Obavezno polje' }}
+            </div>
+          </div>
+          <hr style="margin-top: 30px;" />
+          <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+            <div class="form-group">
+              <button id="btn-brisanje-izmeni" type="submit" class="btn btn-warning">
+                <i class="fas fa-save"></i>&emsp;Snimi
+              </button>
+              <a class="btn btn-secondary" data-dismiss="modal">
+                <i class="fas fa-ban"></i>&emsp;Otkaži
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{# Kraj modala za izmenu #}
+{% endblock sadrzaj %}
+{% block traka %}
+<div class="card border-dark mb-3">
+  <div class="card-header">Dodavanje novog korisnika</div>
+  <div class="card-body text-dark mobilni">
+    <form action="{{ path_for('admin.korisnik.dodavanje') }}" method="POST" class="needs-validation" novalidate
+      oninput='lozinka_potvrda.setCustomValidity(lozinka_potvrda.value != lozinka.value ? "Lozika se ne poklapa!" : "")'>
+      {{ csrf | raw }}
+      <div class="form-group">
+        <label for="ime">Ime</label>
+        <input class="form-control{{ errors.ime[0] ? ' is-invalid' : '' }}" type="text" name="ime" id="ime"
+          value="{{ old.ime ? : ''  }}" autocomplete="off" required minlength="6" />
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.ime[0] ? : 'Obavezno polje sa najmanje 6 karaktera' }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="korisnicko_ime">Korisničko ime</label>
+        <input class="form-control{{
+            errors.korisnicko_ime[0] ? ' is-invalid' : ''
+          }}" type="text" name="korisnicko_ime" id="korisnicko_ime" value="{{ old.korisnicko_ime ? : '' }}"
+          autocomplete="off" required minlength="3" />
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.korisnicko_ime[0] ? : 'Obavezno polje sa najmanje 3 karaktera' }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="lozinka" class="uk-form-label">Lozinka</label>
+        <input class="form-control{{ errors.lozinka[0] ? ' is-invalid' : '' }}" type="password" name="lozinka"
+          id="lozinka" class="uk-input" autocomplete="new-password" required minlength="6"/>
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.lozinka[0] ? : 'Obavezno polje sa najmanje 6 karaktera' }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="lozinka_potvrda" class="uk-form-label">Potvrda lozinke</label>
+        <input class="form-control{{
+            errors.lozinka_potvrda[0] ? ' is-invalid' : ''
+          }}" type="password" name="lozinka_potvrda" id="lozinka_potvrda" class="uk-input" autocomplete="off"
+          required />
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.lozinka_potvrda[0] ? : 'Obavezno polje koje mora biti isto kao i "Lozinka"' }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="nivo">Nivo korisničkih prava</label>
+        <select class="form-control{{ errors.nivo[0] ? ' is-invalid' : '' }}" id="nivo" name="nivo" required>
+          <option value=""></option>
+          <option value="0">Admin</option>
+          {% if auth.user.id == 0 %}
+          <option value="100">Vlasnik</option>
+          {% endif %}
+          <option value="200">Zakazivač</option>
+          <option value="300">Osoblje</option>
+        </select>
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.nivo[0] ? : 'Obavezno polje' }}
+        </div>
+      </div>
+      <div class="row justify-content-end text-right">
+        <div class="col">
+          <button type="submit" class="btn btn-primary text-right">
+            <i class="fas fa-plus-square" title="Dodavanje novog korisnika"></i>
+            &emsp;Dodaj
+          </button>
+          <a href="{{ path_for('admin.korisnik.lista') }}" class="btn btn-secondary"><i class="fas fa-ban"></i>
+            &emsp;Otkaži</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock traka %} {% block skripta %}
+<script>
+  $(document).ready(function () {
+    $(document).on("click", ".otvori-brisanje", function () {
+      var id = $(this).val();
+      $("#idBrisanje").val(id);
+    });
+
+    $(document).on("click", ".otvori-izmenu", function () {
+      $('#nivoM').find('option').remove();
+      var csrfName = $(".csrf_name").val();
+      var csrfValue = $(".csrf_value").val();
+      var id = $(this).data("id");
+
+      var csrfAndData = {
+        csrf_name: csrfName,
+        csrf_value: csrfValue,
+        id: id
+      };
+
+      var ruta = ["{{ path_for('admin.korisnik.detalj') }}"];
+
+      $.ajax({
+        url: ruta,
+        type: "POST",
+        data: csrfAndData,
+        success: function (data) {
+          $(".csrf_name").val(data.cname);
+          $(".csrf_value").val(data.cvalue);
+          $("#idIzmena").val(data.korisnik.id);
+          $("#imeM").val(data.korisnik.ime);
+          $("#korisnicko_imeM").val(data.korisnik.korisnicko_ime);
+
+          $.each(data.nivoi, function (index, lokObjekat) {
+            $("#nivoM").append(
+              '<option value="' +
+              lokObjekat.vrednost +
+              '">' +
+              lokObjekat.naziv +
+              "</option>"
+            );
+          });
+          $("#nivoM").val(data.korisnik.nivo);
+        }
+      });
+    });
+
+    (function () {
+      "use strict";
+      window.addEventListener(
+        "load",
+        function () {
+          var forms = document.getElementsByClassName("needs-validation");
+          var validation = Array.prototype.filter.call(forms, function (form) {
+            form.addEventListener(
+              "submit",
+              function (event) {
+                if (form.checkValidity() === false) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                form.classList.add("was-validated");
+              },
+              false
+            );
+          });
+        },
+        false
+      );
+    })();
+  });
+</script>
+{% endblock skripta %}

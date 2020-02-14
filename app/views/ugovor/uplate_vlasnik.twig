@@ -1,0 +1,297 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+<style>
+  @media (max-width: 575.98px) {
+    .mobilni {
+      font-size: 0.75rem !important;
+    }
+
+    .btn,
+    .btn-sm {
+      padding: 0.25rem 0.4rem !important;
+      font-size: 0.875rem !important;
+      line-height: 0.5 !important;
+      border-radius: 0.2rem !important;
+    }
+  }
+</style>
+{% endblock stil %}
+{% block naslov %}
+	<div class="row d-none d-sm-flex">
+		<div class="col">
+			<h1>
+				<i class="fas fa-file-signature text-secondary"></i>
+				Pregled uplata za ugovor
+				<strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
+			</h1>
+		</div>
+		<div class="col text-right pt-3">
+			<div class="btn-group btn-group-sm">
+				<button type="button" class="btn btn-secondary" onclick="window.history.back();" title="Povratak na prethodnu stranu">
+					<i class="fas fa-chevron-circle-left"></i>
+					Nazad
+				</button>
+				<a href="{{ path_for('vlasnik.ugovor.detalj', { id: ugovor.id }) }}" class="btn btn-secondary">
+					<i class="fas fa-arrow-alt-circle-left"></i>
+					Ugovor
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="row d-sm-none">
+		<div class="col">
+			<h4>
+				<i class="fas fa-file-signature text-secondary"></i>
+				Pregled uplata za ugovor
+				<strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
+			</h4>
+		</div>
+		<div class="col text-right pt-3">
+			<div class="btn-group btn-group-sm">
+				<button type="button" class="btn btn-secondary" onclick="window.history.back();" title="Povratak na prethodnu stranu">
+					<i class="fas fa-chevron-circle-left"></i>
+					Nazad
+				</button>
+				<a href="{{ path_for('vlasnik.ugovor.detalj', { id: ugovor.id }) }}" class="btn btn-secondary">
+					<i class="fas fa-arrow-alt-circle-left"></i>
+					Ugovor
+				</a>
+			</div>
+		</div>
+	</div>
+
+<div class="row d-none d-sm-flex">
+  <div class="col">
+    <h3 class="text-warning text-right mt-3"><i class="fas fa-user-secret"></i></h3>
+  </div>
+</div>
+
+<div class="row d-sm-none">
+  <div class="col">
+    <h5 class="text-warning text-right mt-3"><i class="fas fa-user-secret"></i></h5>
+  </div>
+</div>
+	<hr/>
+{% endblock naslov %}
+{% block sadrzaj %}
+<div class="row">
+  <div class="col">
+	<h4 class="text-primary">
+		Termin:
+		{{ugovor.termin().datum|date()}}
+		od
+		{{ ugovor.termin.pocetak|date("H:i") }}
+		do
+		{{ ugovor.termin.kraj|date("H:i") }}
+	</h4>
+	<table class="table table-sm mb-0">
+		<tr>
+			<th class="w-30">Meni</th>
+			<td class="w-70">{{ ugovor.meni.naziv }}</td>
+		</tr>
+		<tr>
+			<th>
+				<strong>Ime i prezime</strong>
+			</th>
+			<td>{{ ugovor.punoIme() }}</td>
+		</tr>
+		<tr>
+			<th>
+				<strong>Telefon</strong>
+			</th>
+			<td>{{ ugovor.telefon }}</td>
+		</tr>
+		<tr>
+			<th>
+				<strong>E-mail</strong>
+			</th>
+			<td>
+				<a href="mailto:{{ ugovor.email }}">
+					{{ ugovor.email }}</a></td>
+		</tr>
+<tr>
+	<th>
+		<strong>Cena</strong>
+	</th>
+	<td>{{ ugovor.iznos|number_format }}</td>
+</tr>
+<tr>
+	<th>
+		<strong>Broj zvanica</strong>
+	</th>
+	<td>{{ ugovor.broj_mesta }}</td>
+</tr>
+<tr>
+	<th>
+		<strong>Broj stolova</strong>
+	</th>
+	<td>{{ ugovor.broj_stolova }}</td>
+</tr>
+</table>
+</div>
+</div>
+<hr>
+<div class="row">
+<div class="col">
+	<h4>
+		<i class="fas fa-credit-card text-secondary"></i>
+		Pregled uplata
+	</h4>
+</div></div>
+<div class="row">
+<div class="col table-responsive">
+	<table class="table table-sm table-striped">
+		<thead class="thead-dark">
+			<tr>
+				<th class="w-5">ID</th>
+				<th class="w-20">Datum</th>
+				<th class="w-20 text-right">Iznos</th>
+				<th class="w-15">Način plaćanja</th>
+				<th class="w-30">Opis</th>
+				<th class="w-10 text-center">Kapara</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for uplata in ugovor.uplate %}
+				<tr>
+					<th class="text-danger">{{ uplata.id }}</th>
+					<td>
+						<strong>{{ uplata.datum|date }}</strong>
+					</td>
+					<td class="text-right">{{ uplata.iznos|number_format }}</td>
+					<td>{{ uplata.nacin_placanja }}</td>
+					<td>{{ uplata.opis }}</td>
+					<td class="text-center">
+						{{ (uplata.kapara == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr class="bg-dark text-light">
+				<th></th>
+				<td>Zbir</td>
+				<td class="text-right">{{ ugovor.uplateSuma()|number_format }}</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tfoot>
+	</table>
+</div></div>
+{% endblock sadrzaj %}
+{% block traka %}
+<div class="card border-dark mb-3">
+<div class="card-header text-primary">
+	<strong>Zbirni finansijski podaci</strong>
+</div>
+<div class="card-body text-dark">
+	<div class="row">
+		<div class="col-lg-6">
+			Ukupan iznos:
+		</div>
+		<div class="col-lg-6 text-primary text-right">
+			<strong>{{ ugovor.iznos|number_format }}</strong>
+		</div>
+	</div>
+	<div class="row" style="font-size: 0.875rem;">
+		<div class="col-lg-6">
+			Od toga usluge:
+		</div>
+		<div class="col-lg-6 text-right">
+			<strong>{{ ugovor.cenaUsluga()|number_format }}</strong>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-lg-6">
+			Zbir uplata:
+		</div>
+		<div class="col-lg-6 text-success text-right">
+			<strong>{{ ugovor.uplateSuma()|number_format }}</strong>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			Dug po ugovoru:
+		</div>
+		<div class="col-lg-6 text-danger text-right">
+			<strong>{{ ugovor.uplateDug()|number_format }}</strong>
+		</div>
+	</div>
+</div>
+</div>
+
+<div class="card border-dark mb-3">
+<div class="card-header">
+	Dodatne usluge
+</div>
+<div class="card-body text-dark">
+	<div class="row">
+		<div class="col">
+			<table class="table table-sm table-striped mb-0">
+				<thead>
+					<tr>
+						<th class="w-10">#</th>
+						<th class="w-40">Usluga</th>
+						<th class="w-50 text-right">Iznos</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>1</th>
+						<td>Muzika</td>
+						<td class="text-success text-right">{{ ugovor.muzika_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>2</th>
+						<td>Fotograf</td>
+						<td class="text-success text-right">{{ ugovor.fotograf_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>3</th>
+						<td>Torta</td>
+						<td class="text-success text-right">{{ ugovor.torta_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>4</th>
+						<td>Dekoracija</td>
+						<td class="text-success text-right">{{ ugovor.dekoracija_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>5</th>
+						<td>Kokteli</td>
+						<td class="text-success text-right">{{ ugovor.kokteli_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>6</th>
+						<td>Slatki sto</td>
+						<td class="text-success text-right">{{ ugovor.slatki_sto_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>7</th>
+						<td>Voćni sto</td>
+						<td class="text-success text-right">{{ ugovor.vocni_sto_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>8</th>
+						<td>Posebni zahtevi</td>
+						<td class="text-success text-right">{{ ugovor.posebni_zahtevi_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</div>
+{% endblock traka %}
+{% block skripta %}
+<script src="{{ base_url() }}/js/moment.min.js"></script>
+<script>
+$(document).ready(function () {
+
+});
+</script>
+{% endblock skripta %}

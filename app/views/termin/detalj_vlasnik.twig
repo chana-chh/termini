@@ -1,0 +1,226 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+<style>
+  @media (max-width: 575.98px) {
+    .mobilni {
+      font-size: 0.75rem !important;
+    }
+
+    .btn,
+    .btn-sm {
+      padding: 0.25rem 0.4rem !important;
+      font-size: 0.875rem !important;
+      line-height: 0.5 !important;
+      border-radius: 0.2rem !important;
+    }
+  }
+</style>
+{% endblock stil %}
+
+{% block naslov %}
+<div class="row d-none d-sm-flex">
+  <div class="col">
+    <h1>
+      <i class="fas fa-calendar-check text-secondary"></i>
+      Pregled termina -
+      <small
+        >[
+        <i class="{{ termin.statusIkonica() }}"></i>
+
+        <span>
+          {% if termin.status() == 0 %} Termin u pripremi {% endif %} {% if
+          termin.status() == 1 %} Zaključen termin {% endif %} {% if
+          termin.status() == 2 %} Informacija o terminu {% endif %}
+        </span>
+
+        ]</small
+      >
+    </h1>
+  </div>
+  <div class="col text-right">
+    <div class="btn-group btn-group-sm mt-3">
+      <a href="#" class="btn btn-secondary" onclick="window.history.back();"
+        ><i class="fas fa-chevron-circle-left"></i> Nazad</a
+      >
+      <a
+        href="{{ path_for('vlasnik.kalendar', { datum: termin.datum }) }}"
+        class="btn btn-secondary"
+        ><i class="fas fa-arrow-alt-circle-left"></i> Termini</a
+      >
+    </div>
+  </div>
+</div>
+
+<div class="row d-sm-none mobilni">
+  <div class="col">
+    <h3>
+      <i class="fas fa-calendar-check text-secondary"></i>
+      Pregled termina -
+      <small
+        >[
+        <i class="{{ termin.statusIkonica() }}"></i>
+
+        <span>
+          {% if termin.status() == 0 %} Termin u pripremi {% endif %} {% if
+          termin.status() == 1 %} Zaključen termin {% endif %} {% if
+          termin.status() == 2 %} Informacija o terminu {% endif %}
+        </span>
+
+        ]</small
+      >
+    </h3>
+  </div>
+  <div class="col text-right">
+    <div class="btn-group btn-group-sm mt-3">
+      <a href="#" class="btn btn-secondary" onclick="window.history.back();"
+        ><i class="fas fa-chevron-circle-left"></i> Nazad</a
+      >
+      <a
+        href="{{ path_for('vlasnik.kalendar', { datum: termin.datum }) }}"
+        class="btn btn-secondary"
+        ><i class="fas fa-arrow-alt-circle-left"></i> Termini</a
+      >
+    </div>
+  </div>
+</div>
+
+<div class="row d-none d-sm-flex">
+  <div class="col">
+    <h3 class="text-warning text-right mt-3"><i class="fas fa-user-secret"></i></h3>
+  </div>
+</div>
+
+<div class="row d-sm-none">
+  <div class="col">
+    <h5 class="text-warning text-right mt-3"><i class="fas fa-user-secret"></i></h5>
+  </div>
+</div>
+{% endblock naslov %}
+{% block sadrzaj %}
+<div class="row mobilni">
+  <div class="col-lg-12">
+<div class="table-responsive mt-3">
+  <table class="table">
+    <tbody>
+      <tr>
+        <th class="w-10">Sala</th>
+        <td class="w-90">{{ termin.sala().naziv }}</td>
+      </tr>
+      <tr>
+        <th>Vreme</th>
+        <td>
+          {{ termin.datum|date() }} od {{ termin.pocetak|date("H:i") }} do
+          {{ termin.kraj|date("H:i") }}
+        </td>
+      </tr>
+      <tr>
+        <th>Tip / vrsta</th>
+        <td>{{ termin.tip().tip }}</td>
+      </tr>
+      <tr>
+        <th>Kratak opis</th>
+        <td>{{ termin.opis }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+</div>
+<div class="row">
+  <div class="col-lg-12">
+    <h2>
+      <i class="fas fa-file-signature text-secondary"></i> Ugovori vezani za termin
+    </h2>
+  </div>
+</div>
+<div class="row mobilni">
+<div class="col-lg-12 table-responsive">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th class="w-5">ID</th>
+        <th class="w-10">Broj</th>
+        <th class="w-15 text-right">Iznos</th>
+        <th class="w-15 text-right">Dug</th>
+        <th class="w-20">Ime</th>
+        <th class="w-15">Mesta</th>
+        <th class="w-10">Datum</th>
+        <th class="w-10 text-right">
+          <i class="fas fa-cogs text-warning"></i>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ugovor in termin.ugovori() %}
+      <tr>
+        <th>{{ ugovor.id }}</th>
+        <td>{{ ugovor.broj_ugovora }}</td>
+        <td class="text-info text-right">
+          <strong>{{ ugovor.iznos | number_format }}</strong>
+        </td>
+        <td
+          class="{{
+            ugovor.uplateDug() > 0 ? 'text-danger' : 'text-success'
+          }} text-right"
+        >
+          <strong>{{ ugovor.uplateDug() | number_format }}</strong>
+        </td>
+        <td>{{ ugovor.punoIme() }}</td>
+        <td>
+          {{ ugovor.broj_mesta }} ({{ ugovor.broj_stolova }}/{{
+            ugovor.broj_mesta_po_stolu
+          }})
+        </td>
+        <td>{{ ugovor.datum|date() }}</td>
+        <td class="text-right">
+          <div class="btn-group btn-group-sm">
+            <a
+              class="btn btn-success"
+              href="{{
+                path_for('vlasnik.ugovor.detalj', { id: ugovor.id })
+              }}"
+              title="Detaljni pregled odabranog ugovora"
+            >
+              <i class="fas fa-eye"></i>
+            </a>
+            <a
+              class="btn btn-info btn-sm"
+              href="{{ path_for('vlasnik.uplate', { id: ugovor.id }) }}"
+              class="btn btn-success"
+              ><i class="fas fa-money-bill"></i
+            ></a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+
+{% endblock sadrzaj %}
+{% block traka %}
+<div class="row mt-3">
+<div class="col-lg-10 offset-lg-2">
+  <div class="card bg-light">
+  <div class="card-header"><i class="fas fa-info-circle text-info"></i></div>
+  <div class="card-body text-right">
+    <h5 class="card-title">Cena termina:&emsp;{{ termin.cenaTermina() | number_format }}</h5>
+    <hr>
+    <p class="card-text text-success">Slobodna mesta: {{ termin.slobodnaMesta() }}</p>
+    <p class="card-text text-danger">Rezevisana mesta: {{ termin.popunjenaMesta() }}</p>
+    <hr style="border-top: 1px dotted #8c8b8b">
+    <p class="card-text text-success">Slobodni stolovi: {{ termin.slobodniStolovi() }}</p>
+    <p class="card-text text-danger">Rezervisani stolovi: {{ termin.popunjeniStolovi() }}</p>
+  </div>
+</div>
+</div>
+</div>
+{% endblock traka %} 
+{% block skripta %}
+<script>
+  $(document).ready(function() {
+
+  });
+</script>
+{% endblock skripta %}

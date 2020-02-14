@@ -1,0 +1,220 @@
+{% extends "templates/app.twig" %}
+{% block naslov %}
+<div class="row mt-md-2">
+  <div class="col">
+   <h1>
+      <i class="fas fa-file-signature text-secondary"></i> Pregled ugovora
+    </h1>
+    {% if data %}
+    <small><em class="text-warning">[filtrirano]</em></small>
+    {% else %}
+    <small><em class="text-success">[svi ugovori]</em></small>
+    {% endif %}
+  </div>
+  <div class="col justify-content-end text-right">
+    <div class="btn-group btn-group mt-3">
+      <button type="button" class="btn btn-secondary btn-sm" id="prikazi" title="Prikaži formu za filtriranje">
+        <i class="fas fa-filter"></i> Filter</button>
+      <a href="{{ path_for('ugovori') }}" class="btn btn-warning btn-sm pretraga_div">Svi ugovori</a>
+    </div>
+  </div>
+</div>
+<hr />
+<div class="card border-dark mb-3 pretraga_div" style="display: none;">
+    <div class="card-header">Filtriranje ugovora</div>
+    <div class="card-body text-dark">
+    <form action="{{ path_for('ugovori.pretraga') }}" method="POST">
+        {{ csrf|raw }}
+        <div class="form-row">
+        <div class="form-group col-md-2">
+        <label for="broj_ugovora">Broj ugovora: </label>
+        <input type="text" name="broj_ugovora" id="broj_ugovora" class="form-control"
+            value="{{ data.broj_ugovora }}" autocomplete="off" placeholder="... broj ugovora">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="naziv_firme">Naziv firme: </label>
+          <input type="text" name="naziv_firme" id="naziv_firme" class="form-control"
+            value="{{ data.naziv_firme }}" autocomplete="off" placeholder="... naziv firme">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="ime">Ime: </label>
+          <input type="text" name="ime" id="ime" class="form-control"
+            value="{{ data.ime }}" autocomplete="off" placeholder="... ime">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="prezime">Prezime: </label>
+          <input type="text" name="prezime" id="prezime" class="form-control"
+            value="{{ data.prezime }}" autocomplete="off" placeholder="... prezime">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="tip">Datum (od): </label>
+          <input type="date" name="datum_1" id="datum_1" class="form-control">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="tip">Datum (do): </label>
+          <input type="date" name="datum_2" id="datum_2" class="form-control">
+        </div>
+        </div>
+        
+        <div class="form-row">
+        <div class="form-group col-md-2">
+        <label for="email">E-mail: </label>
+        <input type="text" name="email" id="email" class="form-control"
+            value="{{ data.email }}" autocomplete="off" placeholder="... email">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="telefon">Telefon: </label>
+          <input type="text" name="telefon" id="telefon" class="form-control"
+            value="{{ data.telefon }}" autocomplete="off" placeholder="... telefon">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="napomena">Napomena: </label>
+          <input type="text" name="napomena" id="napomena" class="form-control"
+            value="{{ data.napomena }}" autocomplete="off" placeholder="... napomena">
+        </div>
+        <div class="form-group offset-md-2 col-md-4">
+              <small class="text-warning">
+                    Ako se unese samo prvi datum pretraga će se vršiti za ugovore sa tim datumom. Ako se unesu oba datuma pretraga će se vršiti za ugovore između ta dva datuma.
+              </small>
+        </div>
+        </div>
+        <div class="form-row">
+        <div class="col text-right">
+        <div class="btn-group">
+          <button type="submit" class="btn btn-info btn-sm">
+          <i class="fas fa-filter"></i> Filtriraj
+          </button>
+            <a href="{{ path_for('ugovori') }}" class="btn btn-outline-warning btn-sm">Svi ugovori</a>
+        </div>
+        </div>
+        </div>
+    </form>
+  </div>
+</div>
+<div class="table-responsive">
+<table class="table table-sm table-striped" style="font-size: 0.875rem;">
+  <thead class="thead-dark">
+    <tr>
+      <th class="w-5" scope="col">ID</th>
+      <th class="w-8" scope="col">Broj</th>
+      <th class="w-12" scope="col">Termin</th>
+      <th class="w-10" scope="col">Iznos</th>
+      <th class="w-20" scope="col">Ime/naziv</th>
+      <th class="w-10" scope="col">Telefon</th>
+      <th class="w-10" scope="col">E-mail</th>
+      <th class="w-10" scope="col">Mesta</th>
+      <th class="w-10" scope="col">Datum</th>
+      <th class="w-5" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ugovor in ugovori.data %}
+    <tr>
+      <th scope="row" class="text-danger">{{ ugovor.id }}</th>
+      <td><strong>{{ ugovor.broj_ugovora }}</strong></td>
+      <td><small><a href="{{path_for('termin.detalj.get', { id: ugovor.termin.id })}}">
+        ({{ ugovor.termin().datum|date('d.m.Y') }}) {{ ugovor.termin().opis }}</a></small></td>
+      <td class="text-info"><strong>{{ ugovor.iznos | number_format(2, '.', ',') }}</strong></td>
+      <td>{{ ugovor.ime }} {{ ugovor.prezime }}
+        {% if ugovor.naziv_firme %}
+          <span>, {{ugovor.naziv_firme}}</span>
+        {% endif %}
+        {% if ugovor.adresa_firme %}
+          <span>- {{ugovor.adresa_firme}}</span>
+        {% endif %}
+      </td>
+      <td>{{ ugovor.telefon }}</td>
+      <td><a href="mailto:{{ ugovor.email }}">{{ ugovor.email }}</a></td>
+      <td>{{ ugovor.broj_mesta }} ({{ ugovor.broj_stolova }}/{{ ugovor.broj_mesta_po_stolu }})</td>
+      <td>{{ ugovor.datum|date('d.m.Y') }}</td>
+      <td style="text-align:right;">
+        <div class="btn-group btn-group-sm">
+          <a class="btn btn-success btn-sm" href="{{ path_for('termin.ugovor.detalj.get', { id: ugovor.id }) }}" title="Detaljni pregled odabranog ugovora"><i
+              class="fas fa-eye"></i></a>
+          <a class="btn btn-warning btn-sm" href="{{ path_for('termin.ugovor.izmena.get', { id: ugovor.id }) }}" title="Izmena odabranog ugovora"><i
+              class="fas fa-edit"></i></a>
+          <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
+            data-id="{{ ugovor.id }}" title="Brisanje odabranog ugovora">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+          <a class="btn btn-info btn-sm"
+        href="{{ path_for('ugovor.uplate.lista', { id: ugovor.id }) }}"
+        class="btn btn-success"
+        ><i class="fas fa-money-bill"></i></a
+      >
+        </div>
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<div class="row mobilni">
+  <nav class="col">
+    <ul class="pagination pagination-sm">
+      {% for button in ugovori.links.buttons %}
+      <li class="page-item{{ button.current ? ' active' : '' }}">
+        <a class="page-link" href="{{ button.url }}">{{ button.page }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  <p class="col justify-content-end text-right text-info"><strong>
+      Prikazani redovi od
+      <em>{{ ugovori.links.row_from }}</em> do
+      <em>{{ ugovori.links.row_to }}</em> od ukupno
+      <em>{{ ugovori.links.total_rows }}</em>
+    </strong>
+  </p>
+</div>
+{# Modal za brisanje #}
+  <div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Upozorenje!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4>Da li želite trajno da obrišete ugovor?</h4>
+          <p class="text-danger">* Ova akcija je nepovratna!</p>
+          <form id="brisanje-forma" action="{{ path_for('termin.ugovor.brisanje') }}" method="POST">
+            {{ csrf|raw }}
+            <input type="hidden" id="idBrisanje" name="idBrisanje">
+            <hr style="margin-top: 30px;">
+
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-obrisi" type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash-alt"></i>&emsp;Obriši
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# Kraj modala za brisanje #}
+{% endblock naslov %}
+{% block skripta %}
+  <script>
+    $(document).ready(function () {
+
+    $('#prikazi').click(function () {
+        $('.pretraga_div').toggle();
+    });
+
+    $(document).on('click', '.otvori-brisanje', function () {
+        var id = $(this).data("id");
+        $('#idBrisanje').val(id);
+    });
+
+    });
+  </script>
+{% endblock skripta %}

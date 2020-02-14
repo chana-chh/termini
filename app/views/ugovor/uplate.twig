@@ -1,0 +1,473 @@
+{% extends "templates/app.twig" %}
+{% block naslov %}
+	<div class="row">
+		<div class="col">
+			<h1>
+				<i class="fas fa-file-signature text-secondary"></i>
+				Pregled uplata za ugovor
+				<strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
+			</h1>
+		</div>
+		<div class="col text-right pt-3">
+			<div class="btn-group btn-group-sm">
+				<button type="button" class="btn btn-secondary" onclick="window.history.back();" title="Povratak na prethodnu stranu">
+					<i class="fas fa-chevron-circle-left"></i>
+					Nazad
+				</button>
+				<a href="{{ path_for('termin.ugovor.detalj.get', { id: ugovor.id }) }}" class="btn btn-secondary">
+					<i class="fas fa-arrow-alt-circle-left"></i>
+					Ugovor
+				</a>
+			</div>
+		</div>
+	</div>
+	<hr/>
+{% endblock naslov %}
+{% block sadrzaj %}
+	<h4 class="text-primary">
+		Termin:
+		{{ugovor.termin().datum|date()}}
+		od
+		{{ ugovor.termin.pocetak|date("H:i") }}
+		do
+		{{ ugovor.termin.kraj|date("H:i") }}
+	</h4>
+	<table class="table table-sm mb-0">
+		<tr>
+			<th class="w-20">Meni</th>
+			<td class="w-70">{{ ugovor.meni.naziv }}</td>
+			<td class="w-10 text-right">
+				<a class="btn btn-info btn-sm" href="{{ path_for('meni.detalj', { id: ugovor.meni.id }) }}" title="Detaljni pregled odabranog menija">
+					<i class="fas fa-eye"></i>
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<strong>Ime i prezime</strong>
+			</th>
+			<td>{{ ugovor.punoIme() }}</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>
+				<strong>Telefon</strong>
+			</th>
+			<td>{{ ugovor.telefon }}</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th>
+				<strong>E-mail</strong>
+			</th>
+			<td>
+				<a href="mailto:{{ ugovor.email }}">
+					{{ ugovor.email }}</a></td>
+			<td></td>
+		</tr>
+<tr>
+	<th>
+		<strong>Cena</strong>
+	</th>
+	<td>{{ ugovor.iznos|number_format }}</td>
+	<td></td>
+</tr>
+<tr>
+	<th>
+		<strong>Broj zvanica</strong>
+	</th>
+	<td>{{ ugovor.broj_mesta }}</td>
+	<td></td>
+</tr>
+<tr>
+	<th>
+		<strong>Broj stolova</strong>
+	</th>
+	<td>{{ ugovor.broj_stolova }}</td>
+	<td></td>
+</tr>
+</table>
+<hr>
+<div class="row">
+<div class="col">
+	<h4>
+		<i class="fas fa-credit-card text-secondary"></i>
+		Pregled uplata
+	</h4>
+</div></div><div class="row">
+<div class="col">
+	<table class="table table-sm table-striped">
+		<thead class="thead-dark">
+			<tr>
+				<th class="w-5">ID</th>
+				<th class="w-15">Datum</th>
+				<th class="w-15 text-right">Iznos</th>
+				<th class="w-15">Način plaćanja</th>
+				<th class="w-30">Opis</th>
+				<th class="w-10 text-center">Kapara</th>
+				<th class="w-10 text-right text-warning">
+					<i class="fas fa-cogs"></i>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for uplata in ugovor.uplate %}
+				<tr>
+					<th class="text-danger">{{ uplata.id }}</th>
+					<td>
+						<strong>{{ uplata.datum|date }}</strong>
+					</td>
+					<td class="text-right">{{ uplata.iznos|number_format }}</td>
+					<td>{{ uplata.nacin_placanja }}</td>
+					<td>{{ uplata.opis }}</td>
+					<td class="text-center">
+						{{ (uplata.kapara == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+					</td>
+					<td class="text-right">
+						<div class="btn-group btn-group-sm">
+							<button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal" data-id="{{ uplata.id }}" title="Izmena podataka uplate">
+								<i class="fas fa-edit"></i>
+							</button>
+							<button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal" data-id="{{ uplata.id }}" title="Brisanje odabrane uplate">
+								<i class="fas fa-trash-alt"></i>
+							</button>
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr class="bg-dark text-light">
+				<th></th>
+				<td>Zbir</td>
+				<td class="text-right">{{ ugovor.uplateSuma()|number_format }}</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</tfoot>
+	</table>
+</div></div>{# Modal za izmenu uplate #}<div id="izmenaModal" class="modal fade" tabindex="-1" role="dialog">
+<div class="modal-dialog" role="document">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title text-danger">Izmeni podatke uplate</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<form id="izmena-forma" action="{{ path_for('ugovor.izmena.uplata') }}" method="POST" class="needs-validation" novalidate>
+				{{ csrf|raw }}
+				<input type="hidden" id="idIzmena" name="idIzmena">
+				<div class="form-group">
+					<label for="opisModal">Opis</label>
+					<input type="text" class="form-control" name="opisModal" id="opisModal" aria-describedby="izmena opis">
+				</div>
+				<div class="form-group">
+					<label for="datumModal">Datum</label>
+					<input name="datumModal" type="date" id="datumModal" class="form-control{{ errors.datumModal[0] ? ' is-invalid' : '' }}" required>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.datumModal[0] ? : 'Obavezno polje' }}
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="iznosModal">Iznos</label>
+					<input type="number" class="form-control{{ errors.iznosModal[0] ? ' is-invalid' : '' }}" name="iznosModal" id="iznosModal" min="0" step="0.01" required>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.iznosModal[0] ? : 'Obavezno polje' }}
+					</div>
+				</div>
+				<div class="custom-control custom-checkbox mb-3">
+					<input type="checkbox" class="custom-control-input {{ errors.kaparaModal[0] ? ' is-invalid' : '' }}" name="kaparaModal" id="kaparaModal">
+					<label class="custom-control-label" for="kaparaModal">Kapara</label>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.kaparaModal[0] ? : '' }}</div>
+				</div>
+				<div class="form-group">
+					<label for="nacin_placanjaModal">Način plaćanja:</label>
+					<select class="custom-select mb-2 form-control{{ errors.iznosModal[0] ? ' is-invalid' : '' }}" name="nacin_placanjaModal" id="nacin_placanjaModal" class="form-control" required>
+						<option value=""></option>
+					</select>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.nacin_placanjaModal[0] ? : 'Obavezno polje' }}
+					</div>
+				</div>
+				<hr style="margin-top: 30px;">
+				<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+					<div class="form-group">
+						<button id="btn-brisanje-izmeni" type="submit" class="btn btn-warning">
+							<i class="fas fa-save"></i>&emsp;Snimi
+						</button>
+						<a class="btn btn-secondary" data-dismiss="modal">
+							<i class="fas fa-ban"></i>&emsp;Otkaži
+						</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div></div>{# Kraj modala za izmenu uplate #}{# Modal za brisanje #}<div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
+<div class="modal-dialog" role="document">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title text-danger">Upozorenje!</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<h4>Da li želite trajno da obrišete uplatu?</h4>
+			<p class="text-danger">* Ova akcija je nepovratna!</p>
+			<form id="brisanje-forma" action="{{ path_for('ugovor.brisanje.uplata') }}" method="POST">
+				{{ csrf|raw }}
+				<input type="hidden" id="idBrisanje" name="idBrisanje">
+				<hr style="margin-top: 30px;">
+
+				<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+					<div class="form-group">
+						<button id="btn-brisanje-obrisi" type="submit" class="btn btn-danger">
+							<i class="fas fa-trash-alt"></i>&emsp;Obriši
+						</button>
+						<a class="btn btn-secondary" data-dismiss="modal">
+							<i class="fas fa-ban"></i>&emsp;Otkaži
+						</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div></div>{# Kraj modala za brisanje #}{% endblock sadrzaj %}{% block traka %}<div class="card border-dark mb-3">
+<div class="card-header text-primary">
+	<strong>Zbirni finansijski podaci</strong>
+</div>
+<div class="card-body text-dark">
+	<div class="row">
+		<div class="col-lg-6">
+			Ukupan iznos:
+		</div>
+		<div class="col-lg-6 text-primary text-right">
+			<strong>{{ ugovor.iznos|number_format }}</strong>
+		</div>
+	</div>
+	<div class="row" style="font-size: 0.875rem;">
+		<div class="col-lg-6">
+			Od toga usluge:
+		</div>
+		<div class="col-lg-6 text-right">
+			<strong>{{ ugovor.cenaUsluga()|number_format }}</strong>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-lg-6">
+			Zbir uplata:
+		</div>
+		<div class="col-lg-6 text-success text-right">
+			<strong>{{ ugovor.uplateSuma()|number_format }}</strong>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			Dug po ugovoru:
+		</div>
+		<div class="col-lg-6 text-danger text-right">
+			<strong>{{ ugovor.uplateDug()|number_format }}</strong>
+		</div>
+	</div>
+</div></div><div class="card border-dark mb-3">
+<div class="card-header text-primary">
+	<strong>Evidentiranje uplate</strong>
+</div>
+<div class="card-body text-dark">
+	<form id="uplata-forma" action="{{ path_for('termin.ugovor.uplata') }}" method="POST" class="needs-validation" novalidate>
+		{{ csrf|raw }}
+		<input type="hidden" id="ugovor_id" name="ugovor_id" value="{{ ugovor.id }}">
+		<div class="form-row">
+			<div class="col form-group">
+				<label for="opis">Opis</label>
+				<input type="text" class="form-control{{ errors.opis[0] ? ' is-invalid' : '' }}" name="opis" id="opis" value="{{ old.opis ? : '' }}" required>
+				<div class="valid-feedback">Odgovarajući podatak</div>
+				<div class="invalid-feedback">{{ errors.opis[0] ? : 'Obavezno polje' }}</div>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col form-group">
+				<label for="datum">Datum</label>
+				<input name="datum" type="date" id="datum" class="form-control{{ errors.datum[0] ? ' is-invalid' : '' }}" value="{{ old.datum ? : 'now'|date('Y-m-d') }}" required>
+				<div class="valid-feedback">Odgovarajući podatak</div>
+				<div class="invalid-feedback">{{ errors.datum[0] ? : 'Obavezno polje' }}</div>
+			</div>
+			<div class="col form-group">
+				<label for="nacin_placanja">Način plaćanja:</label>
+				<select class="custom-select mb-2 {{ errors.nacin_placanja[0] ? ' is-invalid' : '' }}" name="nacin_placanja" id="nacin_placanja" required>
+					<option value=""></option>
+					<option value="gotovina" {{ old.nacin_placanja == 'gotovina' ? ' checked' : '' }}>Gotovina</option>
+					<option value="kartica" {{ old.nacin_placanja == 'kartica' ? ' checked' : '' }}>Kartica</option>
+					<option value="ček" {{ old.nacin_placanja == 'ček' ? ' checked' : '' }}>Ček</option>
+					<option value="faktura" {{ old.nacin_placanja == 'faktura' ? ' checked' : '' }}>Faktura</option>
+				</select>
+				<div class="valid-feedback">Odgovarajući podatak</div>
+				<div class="invalid-feedback">{{ errors.nacin_placanja[0] ? : 'Obavezno polje' }}</div>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col form-group">
+				<label for="iznos">Iznos</label>
+				<input type="number" class="form-control{{ errors.iznos[0] ? ' is-invalid' : '' }}" name="iznos" id="iznos" min="1" step="0.01" value="{{ old.iznos ? : 0 }}" required>
+				<div class="valid-feedback">Odgovarajući podatak</div>
+				<div class="invalid-feedback">{{ errors.iznos[0] ? : 'Iznos mora biti veći od 0' }}</div>
+			</div>
+			<div class="col form-group">
+				<div class="form-check">
+					<label for="kapara">Kapara</label><br>
+					<input type="checkbox" class="form-check-input ml-0{{ errors.kapara[0] ? ' is-invalid' : '' }}" name="kapara" id="kapara" {{ old.kapara == 1 ? ' checked' : '' }}>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.kapara[0] ? : '' }}</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-row">
+			<div class="col form-group text-right mb-0">
+				<button type="submit" class="btn btn-primary">
+					<i class="fas fa-money-bill"></i>
+					Evidentiraj uplatu
+				</button>
+				<button type="reset" class="btn btn-secondary" id="otkazi-validation">
+					<i class="fas fa-ban"></i>
+					Otkaži
+				</button>
+			</div>
+		</div>
+	</form>
+</div></div><div class="card border-dark mb-3">
+<div class="card-header">
+	Dodatne usluge
+</div>
+<div class="card-body text-dark">
+	<div class="row">
+		<div class="col">
+			<table class="table table-sm table-striped mb-0">
+				<thead>
+					<tr>
+						<th class="w-10">#</th>
+						<th class="w-40">Usluga</th>
+						<th class="w-50 text-right">Iznos</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>1</th>
+						<td>Muzika</td>
+						<td class="text-success text-right">{{ ugovor.muzika_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>2</th>
+						<td>Fotograf</td>
+						<td class="text-success text-right">{{ ugovor.fotograf_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>3</th>
+						<td>Torta</td>
+						<td class="text-success text-right">{{ ugovor.torta_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>4</th>
+						<td>Dekoracija</td>
+						<td class="text-success text-right">{{ ugovor.dekoracija_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>5</th>
+						<td>Kokteli</td>
+						<td class="text-success text-right">{{ ugovor.kokteli_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>6</th>
+						<td>Slatki sto</td>
+						<td class="text-success text-right">{{ ugovor.slatki_sto_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>7</th>
+						<td>Voćni sto</td>
+						<td class="text-success text-right">{{ ugovor.vocni_sto_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>8</th>
+						<td>Posebni zahtevi</td>
+						<td class="text-success text-right">{{ ugovor.posebni_zahtevi_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div></div>{% endblock traka %}{% block skripta %}<script src="{{ base_url() }}/js/moment.min.js"></script><script>
+$(document).ready(function () {
+$(document).on('click', '.otvori-uplatu', function () {
+var id = $(this).data("id");
+$('#idUgovora').val(id);
+});
+
+$(document).on('click', '.otvori-brisanje', function () {
+var id = $(this).data("id");
+$('#idBrisanje').val(id);
+});
+
+$(document).on('click', '.otvori-izmenu', function () {
+
+$('#nacin_placanjaModal').find('option').remove();
+var csrfName = $(".csrf_name").val();
+var csrfValue = $(".csrf_value").val();
+var id = $(this).data("id");
+
+var csrfAndData = {
+"csrf_name": csrfName,
+"csrf_value": csrfValue,
+"id": id
+};
+
+var ruta = ["{{ path_for('ugovor.uplata.detalj') }}"];
+
+$.ajax({
+url: ruta,
+type: "POST",
+data: csrfAndData,
+success: function (data) {
+$(".csrf_name").val(data.cname);
+$(".csrf_value").val(data.cvalue);
+$("#idIzmena").val(data.uplata.id);
+$("#opisModal").val(data.uplata.opis);
+$("#iznosModal").val(data.uplata.iznos);
+$("#datumModal").val(moment(data.uplata.datum).format("YYYY-MM-DD"));
+$("#kaparaModal").prop('checked', data.uplata.kapara);
+
+$.each(data.nacini, function (index, lokObjekat) {
+$("#nacin_placanjaModal").append('<option value="' + lokObjekat + '">' + lokObjekat + "</option>");
+});
+
+$("#nacin_placanjaModal").val(data.uplata.nacin_placanja);
+}
+});
+
+});
+
+$("#otkazi-validation").on("click", function () {
+$("#uplata-forma").removeClass("was-validated");
+});
+
+window.addEventListener("load", function () {
+var forms = document.getElementsByClassName("needs-validation");
+var validation = Array.prototype.filter.call(forms, function (form) {
+form.addEventListener("submit", function (event) {
+if (form.checkValidity() === false || !provera) {
+event.preventDefault();
+event.stopPropagation();
+}
+form.classList.add("was-validated");
+}, false);
+});
+}, false);
+});</script>{% endblock skripta %}

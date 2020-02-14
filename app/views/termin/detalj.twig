@@ -1,0 +1,340 @@
+{% extends "templates/app.twig" %} {% block stil %} {% endblock stil %} {% block
+naslov %}
+<div class="row">
+  <div class="col">
+    <h1>
+      <i class="fas fa-calendar-check text-secondary"></i>
+      Pregled termina -
+      <small
+        >[
+        <i class="{{ termin.statusIkonica() }}"></i>
+
+        <span>
+          {% if termin.status() == 0 %} Termin u pripremi {% endif %} {% if
+          termin.status() == 1 %} Zaključen termin {% endif %} {% if
+          termin.status() == 2 %} Informacija o terminu {% endif %}
+        </span>
+
+        ]</small
+      >
+    </h1>
+  </div>
+  <div class="col text-right">
+    <div class="btn-group btn-group-sm mt-3">
+      <a href="#" class="btn btn-secondary" onclick="window.history.back();"
+        ><i class="fas fa-chevron-circle-left"></i> Nazad</a
+      >
+      <a
+        href="{{ path_for('termin.pregled.get', { datum: termin.datum }) }}"
+        class="btn btn-secondary"
+        ><i class="fas fa-arrow-alt-circle-left"></i> Termini</a
+      >
+      <a href="" class="btn btn-primary" id="zakljuci-termin">
+        <i class="fas fa-check"></i> Zaključaj/otključaj termin
+      </a>
+      <a
+        href="{{ path_for('termin.izmena.get', { id: termin.id }) }}"
+        class="btn btn-warning"
+        ><i class="fas fa-edit"></i> Izmeni</a
+      >
+      <a
+        href=""
+        class="btn btn-danger otvori-brisanje"
+        data-toggle="modal"
+        data-target="#brisanjeModal"
+        ><i class="fas fa-trash"></i> Obriši</a
+      >
+    </div>
+  </div>
+</div>
+<div class="table-responsive mt-3">
+  <table class="table">
+    <tbody>
+      <tr>
+        <th class="w-10">Sala</th>
+        <td class="w-90">{{ termin.sala().naziv }}</td>
+      </tr>
+      <tr>
+        <th>Vreme</th>
+        <td>
+          {{ termin.datum|date() }} od {{ termin.pocetak|date("H:i") }} do
+          {{ termin.kraj|date("H:i") }}
+        </td>
+      </tr>
+      <tr>
+        <th>Tip / vrsta</th>
+        <td>{{ termin.tip().tip }}</td>
+      </tr>
+      <tr>
+        <th>Kratak opis</th>
+        <td>{{ termin.opis }}</td>
+      </tr>
+      <tr>
+        <th>Zaključen termin</th>
+        <td>
+          <div class="custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox" id="zauzet"
+            {{ termin.zauzet == 1 ? ' checked="checked"' : "" }}
+            disabled>
+            <label class="custom-control-label" for="zauzet"
+              ><strong></strong
+            ></label>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th>Napomena</th>
+        <td>{{ termin.napomena | nl2br }}</td>
+      </tr>
+      <tr>
+        <th></th>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{# Modal za brisanje termina #}
+<div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Upozorenje!</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>Da li želite trajno da obrišete termin?</h6>
+        <p class="text-danger">* Ova akcija je nepovratna!</p>
+        <form
+          action="{{ path_for('termin.brisanje.post') }}"
+          method="POST"
+          id="modal-forma-brisanje-termina"
+        >
+          {{ csrf | raw }}
+          <input
+            type="hidden"
+            name="modal_termin_brisanje_id"
+            id="modal-termin-brisanje-id"
+          />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="modal-obrisi-termin">
+          <i class="fas fa-trash-alt"></i> Obriši
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          <i class="fas fa-ban"></i> Otkaži
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{# Kraj modala za brisanje termina #}
+<div class="row">
+  <div class="col-lg-8">
+    <h2>
+      <i class="fas fa-file-signature text-secondary"></i> Ugovori za termin
+    </h2>
+  </div>
+  <div class="col-lg-4 text-right pt-1">
+    <a
+      href="{{ path_for('termin.dodavanje.ugovor', { termin_id: termin.id }) }}"
+      class="btn btn-primary btn-sm"
+    >
+      <i class="fas fa-plus-square"></i> Dodavanje ugovora
+    </a>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th class="w-5">ID</th>
+        <th class="w-10">Broj ugovora</th>
+        <th class="w-10 text-right">Iznos</th>
+        <th class="w-10 text-right">Dug</th>
+        <th class="w-15">Ime</th>
+        <th class="w-10">Telefon</th>
+        <th class="w-10">Email</th>
+        <th class="w-10">Br mesta</th>
+        <th class="w-10">Datum</th>
+        <th class="w-10 text-right">
+          <i class="fas fa-cogs text-warning"></i>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ugovor in termin.ugovori() %}
+      <tr>
+        <th>{{ ugovor.id }}</th>
+        <td>{{ ugovor.broj_ugovora }}</td>
+        <td class="text-info text-right">
+          <strong>{{ ugovor.iznos | number_format }}</strong>
+        </td>
+        <td
+          class="{{
+            ugovor.uplateDug() > 0 ? 'text-danger' : 'text-success'
+          }} text-right"
+        >
+          <strong>{{ ugovor.uplateDug() | number_format }}</strong>
+        </td>
+        <td>{{ ugovor.punoIme() }}</td>
+        <td>{{ ugovor.telefon }}</td>
+        <td>
+          <a href="mailto:{{ ugovor.email }}">{{ ugovor.email }}</a>
+        </td>
+        <td>
+          {{ ugovor.broj_mesta }} ({{ ugovor.broj_stolova }}/{{
+            ugovor.broj_mesta_po_stolu
+          }})
+        </td>
+        <td>{{ ugovor.datum|date() }}</td>
+        <td class="text-right">
+          <div class="btn-group btn-group-sm">
+            <a
+              class="btn btn-success"
+              href="{{
+                path_for('termin.ugovor.detalj.get', { id: ugovor.id })
+              }}"
+              title="Detaljni pregled odabranog ugovora"
+            >
+              <i class="fas fa-eye"></i>
+            </a>
+            <a
+              class="btn btn-warning"
+              href="{{
+                path_for('termin.ugovor.izmena.get', { id: ugovor.id })
+              }}"
+              title="Izmena odabranog ugovora"
+            >
+              <i class="fas fa-edit"></i>
+            </a>
+            <button
+              class="btn btn-danger otvori-brisanje-ugovora"
+              data-toggle="modal"
+              data-target="#brisanje-ugovora-modal"
+              data-id="{{ ugovor.id }}"
+              title="Brisanje odabranog ugovora"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </button>
+            <a
+              class="btn btn-info btn-sm"
+              href="{{ path_for('ugovor.uplate.lista', { id: ugovor.id }) }}"
+              class="btn btn-success"
+              ><i class="fas fa-money-bill"></i
+            ></a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{# Modal za brisanje ugovora #}
+<div id="brisanje-ugovora-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Upozorenje!</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>Da li želite trajno da obrišete ugovor?</h6>
+        <p class="text-danger">* Ova akcija je nepovratna!</p>
+        <form
+          action="{{ path_for('termin.ugovor.brisanje') }}"
+          method="POST"
+          id="modal-forma-brisanje-ugovora"
+        >
+          {{ csrf | raw }}
+          <input type="hidden" id="idBrisanje" name="idBrisanje" />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="modal-obrisi-ugovor">
+          <i class="fas fa-trash-alt"></i> Obriši
+        </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          <i class="fas fa-ban"></i> Otkaži
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{# Kraj modala za brisanje ugovora #} {% endblock naslov %} {% block skripta %}
+<script>
+  $(document).ready(function() {
+    $(".otvori-brisanje").on("click", function() {
+      var id = "{{ termin.id }}";
+      $("#modal-termin-brisanje-id").val(id);
+    });
+
+    $(".otvori-brisanje-ugovora").on("click", function() {
+      var id = $(this).data("id");
+      $("#idBrisanje").val(id);
+    });
+
+    $("#modal-obrisi-termin").on("click", function() {
+      $("#modal-forma-brisanje-termina").submit();
+    });
+
+    $("#modal-obrisi-ugovor").on("click", function() {
+      $("#modal-forma-brisanje-ugovora").submit();
+    });
+
+    $("#zakljuci-termin").on("click", function(e) {
+      e.preventDefault();
+      $.post(
+        "{{ path_for('termin.zakljucivanje.post') }}",
+        {
+          termin_id: "{{ termin.id }}",
+          csrf_name: document.querySelector(".csrf_name").value,
+          csrf_value: document.querySelector(".csrf_value").value
+        },
+        function(data) {
+          data = JSON.parse(data);
+          document.querySelector(".csrf_name").value = data.csrf_name;
+          document.querySelector(".csrf_value").value = data.csrf_value;
+          // promeniti ikonicu i text statusa u h1
+
+          let tekst = "";
+          if (data.status === 0) {
+            tekst = " Termin u pripremi";
+          }
+          if (data.status === 1) {
+            tekst = " Zaključen termin";
+          }
+          if (data.status === 2) {
+            tekst = " Informacija o terminu";
+          }
+          $("h1 small span").text(tekst);
+          $("h1 small i")
+            .removeClass()
+            .addClass(data.ikonica);
+          if (data.zakljucen) {
+            document
+              .querySelector("#zauzet")
+              .setAttribute("checked", "checked");
+          } else {
+            document.querySelector("#zauzet").removeAttribute("checked");
+          }
+        }
+      );
+    });
+  });
+</script>
+{% endblock skripta %}

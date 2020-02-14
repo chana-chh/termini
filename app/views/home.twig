@@ -1,0 +1,38 @@
+{% extends "templates/app.twig" %}
+{% block naslov %}
+<div class="d-none d-sm-block">
+	<div class="row mt-5">
+		<div class="col text-center">
+			<img src="{{ base_url() }}/img/EEC-logo-znak.png" alt="logo EEC" class="img-fluid w-15">
+		</div>
+	</div>
+	<div class="row mt-5">
+		<div class="col text-center">
+			<img src="{{ base_url() }}/img/EEC-logo-tekst.png" alt="logo EEC" class="img-fluid w-40">
+		</div>
+	</div>
+	<div class="row mt-5">
+		<div class="col text-center">
+			<h4 class="display-4">Sistem za zakazivanje i pomoć u organizovanju događaja</h4>
+		</div>
+	</div>
+</div>
+{# Mobilni telefoni #}
+<div class="d-sm-none">
+	<div class="row mt-5">
+		<div class="col text-center">
+			<img src="{{ base_url() }}/img/EEC-logo-znak.png" alt="logo EEC" class="img-fluid w-30">
+		</div>
+	</div>
+	<div class="row mt-5">
+		<div class="col text-center">
+			<img src="{{ base_url() }}/img/EEC-logo-tekst.png" alt="logo EEC" class="img-fluid w-80">
+		</div>
+	</div>
+	<div class="row mt-5">
+		<div class="col text-center">
+			<p class="large">Sistem za zakazivanje i pomoć u organizovanju događaja</p>
+		</div>
+	</div>
+</div>
+{% endblock naslov %}

@@ -1,0 +1,266 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+  <style>
+  @media (max-width: 575.98px) {
+  .mobilni{
+    font-size: 0.75rem !important;
+  }
+  .btn, .btn-sm{
+    padding: .25rem .4rem;
+    font-size: .875rem;
+    line-height: .5;
+    border-radius: .2rem;
+  }
+  }
+}
+  </style>
+{% endblock stil %}
+{% block naslov %}
+<div class="row mt-md-2 d-none d-sm-flex">
+  <div class="col">
+    <h1>
+      <i class="fas fa-birthday-cake text-secondary"></i> Pregled tipova događaja
+    </h1>
+  </div>
+</div>
+<div class="row mt-2 d-sm-none">
+  <div class="col">
+    <h4>
+      <i class="fas fa-birthday-cake text-secondary"></i> Pregled tipova događaja
+    </h4>
+  </div>
+</div>
+<hr />
+{% endblock naslov %} 
+{% block sadrzaj %}
+  <table class="table mobilni">
+    <thead class="thead-dark">
+      <tr>
+        <th class="w-10" scope="col">ID</th>
+        <th class="w-50" scope="col">Tip</th>
+        <th class="w-20" scope="col"><small>Više ugovora u jednom terminu</small></th>
+        <th class="w-20" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tip in tipovi %}
+      <tr>
+        <th scope="row" class="text-danger">{{ tip.id }}</th>
+        <td>{{ tip.tip }}</td>
+        <td class="text-center">
+            <span title="Moguće je imati više ugovora u jednom terminu" style="color: #5cb85c;">
+                {{ (tip.multi_ugovori == 1) ? '<i class=\"fas fa-check fa-lg\"></i>' : '' }}
+            </span>
+        </td>
+        <td style="text-align:right;">
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
+            data-id="{{ tip.id }}" title="Izmena podataka odabranog tipa događaja">
+            <i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
+            data-id="{{ tip.id }}" title="Brisanje odabrananog tipa događaja">
+            <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {# Modal za brisanje #}
+  <div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Upozorenje!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4>Da li želite trajno da obrišete tip događaja?</h4>
+          <p class="text-danger">* Ova akcija je nepovratna!</p>
+          <form id="brisanje-forma" action="{{ path_for('tip_dogadjaja.brisanje') }}" method="POST">
+            {{ csrf|raw }}
+            <input type="hidden" id="idBrisanje" name="idBrisanje">
+            <hr style="margin-top: 30px;">
+
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-obrisi" type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash-alt"></i>&emsp;Obriši
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# Kraj modala za brisanje #}
+
+  {# Modal za izmenu #}
+  <div id="izmenaModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Izmeni stavku</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="izmena-forma" action="{{ path_for('tip_dogadjaja.izmena') }}" method="POST" class="needs-validation" novalidate>
+            {{ csrf|raw }}
+            <input type="hidden" id="idIzmena" name="idIzmena">
+            <div class="form-group">
+              <label for="tipModal">Tip događaja</label>
+              <input type="text" 
+              class="form-control{{ errors.tip[0] ? ' is-invalid' : '' }}" 
+              name="tipModal" 
+              id="tipModal" 
+              aria-describedby="tip događaja" 
+              required
+              minlength=5>
+              <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.tipModal[0] ? : 'Obavezno polje sa najmanje 5 karaktera' }}
+          </div>
+            </div>
+            <div class="form-group">
+            <label>
+                <input type="checkbox" name="multi_ugovoriM" id="multi_ugovoriM">
+                &emsp;Da li je moguće imati više ugovora u jednom terminu?
+            </label>
+            </div>
+            <hr style="margin-top: 30px;">
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-izmeni" type="submit" class="btn btn-warning">
+                  <i class="fas fa-save"></i>&emsp;Snimi
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# Kraj modala za izmenu #}
+
+{% endblock sadrzaj %} 
+{% block traka %}
+  <div class="card border-dark mb-3">
+    <div class="card-header">Dodavanje novog tipa događaja</div>
+    <div class="card-body text-dark mobilni">
+      <form action="{{ path_for('tip_dogadjaja.dodavanje') }}" method="POST" class="needs-validation" novalidate>
+        {{ csrf|raw }}
+        <div class="form-group">
+          <label for="tip">Tip događaja</label>
+          <input type="text" class="form-control{{ errors.tip[0] ? ' is-invalid' : '' }}" value="{{ old.tip ? : '' }}" name="tip" id="tip" aria-describedby="tip događaja" required minlength=5>
+           <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.tip[0] ? : 'Obavezno polje sa najmanje 5 karaktera' }}
+          </div>
+        </div>
+        <div class="form-group">
+            <label>
+                <input type="checkbox" name="multi_ugovori" id="multi_ugovori">
+                &emsp;Da li je moguće imati više ugovora u jednom terminu?
+            </label>
+        </div>
+         <div class="row justify-content-end text-right">
+            <div class="col">
+              <button type="submit" class="btn btn-primary text-right"><i class="fas fa-plus-square" title="Dodavanje novog tipa događaja"></i> &emsp;Dodaj</button>
+              <a href="{{ path_for('tip_dogadjaja') }}" class="btn btn-secondary"><i class="fas fa-ban"></i> &emsp;Otkaži</a>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card border-info mb-3">
+  <div class="card-header"><i class="fas fa-info-circle text-info"></i></div>
+  <div class="card-body text-info" style="font-size: 0.875rem;">
+    <h5 class="card-title">Saveti:</h5>
+    <p class="card-text font-italic">U slučaju da neki tip događaja može da ima samo jedan ugovor ili više ugovora u terminu najbolje je napraviti dva tipa događaja sa naznakom koliko će ugovora biti u terminu.</p>
+    <ul>
+      <li>Proslava rođendana (jedan ugovor)</li>
+      <li>Proslava rođendana (više ugovora)</li>
+    </ul>
+  </div>
+</div>
+{% endblock traka %}
+{% block skripta %}
+  <script>
+    $(document).ready(function () {
+
+        (function() {
+            "use strict";
+            window.addEventListener(
+              "load",
+              function() {
+                var forms = document.getElementsByClassName("needs-validation");
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                  form.addEventListener(
+                    "submit",
+                    function(event) {
+                      if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }
+                      form.classList.add("was-validated");
+                    },
+                    false
+                  );
+                });
+              },
+              false
+            );
+          })();
+
+
+      $(document).on('click', '.otvori-brisanje', function () {
+        var id = $(this).data("id");
+        $('#idBrisanje').val(id);
+      });
+
+
+      $(document).on('click', '.otvori-izmenu', function () {
+
+        var csrfName = $(".csrf_name").val();
+        var csrfValue = $(".csrf_value").val();
+        var id = $(this).data("id");
+
+        var csrfAndData = {
+          "csrf_name": csrfName,
+          "csrf_value": csrfValue,
+          "id": id
+        };
+
+        var ruta = ["{{ path_for('tip_dogadjaja.detalj') }}"];
+
+        $.ajax({
+          url: ruta,
+          type: "POST",
+          data: csrfAndData,
+          success: function (data) {
+            $(".csrf_name").val(data.cname);
+            $(".csrf_value").val(data.cvalue);
+            $("#idIzmena").val(data.tip.id);
+            $("#tipModal").val(data.tip.tip);
+            $("#multi_ugovoriM").prop('checked', data.tip.multi_ugovori);
+          }
+        });
+
+      });
+
+    });
+  </script>
+{% endblock skripta %}
+

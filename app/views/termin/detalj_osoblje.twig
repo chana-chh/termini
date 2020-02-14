@@ -1,0 +1,208 @@
+{% extends "templates/app.twig" %} {% block stil %} {% endblock stil %} {% block
+naslov %}
+<div class="row ne_stampaj">
+  <div class="col">
+    <h1>
+      <i class="fas fa-calendar-check text-secondary"></i>
+      Pregled termina -
+      <small>[
+        <i class="{{ termin.statusIkonica() }}"></i>
+
+        <span>
+          {% if termin.status() == 0 %} Termin u pripremi {% endif %} 
+          {% if termin.status() == 1 %} Zaključen termin {% endif %} 
+          {% if termin.status() == 2 %} Informacija o terminu {% endif %}
+        </span>
+
+        ]</small>
+    </h1>
+  </div>
+  <div class="col text-right">
+    <div class="btn-group btn-group-sm mt-3">
+      <a href="#" class="btn btn-secondary" onclick="window.history.back();"><i class="fas fa-chevron-circle-left"></i>
+        Nazad</a>
+      <a href="{{ path_for('osoblje.kalendar', { datum: termin.datum }) }}" class="btn btn-secondary"><i
+          class="fas fa-arrow-alt-circle-left"></i> Termini</a>
+      <button type="button" class="btn btn-primary btn-sm" title="Štampanje detalja termina" onclick="window.print();">
+      <i class="fas fa-print"></i> Štampaj</button>
+    </div>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-12">
+<div class="alert alert-dark" role="alert">
+  <h5>Detalji o terminu:&emsp;
+    {{ termin.tip().tip }} u {{ termin.sala().naziv }} na dan
+    <span class="text-danger">{{ termin.datum|date() }}</span> od {{ termin.pocetak|date("H:i") }} do
+    {{ termin.kraj|date("H:i") }}.
+    {% if termin.opis %}<span> Opis: {{ termin.opis }}.</span> {% endif %}
+    {% if termin.napomena %}<span class="font-italic">({{ termin.napomena | nl2br }})</span> {% endif %}
+  </h5>
+</div>
+</div>
+</div>
+
+<div class="row mt-4 mx-3">
+  <div class="col-md-6">
+    <h3 class="text-primary p-4">
+      <i class="fas fa-users"></i> Ukupan broj zvanica: {{ termin.popunjenaMesta() }}
+    </h3>
+  </div>
+  <div class="col-md-6">
+    <h4>
+      <i class="fas fa-drumstick-bite text-secondary"></i> Meniji koje je potrebno pripremiti
+    </h4>
+    <ul class="list-group list-group-flush">
+      {% for meni in meniji %}
+      <li class="list-group-item">
+        <h5>{{ meni.naziv }}:&emsp;{{ meni.komada }}</h5>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+<hr>
+<div class="row mt-3">
+  <div class="col">
+    <h4>
+      Pregled popunjenih stolova i pripadajućih menija:
+    </h4>
+  </div>
+</div>
+{% for ugovor in ugovori %}
+<div class="row mt-3">
+  <div class="col">
+    <h5>
+      {{ ugovor.broj_mesta }} zvanica sa {{ ugovor.broj_stolova }} popunjenih stolova sa po {{
+            ugovor.broj_mesta_po_stolu}} stolica. Planirani meni je {{ ugovor.meni.naziv }} koji se sastoji iz:
+    </h5>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12" style="font-size: 0.875rem;">
+    <ul class="list-group list-group-horizontal-md ">
+      <li class="list-group-item flex-fill">
+        <p class="font-italic text-success">Hladno predjelo:</p>
+        {% set predjela = ugovor.meni.hladno_predjelo|split(',')%}
+          {% for p in predjela %}
+            {{p}}<br>
+          {% endfor %}
+      </li>
+      <li class="list-group-item flex-fill">
+         <p class="font-italic text-success">Sirevi:</p>
+        {% set predjela = ugovor.meni.sirevi|split(',')%}
+          {% for p in predjela %}
+            {{p}}<br>
+          {% endfor %}
+      </li>
+      <li class="list-group-item flex-fill">
+         <p class="font-italic text-success">Čorba:</p>
+        {% set predjela = ugovor.meni.corba|split(',')%}
+          {% for p in predjela %}
+            {{p}}<br>
+          {% endfor %}
+      </li>
+      <li class="list-group-item flex-fill">
+         <p class="font-italic text-success">Glavno jelo:</p>
+        {% set predjela = ugovor.meni.glavno_jelo|split(',')%}
+          {% for p in predjela %}
+            {{p}}<br>
+          {% endfor %}
+      </li>
+      <li class="list-group-item flex-fill">
+         <p class="font-italic text-success">Meso:</p>
+        {% set predjela = ugovor.meni.meso|split(',')%}
+          {% for p in predjela %}
+            {{p}}<br>
+          {% endfor %}
+      </li>
+      <li class="list-group-item flex-fill">
+         <p class="font-italic text-success">Hleb:</p>
+        {% set predjela = ugovor.meni.hleb|split(',')%}
+          {% for p in predjela %}
+            {{p}}<br>
+          {% endfor %}
+      </li>
+      <li class="list-group-item flex-fill">
+         <p class="font-italic text-success">Karta pića:</p>
+        {% set predjela = ugovor.meni.karta_pica|split(',')%}
+          {% for p in predjela %}
+            {{p}}<br>
+          {% endfor %}
+      </li>
+    </ul>
+  </div>
+</div>
+<hr style="border-top: 1px dotted #8c8b8b">
+      <div class="row">
+        <div class="col-md-4">
+          <table class="table table-sm table-striped mb-0" style="font-size: 0.875rem;">
+            <thead>
+          <tr>
+            <th class="w-25"></th>
+            <th class="w-75"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th>Muzika</th>
+            <td>{{ ugovor.muzika_opis }}</td>
+          </tr>
+          <tr>
+            <th>Fotograf</th>
+            <td>{{ ugovor.fotograf_opis }}</td>
+          </tr>
+          <tr>
+            <th>Torta</th>
+            <td>{{ ugovor.torta_opis }}</td>
+          </tr>
+          </tbody>
+          </table>
+        </div>
+        <div class="col-md-4">
+          <table class="table table-sm table-striped mb-0" style="font-size: 0.875rem;">
+            <thead>
+          <tr>
+            <th class="w-25"></th>
+            <th class="w-75"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th>Dekoracija</th>
+            <td>{{ ugovor.dekoracija_opis }}</td>
+          </tr>
+          <tr>
+            <th>Kokteli</th>
+            <td>{{ ugovor.kokteli_opis }}</td>
+          </tr>
+          <tr>
+            <th>Slatki sto</th>
+            <td>{{ ugovor.slatki_sto_opis }}</td>
+          </tr>
+          </tbody>
+          </table>
+        </div>
+        <div class="col-md-4">
+          <table class="table table-sm table-striped mb-0" style="font-size: 0.875rem;">
+            <thead>
+          <tr>
+            <th class="w-25"></th>
+            <th class="w-75"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th>Voćni sto</th>
+            <td>{{ ugovor.vocni_sto_opis }}</td>
+          </tr>
+          <tr>
+            <th>Posebni zahtevi</th>
+            <td>{{ ugovor.posebni_zahtevi }}</td>
+          </tr>
+          </tbody>
+          </table>
+        </div>
+      </div>
+{% endfor %}
+{% endblock naslov %}

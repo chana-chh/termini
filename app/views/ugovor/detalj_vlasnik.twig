@@ -1,0 +1,317 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+<style>
+  @media (max-width: 575.98px) {
+    .mobilni {
+      font-size: 0.75rem !important;
+    }
+
+    .btn,
+    .btn-sm {
+      padding: 0.25rem 0.4rem !important;
+      font-size: 0.875rem !important;
+      line-height: 0.5 !important;
+      border-radius: 0.2rem !important;
+    }
+  }
+</style>
+{% endblock stil %}
+{% block naslov %}
+<div class="row d-none d-sm-flex">
+  <div class="col-lg-8">
+    <h1>
+	  <i class="fas fa-file-signature text-secondary"></i>
+	  Pregled ugovora
+	  <strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
+	  &emsp;<small>(od {{ugovor.datum|date()}})</small>
+    </h1>
+  </div>
+  <div class="col-lg-4 text-right pt-3">
+    <div class="btn-group btn-group-sm">
+      <button type="button" class="btn btn-secondary" onclick="window.history.back();" title="Povratak na prethodnu stranu"><i
+          class="fas fa-chevron-circle-left"></i> Nazad</button>
+      <a
+        href="{{ path_for('vlasnik.termin', { id: ugovor.termin_id }) }}"
+        class="btn btn-secondary"
+        ><i class="fas fa-arrow-alt-circle-left"></i> Termin</a
+      >
+      <a
+        href="{{ path_for('vlasnik.uplate', { id: ugovor.id }) }}"
+        class="btn btn-success"
+        ><i class="fas fa-money-bill"></i> Uplate</a
+      >
+    </div>
+  </div>
+</div>
+
+<div class="row d-sm-none">
+  <div class="col">
+    <h4>
+	  <i class="fas fa-file-signature text-secondary"></i>
+	  Pregled ugovora
+	  <strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
+	  &emsp;<small class="font-italic">(od {{ugovor.datum|date()}})</small>
+    </h4>
+  </div>
+  <div class="col text-right pt-3">
+    <div class="btn-group btn-group-sm">
+      <button type="button" class="btn btn-secondary" onclick="window.history.back();" title="Povratak na prethodnu stranu"><i
+          class="fas fa-chevron-circle-left"></i> Nazad</button>
+      <a
+        href="{{ path_for('vlasnik.termin', { id: ugovor.termin_id }) }}"
+        class="btn btn-secondary"
+        ><i class="fas fa-arrow-alt-circle-left"></i> Termin</a
+      >
+      <a
+        href="{{ path_for('vlasnik.uplate', { id: ugovor.id }) }}"
+        class="btn btn-success"
+        ><i class="fas fa-money-bill"></i> Uplate</a
+      >
+    </div>
+  </div>
+</div>
+
+<div class="row d-none d-sm-flex">
+  <div class="col">
+    <h3 class="text-warning text-right mt-3"><i class="fas fa-user-secret"></i></h3>
+  </div>
+</div>
+
+<div class="row d-sm-none">
+  <div class="col">
+    <h5 class="text-warning text-right mt-3"><i class="fas fa-user-secret"></i></h5>
+  </div>
+</div>
+
+<hr />
+{% endblock naslov %}
+{% block sadrzaj %}
+<h4 class="text-primary">
+	Termin: {{ugovor.termin().datum|date()}} od {{ ugovor.termin.pocetak|date("H:i") }} do {{ ugovor.termin.kraj|date("H:i") }}
+</h4>
+<table class="table mb-0">
+	<tr>
+		<th class="w-20">Meni</th>
+		<td class="w-70">{{ ugovor.meni.naziv }}</td>
+		<td>
+		</td>
+	</tr>
+	<tr>
+		<th><strong>Ime i prezime</strong></th>
+		<td>{{ ugovor.punoIme() }}</td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><strong>Telefon</strong></th>
+		<td>{{ ugovor.telefon }}</td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><strong>E-mail</strong></th>
+		<td>
+			<a href="mailto:{{ ugovor.email }}">
+				{{ ugovor.email }}</td>
+			</a>
+		<td></td>
+	</tr>
+	{% if ugovor.fizicko_pravno == 1 %}
+	 <tr>
+		<th><strong>Naziv firme</strong></th>
+		<td>{{ ugovor.naziv_firme }}</td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><strong>PIB</strong></th>
+		<td>{{ ugovor.pib_firme }}</td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><strong>Matični broj</strong></th>
+		<td>{{ ugovor.mb_firme }}</td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><strong>Adresa i mesto firme</strong></th>
+		<td>{{ ugovor.adresa_firme }}, {{ ugovor.mesto_firme }}</td>
+		<td></td>
+	</tr>
+		<tr>
+		<th><strong>Račun firme</strong></th>
+		<td>{{ ugovor.racun_firme }} kod {{ ugovor.banka_firme }}</td>
+		<td></td>
+	</tr>
+	{% endif %}
+	<tr class="bg-light">
+		<th><strong>Cena</strong></th>
+		<td>{{ ugovor.iznos|number_format }}</td>
+		<td></td>
+	</tr>
+	<tr class="bg-light">
+		<th><strong>Cena usluga</strong></th>
+		<td>{{ ugovor.cenaUsluga()|number_format }}</td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><strong>Posebni zahtevi</strong></th>
+		<td>{{ ugovor.posebni_zahtevi }}</td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><strong>Napomena</strong></th>
+		<td>{{ ugovor.napomena }}</td>
+		<td></td>
+	</tr>
+</table>
+
+{% endblock sadrzaj %}
+{% block traka %}
+	<div class="card border-dark mb-2">
+    <div class="card-header">
+		Detalji vezani za organizaciju
+	</div>
+    <div class="card-body text-dark">
+      <div class="row">
+      	<div class="col">
+      		<table class="table table-sm table-striped mb-0" style="font-size: 0.875rem;">
+      			<thead>
+					<tr>
+						<th class="w-5">#</th>
+						<th class="w-25">Usluga</th>
+						<th class="w-10 text-center">Status</th>
+						<th class="w-45">Opis</th>
+						<th class="w-15">Iznos</th>
+					</tr>
+    			</thead>
+					<tbody>
+					<tr>
+						<th>1</th>
+						<td>Muzika</td>
+						<td class="text-center">
+							{{ (ugovor.muzika_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+						</td>
+						<td>{{ ugovor.muzika_opis }}</td>
+						<td class="text-success">{{ ugovor.muzika_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>2</th>
+						<td>Fotograf</td>
+						<td class="text-center">
+							{{ (ugovor.fotograf_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+						</td>
+						<td>{{ ugovor.fotograf_opis }}</td>
+						<td class="text-success">{{ ugovor.fotograf_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>3</th>
+						<td>Torta</td>
+						<td class="text-center">
+							{{ (ugovor.torta_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+						</td>
+						<td>{{ ugovor.torta_opis }}</td>
+						<td class="text-success">{{ ugovor.torta_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>4</th>
+						<td>Dekoracija</td>
+						<td class="text-center">
+							{{ (ugovor.dekoracija_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+						</td>
+						<td>{{ ugovor.dekoracija_opis }}</td>
+						<td class="text-success">{{ ugovor.dekoracija_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>5</th>
+						<td>Kokteli</td>
+						<td class="text-center">
+							{{ (ugovor.kokteli_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+						</td>
+						<td>{{ ugovor.kokteli_opis }}</td>
+						<td class="text-success">{{ ugovor.kokteli_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>6</th>
+						<td>Slatki sto</td>
+						<td class="text-center">
+							{{ (ugovor.slatki_sto_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+						</td>
+						<td>{{ ugovor.slatki_sto_opis }}</td>
+						<td class="text-success">{{ ugovor.slatki_sto_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>7</th>
+						<td>Voćni sto</td>
+						<td class="text-center">
+							{{ (ugovor.vocni_sto_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+						</td>
+						<td>{{ ugovor.vocni_sto_opis }}</td>
+						<td class="text-success">{{ ugovor.vocni_sto_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					<tr>
+						<th>8</th>
+						<td>Posebni zahtevi</td>
+						<td>
+						</td>
+						<td>{{ ugovor.posebni_zahtevi }}</td>
+						<td class="text-success">{{ ugovor.posebni_zahtevi_iznos | number_format(2, '.', ',') }}</td>
+					</tr>
+					</tbody>
+  				</table>
+  			</div>
+  		</div>
+	</div>
+</div>
+
+<div class="card border-dark mb-3">
+	<div class="card-header">
+		Dokumenti
+	</div>
+	<div class="card-body text-dark">
+		<table class="table table-sm table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th class="w-10">#</th>
+              <th class="w-80">Opis</th>
+              <th class="w-10 text-right text-warning">
+				  <i class="fas fa-cogs"></i>
+			  </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for dok in ugovor.dokumenti() %}
+            <tr>
+              <th>{{ loop.index }}</th>
+              <td>{{ dok.opis }}</td>
+			  <td class="text-right">
+				<div class="btn-group btn-group-sm">
+					<a href="{{ dok.link }}" class="btn btn-success"  target="_blank">
+						<i class="fas fa-eye"></i>
+					</a>
+				</div>
+			  </td>
+            </tr>
+            {% endfor %}
+		  </tbody>
+        </table>
+	</div>
+</div>
+{% endblock traka %}
+{% block skripta %}
+  <script>
+    $(document).ready(function () {
+
+      $(document).on('click', '.otvori-uplatu', function () {
+       var id = $(this).data("id");
+        $('#idUgovora').val(id);
+	  });
+
+	  $("#dokument").on("change", function(){
+		$("#file-label").text(this.files[0].name);
+	  });
+
+	  $("#otkazi-validation").on("click", function(){
+		  $("#dokument-forma").removeClass("was-validated");
+	  });
+
+	});
+</script>
+{% endblock skripta %}
