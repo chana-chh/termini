@@ -68,6 +68,11 @@ const updateCsrfToken = data => {
   });
 };
 
+/**
+ * Proveriti da li formToJSON() ubacije csrf,
+ * ako ubacuje onda ovo nije potrebno
+ * @param {*} data
+ */
 const addCsrfToken = data => {
   const csrfName = document.querySelector(".csrf_name");
   const csrfValue = document.querySelector(".csrf_value");
