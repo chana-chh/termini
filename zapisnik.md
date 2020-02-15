@@ -1,7 +1,13 @@
 # FRAMEWORK
 
-Dokumentovati sve klase i metode (napraviti dokumentaciju na nekom sajtu)
-Provaliti kako da se postavi .gitignore da ignorise sadrzaj ses foldera
+Dokumentovati sve klase i metode (napraviti dokumentaciju na nekom sajtu).
+Provaliti kako da se postavi .gitignore da ignorise sadrzaj ses foldera.
+Izbeci modale za izmenu i dodavanje.
+Osmisliti kako da se vraca nazad na stranu sa koje se doslo (dugme nazad ukloniti, jer vraca na dodavanje, izmenu) i/ili
+dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
+
+
+
 
 ## app
 
@@ -9,7 +15,7 @@ Provaliti kako da se postavi .gitignore da ignorise sadrzaj ses foldera
 - Srediti Logger da loguje sta je izmenjeno
 - Srediti da Config u index.php preuzima i cfg.php i premestiti sva podesavanja u cfg.php
 - Procesljati Mailer (koje su sve opcije PhpMailer-a)
-- App\Classes\Nivo ??? (object)[]
+- App\Classes\Nivo ??? (object)[] StdClass
 - Validator dodati jos neke provere (vece od ...)
 
 ### Controllers
@@ -55,3 +61,5 @@ Provaliti kako da se postavi .gitignore da ignorise sadrzaj ses foldera
 # KONCEPTI
 
 1. Posebno obratiti paznju na vlasnika i njegove potrebe za podacima
+
+2. Razmisliti o ulogama (nivoima) i dodati dashboard za administratora
