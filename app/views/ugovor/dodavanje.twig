@@ -73,7 +73,15 @@
               <option value=""></option>
               {% for meni in meniji %}
               <option value="{{ meni.id }}" {{ old.meni_id == meni.id ? ' selected' : '' }}
-                data-cenamenija="{{ meni.cena }}">
+                data-cenamenija="{{ meni.cena }}" 
+                data-hladno="{{ meni.hladno_predjelo }}"
+                data-sirevi="{{ meni.sirevi }}"
+                data-corba="{{ meni.corba }}"
+                data-glavno="{{ meni.glavno_jelo }}"
+                data-meso="{{ meni.meso }}"
+                data-hleb="{{ meni.hleb }}"
+                data-pice="{{ meni.karta_pica }}"
+                >
                 {{ meni.naziv }} - ({{ meni.cena|number_format() }})
               </option>
               {% endfor %}
@@ -93,6 +101,19 @@
             autocomplete="off" required>
           <div class="valid-feedback">Odgovarajući podatak</div>
           <div class="invalid-feedback">{{ errors.prosek_godina[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+      <div row id="detalj_meni" style="display: none;">
+        <div class="col">
+          <small>
+          <p id="hladno_predjelo"></p>
+          <p id="sirevi"></p>
+          <p id="corba"></p>
+          <p id="glavno_jelo"></p>
+          <p id="meso"></p>
+          <p id="hleb"></p>
+          <p id="karta_pica"></p>
+          </small>
         </div>
       </div>
       <hr>
@@ -631,6 +652,17 @@
     const slobodniStolovi = parseInt("{{ termin.slobodniStolovi() }}") + pocetniStolovi;
 
     var provera = true;
+
+    $('#meni_id').change(function (event) {
+      $('#detalj_meni').show();
+      $('#hladno_predjelo').text($(this).find(':selected').data('hladno'));
+      $('#sirevi').text($(this).find(':selected').data('sirevi'));
+      $('#corba').text($(this).find(':selected').data('corba'));
+      $('#glavno_jelo').text($(this).find(':selected').data('glavno'));
+      $('#meso').text($(this).find(':selected').data('meso'));
+      $('#hleb').text($(this).find(':selected').data('hleb'));
+      $('#karta_pica').text($(this).find(':selected').data('pice'));
+    });
 
     $('#cekiraj_sve').click(function () {
       $(':checkbox.cekiraj').not(this).prop('checked', this.checked);
