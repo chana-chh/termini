@@ -14,7 +14,7 @@ dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
 - Srediti Logger da loguje sta je izmenjeno
 - Srediti da Config u index.php preuzima i cfg.php i premestiti sva podesavanja u cfg.php
 - Procesljati Mailer (koje su sve opcije PhpMailer-a)
-- App\Classes\Nivo ??? (object)[] StdClass
+- App\Classes\Nivo ??? (object)[] StdClass (postoji samo da bi vratio jedan select)
 - Validator dodati jos neke provere (vece od ...)
 
 ### Controllers
@@ -55,6 +55,7 @@ dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
 - Izveštaj po dodatnim uslugama
 	- proveriti sta su stvarno uplate za dodatne usluge (fotograf, kapara, torta ...)
 - Prikaz termina po statusu izveštaja
+	Izbor sa selecta (filter) na kalendaru
 
 
 # KONCEPTI
