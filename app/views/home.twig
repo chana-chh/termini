@@ -1,33 +1,60 @@
 {% extends "templates/app.twig" %}
 {% block naslov %}
-<div class="d-none d-sm-block">
 	<div class="row mt-5">
 		<div class="col text-center">
-			<p class="lead display-1 text-success">> termini_</p>
+			<h4><img src="{{ base_url() }}/img/logo.png" alt="logo HK" height="100px">&emsp;Sistem za zakazivanje i pomoć u organizovanju događaja</h4>
+			<hr>
 		</div>
 	</div>
-	<div class="row mt-5">
-		<div class="col text-center">
-			<h4 class="display-4">Sistem za zakazivanje i pomoć u organizovanju događaja</h4>
-		</div>
-	</div>
-</div>
-{# Mobilni telefoni #}
-<div class="d-sm-none">
-	<div class="row mt-5">
-		<div class="col text-center">
-			<img src="{{ base_url() }}/img/EEC-logo-znak.png" alt="logo EEC" class="img-fluid w-30">
-		</div>
-	</div>
-	<div class="row mt-5">
-		<div class="col text-center">
-			<img src="{{ base_url() }}/img/EEC-logo-tekst.png" alt="logo EEC" class="img-fluid w-80">
-		</div>
-	</div>
-	<div class="row mt-5">
-		<div class="col text-center">
-			<p class="large">Sistem za zakazivanje i pomoć u organizovanju događaja</p>
-		</div>
-	</div>
-</div>
 {% endblock naslov %}
+{% block sadrzaj %}
+<div class="row">
+	<div class="col text-center">
+			<h4>Pregled rezervacija kojima uskoro ističe važnost ili je već istekla</h4>
+	</div>
+</div>
+<div class="table-responsive">
+  <table class="table">
+    <thead class="thead-dark table-sm">
+      <tr>
+        <th class="w-5" scope="col">ID</th>
+        <th class="w-20" scope="col">Sala</th>
+        <th class="w-15" scope="col">Datum</th>
+        <th class="w-15" scope="col">Datum važnosti</th>
+        <th class="w-30" scope="col">Opis</th>
+        <th class="w-10" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for termin in termini %}
+      <tr>
+        <th scope="row" class="text-danger">{{ termin.id }}</th>
+        <td><strong>{{ termin.sala().naziv }}</strong></td>
+        <td>{{ termin.datum|date() }}</td>
+        <td class="{{ termin.vaznost|date() <  'now'|date() ? "text-primary" : "text-danger" }}"><strong>{{ termin.vaznost|date() }}</strong></td>
+        <td class="font-italic">{{ termin.opis|length > 50 ? termin.opis|slice(0, 50) ~ ' ...' : termin.opis  }}</td>
+        <td style="text-align:right;">
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-primary btn-sm"
+            data-id="{{ termin.id }}" title="Pošalji upozorenje o otkazu rezervacije">
+            <i class="fas fa-envelope"></i></button>
+            <button class="btn btn-success btn-sm"
+            data-id="{{ termin.id }}" title="Poništi važnost">
+            <i class="fas fa-recycle"></i></button>
+            <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
+            data-id="{{ termin.id }}" title="Brisanje odabranog termina">
+            <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock sadrzaj %}
+{% block traka %}
+	<div class="col text-right">
+		<h4>Podsetnici</h4>
+	</div>
+{% endblock traka %}

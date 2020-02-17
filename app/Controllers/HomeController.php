@@ -10,7 +10,11 @@ class HomeController extends Controller
 {
     public function getHome($request, $response)
     {
-        $this->render($response, 'home.twig');
+        $model_termin = new Termin();
+        $sql = "SELECT * FROM {$model_termin->getTable()} WHERE datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND vaznost <= CURDATE();";
+        $termini = $model_termin->fetch($sql);
+
+        $this->render($response, 'home.twig', compact('termini'));
     }
 
     public function getKalendar($request, $response)
