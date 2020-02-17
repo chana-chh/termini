@@ -38,7 +38,7 @@ class OsobljeController extends Controller
 
     public function getTerminOsoblje($request, $response, $args)
     {
-        $id = $args['id'];
+        $id = (int) $args['id'];
 
         if ($id) {
             $model_termin = new Termin();

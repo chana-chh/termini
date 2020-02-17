@@ -17,9 +17,11 @@ class TipDogadjajaController extends Controller
 
     public function postTipDodavanje($request, $response)
     {
-        $data = $request->getParams();
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // $data = $request->getParams();
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
+
+        $data = $this->data();
 
         $multi_ugovori = isset($data['multi_ugovori']) ? 1 : 0;
         $data['multi_ugovori'] = $multi_ugovori;
@@ -89,11 +91,12 @@ class TipDogadjajaController extends Controller
 
     public function postTipIzmena($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $id = $data['idIzmena'];
         unset($data['idIzmena']);
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
 
         $multi_ugovori = isset($data['multi_ugovoriM']) ? 1 : 0;
 

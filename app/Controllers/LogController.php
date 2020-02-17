@@ -4,15 +4,14 @@ namespace App\Controllers;
 
 use App\Models\Log;
 use App\Models\Korisnik;
-use App\Classes\Db;
 
 class LogController extends Controller
 {
     public function getLog($request, $response)
     {
-        $query = [];
-        parse_str($request->getUri()->getQuery(), $query);
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
+        // $query = [];
+        // parse_str($request->getUri()->getQuery(), $query);
+        // $page = isset($query['page']) ? (int)$query['page'] : 1;
 
         $model = new Log();
         $sql="SELECT * FROM logovi WHERE korisnik_id > 0 ORDER BY datum DESC;";
@@ -20,7 +19,7 @@ class LogController extends Controller
             $sql="SELECT * FROM logovi ORDER BY datum DESC;";
         }
 
-        $logovi = $model->paginate($page, 'page', $sql);
+        $logovi = $model->paginate($this->page(), 'page', $sql);
 
         $model_korisnici = new Korisnik();
         $sqlk = "SELECT * FROM korisnici WHERE id > 0;";

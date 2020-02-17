@@ -8,22 +8,7 @@ final class Config
 {
     private static $instance = null;
     private static $container;
-    private static $config = [
-        'cyrillic' => false, // da li je aplikacija cirilicna
-        'pagination' => [
-            // Podesavanja za stranicenje
-            'per_page' => 10,
-            'page_span' => 4,
-        ],
-        'mail' => [ // podesavanja za slanje email-a
-            'host' => 'mail.eeckg.rs',
-            'username' => 'kure@eeckg.rs',
-            'password' => 'vir5373plus!',
-            'port' => 465, // 465 = ssl, 587 = tls
-            'from' => 'kure@eeckg.rs',
-            'from_name' => 'EEC zakazivanje',
-        ],
-    ];
+    private static $config = [];
 
     public static function instance($container)
     {
@@ -36,6 +21,7 @@ final class Config
     private function __construct($container)
     {
         static::$container = $container;
+        static::$config = $container['settings']['chasha_app_settings'];
     }
 
     private function __clone()

@@ -12,12 +12,12 @@ class UgovorController extends Controller
 {
     public function getUgovor($request, $response)
     {
-        $query = [];
-        parse_str($request->getUri()->getQuery(), $query);
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
+        // $query = [];
+        // parse_str($request->getUri()->getQuery(), $query);
+        // $page = isset($query['page']) ? (int)$query['page'] : 1;
 
         $model = new Ugovor();
-        $ugovori = $model->paginate($page, 'page', "SELECT * FROM ugovori ORDER BY datum DESC;");
+        $ugovori = $model->paginate($this->page(), 'page', "SELECT * FROM ugovori ORDER BY datum DESC;");
 
         $this->render($response, 'ugovor/lista.twig', compact('ugovori'));
     }
@@ -169,7 +169,6 @@ class UgovorController extends Controller
         $model_meni = new Meni();
         $meniji = $model_meni->all();
 
-        // provera multi ugovor
         if (!$termin->multiUgovori() && !empty($termin->ugovori())) {
             $this->flash->addMessage('warning', "Nije dozvoljeno dodavanje više od jednog ugovora.");
             return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
@@ -180,10 +179,10 @@ class UgovorController extends Controller
 
     public function postUgovorDodavanje($request, $response)
     {
-        $data = $request->getParams();
-
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // $data = $request->getParams();
+        $data = $this->data();
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
         unset($data['cekiraj_sve']);
 
         $data['fizicko_pravno'] = isset($data['fizicko_pravno']) ? 1 : 0;
@@ -223,7 +222,6 @@ class UgovorController extends Controller
             'posebni_zahtevi_iznos' => ['required' => true,]
         ];
 
-        // provera broja ugovora
         $model_ugovor = new Ugovor();
         if (trim($data['broj_ugovora']) != "") {
             $sql = "SELECT COUNT(*) AS broj FROM ugovori WHERE broj_ugovora = :br;";
@@ -274,11 +272,12 @@ class UgovorController extends Controller
 
     public function postUgovorIzmena($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $id = (int) $data['id'];
         unset($data['id']);
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
 
         $fizicko_pravno = isset($data['fizicko_pravno']) ? 1 : 0;
         $data['fizicko_pravno'] = $fizicko_pravno;
@@ -324,6 +323,7 @@ class UgovorController extends Controller
             'vocni_sto_iznos' => ['required' => true,],
             'posebni_zahtevi_iznos' => ['required' => true,]
         ];
+        
         // provera broja ugovora unique
         $model_ugovor = new Ugovor();
         if (trim($data['broj_ugovora']) != "") {

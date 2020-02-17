@@ -38,4 +38,30 @@ class Controller
     {
         $this->logger->log($tip, $model, $polje, $model_stari);
     }
+
+    protected function page($naziv = 'page')
+    {
+        $query = [];
+        parse_str($this->request->getUri()->getQuery(), $query);
+        $page = isset($query[$naziv]) ? (int)$query[$naziv] : 1;
+        return $page;
+    }
+
+    protected function data($unsetId = false)
+    {
+        $data = $this->request->getParams();
+        unset($data['csrf_name']);
+        unset($data['csrf_value']);
+        if ($unsetId) {
+            unset($data[$id]);
+        }
+        return $data;
+    }
+
+    protected function dataId($id = 'id')
+    {
+        $data = $this->request->getParams();
+        $id = $data[$id];
+        return $id;
+    }
 }

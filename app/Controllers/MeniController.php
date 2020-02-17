@@ -9,12 +9,12 @@ class MeniController extends Controller
 {
     public function getMeni($request, $response)
     {
-        $query = [];
-        parse_str($request->getUri()->getQuery(), $query);
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
+        // $query = [];
+        // parse_str($request->getUri()->getQuery(), $query);
+        // $page = isset($query['page']) ? (int)$query['page'] : 1;
 
         $model = new Meni();
-        $meni = $model->paginate($page);
+        $meni = $model->paginate($this->page());
 
         $this->render($response, 'meni.twig', compact('meni'));
     }
@@ -131,9 +131,11 @@ class MeniController extends Controller
 
     public function postMeniDodavanje($request, $response)
     {
-        $data = $request->getParams();
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // $data = $request->getParams();
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
+
+        $data = $this->data();
 
         $validation_rules = [
             'naziv' => [
@@ -220,11 +222,12 @@ class MeniController extends Controller
 
     public function postMeniIzmena($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $id = $data['id'];
         unset($data['id']);
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
 
         $validation_rules = [
             'naziv' => [
@@ -255,12 +258,13 @@ class MeniController extends Controller
 
     public function ajaxMeni($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $naziv = $data['nazivMenija'];
         $cena = $data['cenaMenija'];
         $napomena = $data['napomenaMenija'];
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
         unset($data['nazivMenija']);
         unset($data['cenaMenija']);
         unset($data['napomenaMenija']);

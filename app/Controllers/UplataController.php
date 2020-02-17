@@ -12,10 +12,11 @@ class UplataController extends Controller
 {
     public function postUplataDodavanje($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $ugovor_id = (int) $data['ugovor_id'];
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
 
         $data['korisnik_id'] = $this->auth->user()->id;
 
@@ -78,14 +79,15 @@ class UplataController extends Controller
 
     public function postUplataIzmena($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $id = $data['idIzmena'];
         $model = new Uplata();
         $uplata = $model->find($id);
         $ugovor_id = $uplata->ugovor_id;
         unset($data['idIzmena']);
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
 
         $kapara = isset($data['kaparaModal']) ? 1 : 0;
 

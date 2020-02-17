@@ -17,9 +17,11 @@ class SalaController extends Controller
 
     public function postSalaDodavanje($request, $response)
     {
-        $data = $request->getParams();
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // $data = $request->getParams();
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
+
+        $data = $this->data();
 
         $validation_rules = [
             'naziv' => [
@@ -91,11 +93,12 @@ class SalaController extends Controller
 
     public function postSalaIzmena($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $id = $data['idIzmena'];
         unset($data['idIzmena']);
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
 
         $datam = [
             "naziv" => $data['nazivModal'],
