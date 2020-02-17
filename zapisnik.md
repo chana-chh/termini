@@ -5,18 +5,24 @@
 Ubaciti instancu Loggera u $container - dic.php (nije potrebno u svakom kontroleru dodavati use App\Classes\Logger)
 Isto i za Mailer. U principu u kontrolere dodavati 'use' samo za modele.
 
+!!!
+	Treba napraviti listu termina (da ne bude samo kalendar).
+	Proveriti sva brisanja (negde, mislim da je meni, se ne proverava da li je za nesto vezano)
+	Super admin ne vidi sebe u listi korisnika (id=0)
+!!!
+
 
 ## app
 
 ### Classes
 - Srediti Logger da loguje sta je izmenjeno (Log::prepareData(&$logs)), old, new, changed - serialize, unserialize
-	- da li logovati stari i novi model i razliku ili samo razliku?
+	- da li logovati stari i novi model i razliku ili samo razliku!?
 
 ### Controllers
 - Proveriti sta sve jos moze da se doda u Controller.php pa da se koristi u drugim kontrolerima
 	- $this->page($naziv = 'page') - vraca stranicu za paginaciju (MeniController->getMeni())
 	- $this->data() - vraca podatke sa forme bez csrf (MeniController->postMeniDodavanje())
-	- $this->dataId($data, $id = 'id') - nije korisceno (nisam siguran)
+	- $this->dataId($id = 'id') - nije korisceno (nisam siguran - prepravljeno sad je bolje)
 
 ### Models
 - Kada se sredi Logger.php ukloniti __toString() iz modela
