@@ -92,33 +92,6 @@ html, body {
   min-width: 100% !important;
 }
 
-/*Paginacija
-
-.page-link {
-  position: relative;
-  display: block;
-  padding: 0.5rem 0.75rem;
-  margin-left: -1px;
-  line-height: 1.25;
-  color: #5bc0de;
-  background-color: #fff;
-  border: 1px solid #5bc0de;
-}
-
-.page-item.active .page-link {
-  z-index: 1;
-  color: #fff;
-  background-color: #5bc0de;
-  border-color: #f7f7f7;
-}
-
-.page-link:focus, .page-link:hover {
-  color: #fff;
-  text-decoration: none;
-  background-color: #5bc0de;
-  border-color: #f7f7f7;
-}
-*/
 @media print {
   .ne_stampaj {
     display: none !important;
