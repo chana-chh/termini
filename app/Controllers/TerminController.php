@@ -65,9 +65,11 @@ class TerminController extends Controller
     {
         $datum = isset($data['datum']) ? $data['datum'] : null;
 
-        $data = $request->getParams();
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // $data = $request->getParams();
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
+
+        $data = $this->data();
 
         $pocetak = strtotime("{$data['datum']} {$data['pocetak']}");
         $kraj = strtotime("{$data['datum']} {$data['kraj']}");
@@ -182,7 +184,8 @@ class TerminController extends Controller
 
     public function postTerminZakljucivanje($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $termin_id = (int) $data['termin_id'];
         $this->addCsrfToken($data);
         $model = new Termin();
@@ -214,11 +217,12 @@ class TerminController extends Controller
 
     public function postTerminIzmena($request, $response)
     {
-        $data = $request->getParams();
+        // $data = $request->getParams();
+        $data = $this->data();
         $id = (int) $data['termin_id'];
         unset($data['termin_id']);
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
 
         $pocetak = strtotime("{$data['datum']} {$data['pocetak']}");
         $kraj = strtotime("{$data['datum']} {$data['kraj']}");

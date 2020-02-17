@@ -9,21 +9,23 @@ class KorisnikController extends Controller
 {
     public function getKorisnikLista($request, $response)
     {
-        $query = [];
-        parse_str($request->getUri()->getQuery(), $query);
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
+        // $query = [];
+        // parse_str($request->getUri()->getQuery(), $query);
+        // $page = isset($query['page']) ? (int)$query['page'] : 1;
 
         $model = new Korisnik();
-        $data = $model->paginate($page, 'page', "SELECT * FROM korisnici WHERE id > 0;");
+        $data = $model->paginate($this->page(), 'page', "SELECT * FROM korisnici WHERE id > 0;");
 
         $this->render($response, 'korisnik/lista.twig', compact('data'));
     }
 
     public function postKorisnikDodavanje($request, $response)
     {
-        $data = $request->getParams();
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // $data = $request->getParams();
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
+
+        $data = $this->data();
 
         $validation_rules = [
             'ime' => [
@@ -118,18 +120,19 @@ class KorisnikController extends Controller
 
     public function postKorisnikIzmena($request, $response)
     {
-        $data = $request->getParams();
+        $data = $this->data();
+        // $data = $request->getParams();
         $id = $data['idIzmena'];
         unset($data['idIzmena']);
-        unset($data['csrf_name']);
-        unset($data['csrf_value']);
+        // unset($data['csrf_name']);
+        // unset($data['csrf_value']);
 
         $datam = [
-            "ime"=>$data['imeM'],
-            "korisnicko_ime"=>$data['korisnicko_imeM'],
-            "lozinka"=>$data['lozinkaM'],
-            "lozinka_potvrda"=>$data['lozinka_potvrdaM'],
-            "nivo"=>$data['nivoM']
+            "ime" => $data['imeM'],
+            "korisnicko_ime" => $data['korisnicko_imeM'],
+            "lozinka" => $data['lozinkaM'],
+            "lozinka_potvrda" => $data['lozinka_potvrdaM'],
+            "nivo" => $data['nivoM']
         ];
 
         $validation_rules = [

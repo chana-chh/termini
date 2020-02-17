@@ -69,12 +69,12 @@ class VlasnikController extends Controller
 
     public function getUgovorListaVlasnik($request, $response)
     {
-        $query = [];
-        parse_str($request->getUri()->getQuery(), $query);
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
+        // $query = [];
+        // parse_str($request->getUri()->getQuery(), $query);
+        // $page = isset($query['page']) ? (int)$query['page'] : 1;
 
         $model = new Ugovor();
-        $ugovori = $model->paginate($page, 'page', "SELECT * FROM ugovori ORDER BY datum DESC;");
+        $ugovori = $model->paginate($this->page(), 'page', "SELECT * FROM ugovori ORDER BY datum DESC;");
 
         $this->render($response, 'ugovor/lista_vlasnik.twig', compact('ugovori'));
     }

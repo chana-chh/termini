@@ -2,6 +2,9 @@
 
 - Dokumentovati sve klase i metode (napraviti dokumentaciju na nekom sajtu).
 
+Ubaciti instancu Loggera u $container - dic.php (nije potrebno u svakom kontroleru dodavati use App\Classes\Logger)
+Isto i za Mailer. U principu u kontrolere dodavati 'use' samo za modele.
+
 
 ## app
 
@@ -11,7 +14,6 @@
 
 ### Controllers
 - Proveriti sta sve jos moze da se doda u Controller.php pa da se koristi u drugim kontrolerima
-	Vremenom izmenjati po kontrolerima
 	- $this->page($naziv = 'page') - vraca stranicu za paginaciju (MeniController->getMeni())
 	- $this->data() - vraca podatke sa forme bez csrf (MeniController->postMeniDodavanje())
 	- $this->dataId($data, $id = 'id') - nije korisceno (nisam siguran)
