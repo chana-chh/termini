@@ -1,9 +1,11 @@
 <?php
 
+use App\Classes\Config;
+
 $container = $app->getContainer();
 
 $container['db'] = function ($container) {
-    $conf = $container['settings']['db'];
+    $conf = $container['settings']['chasha_app_settings']['db'];
     $db = new \App\Classes\Db($conf['dsn'], $conf['username'], $conf['password'], $conf['options']);
     return $db;
 };
@@ -44,6 +46,8 @@ $container['view'] = function ($container) {
     $view->addExtension(new Knlv\Slim\Views\TwigMessages(new Slim\Flash\Messages));
     $view->addExtension(new Twig_Extension_Debug);
     $view->getEnvironment()->getExtension(\Twig\Extension\CoreExtension::class)->setDateFormat('d.m.Y', '%d dana');
-	$view->getEnvironment()->getExtension(\Twig\Extension\CoreExtension::class)->setNumberFormat(2, '.', ',');
+    $view->getEnvironment()->getExtension(\Twig\Extension\CoreExtension::class)->setNumberFormat(2, '.', ',');
     return $view;
 };
+
+Config::instance($container);

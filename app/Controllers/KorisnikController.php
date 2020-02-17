@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use \App\Models\Korisnik;
-use App\Classes\Nivo;
 use App\Classes\Logger;
 
 class KorisnikController extends Controller
@@ -91,15 +90,15 @@ class KorisnikController extends Controller
 
     public function postKorisnikDetalj($request, $response)
     {
-        $nivoA = new Nivo();
+        $nivoA = (object)[];
         $nivoA->vrednost = 0;
         $nivoA->naziv = "Admin";
 
-        $nivoZ = new Nivo();
+        $nivoZ = (object)[];
         $nivoZ->vrednost = 200;
         $nivoZ->naziv = "Zakazivač";
 
-        $nivoO = new Nivo();
+        $nivoO = (object)[];
         $nivoO->vrednost = 300;
         $nivoO->naziv = "Osoblje";
 

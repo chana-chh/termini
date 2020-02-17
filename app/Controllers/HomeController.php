@@ -10,6 +10,7 @@ class HomeController extends Controller
 {
     public function getHome($request, $response)
     {
+        // dd($this->page(),true);
         $this->render($response, 'home.twig');
     }
 

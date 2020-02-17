@@ -24,6 +24,8 @@ class Validator
         'min',
         'max',
         'equal',
+        'greater_than',
+        'less_than',
         'jmbg',
     ];
     protected $messages = [
@@ -39,6 +41,8 @@ class Validator
         'max' => "Polje :field mora da bude broj ne veći od :option",
         'min' => "Polje :field mora da bude broj ne manji od :option",
         'equal' => "Polje :field mora da bude jednako :option",
+        'greater_than' => "Polje :field mora da bude veće od :option",
+        'less_than' => "Polje :field mora da bude manje od :option",
         'jmbg' => "Polje :field mora da bude ispravan JMBG",
     ];
 
@@ -202,6 +206,16 @@ class Validator
     protected function equal($field, $value, $option)
     {
         return (string)$value === (string)$option;
+    }
+
+    protected function greater_than($field, $value, $option)
+    {
+        return (int)$value > (int)$option;
+    }
+
+    protected function less_than($field, $value, $option)
+    {
+        return (int)$value < (int)$option;
     }
 
     protected function jmbg($field, $value, $option)
