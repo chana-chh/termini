@@ -62,6 +62,8 @@
 
 3. Izbeci modale za izmenu i dodavanje. (veliki posao - automatizovati)
 
+4. Na pocetnoj strani dodati termine za danas, isticanje ponuda za neki dan, podsetnike ...
+
 
 # Hotel Kragujevac
 
