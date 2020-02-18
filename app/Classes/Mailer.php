@@ -59,6 +59,11 @@ class Mailer
 
             $mail->setFrom($from, $from_name);
 
+            // $mail->SMTPKeepAlive = true; // SMTP connection will not close after each email sent, reduces SMTP overhead
+
+            // brisanje adresa to, cc, bcc ...
+            $mail->clearAllRecipients();
+
             foreach ($to as $t) {
                 $mail->addAddress($t['email'], $t['name']);
             }

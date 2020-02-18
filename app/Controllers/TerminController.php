@@ -144,6 +144,10 @@ class TerminController extends Controller
 			$d = date('d.m.Y', strtotime($termin->datum));
 			$p = date('H:i', strtotime($termin->pocetak));
             $k = date('H:i', strtotime($termin->kraj));
+            
+            // ovde treba napraviti mails/zakazano.twig proslediti mu podatke
+            // $termin, $link
+            // $telo = $this->renderPartial('mails/zakazano.twig', compact('termin', 'link'));
             $telo = "<h1>U sali {$termin->sala()->naziv} je zakazan događaj: {$termin->tip()->tip}</h1>
                     <h2>Dana {$d}. godine od {$p} do {$k}</h2>
                     <h3>{$termin->opis}</h3>

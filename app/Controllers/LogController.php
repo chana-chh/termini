@@ -21,6 +21,8 @@ class LogController extends Controller
 
         $logovi = $model->paginate($this->page(), 'page', $sql);
 
+        $this->unserializeLogs($logovi);
+
         $model_korisnici = new Korisnik();
         $sqlk = "SELECT * FROM korisnici WHERE id > 0;";
         $korisnici = $model_korisnici->fetch($sqlk);

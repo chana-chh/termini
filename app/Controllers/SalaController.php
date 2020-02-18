@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\Sala;
-use App\Classes\Logger;
 
 class SalaController extends Controller
 {
@@ -56,7 +55,7 @@ class SalaController extends Controller
 
             $id_sale = $modelSale->lastId();
             $sala = $modelSale->find($id_sale);
-            $this->log(Logger::DODAVANJE, $sala, 'naziv');
+            $this->log($this::DODAVANJE, $sala, 'naziv');
             return $response->withRedirect($this->router->pathFor('sale'));
         }
     }
@@ -70,7 +69,7 @@ class SalaController extends Controller
 
         if ($success) {
             $this->flash->addMessage('success', "Sala je uspešno obrisana.");
-            $this->log(Logger::BRISANJE, $sala, 'naziv', $sala);
+            $this->log($this::BRISANJE, $sala, 'naziv', $sala);
             return $response->withRedirect($this->router->pathFor('sale'));
         } else {
             $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja sale.");
@@ -134,7 +133,7 @@ class SalaController extends Controller
             $stari = $modelSale->find($id);
             $modelSale->update($datam, $id);
             $sala = $modelSale->find($id);
-            $this->log(Logger::IZMENA, $sala, 'naziv', $stari);
+            $this->log($this::IZMENA, $sala, 'naziv', $stari);
             return $response->withRedirect($this->router->pathFor('sale'));
         }
     }

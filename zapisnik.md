@@ -2,10 +2,14 @@
 
 - Dokumentovati sve klase i metode (napraviti dokumentaciju na nekom sajtu).
 
-Ubaciti instancu Loggera u $container - dic.php (nije potrebno u svakom kontroleru dodavati use App\Classes\Logger)
-Isto i za Mailer. U principu u kontrolere dodavati 'use' samo za modele.
-
 !!!
+
+	Zastita od neplacanja:
+	- db: opcije->datum_isteka (enkriptovano)
+	- config->kljuc za enkripciju
+	- kod prijavljivanja korisnika provera da li je isteko datum, ako je isteko datum pusta samo super admina
+	- super admin moze da unese novi datum
+
 	Treba napraviti listu termina (da ne bude samo kalendar).
 	Proveriti sva brisanja (negde, mislim da je meni, se ne proverava da li je za nesto vezano)
 	Super admin ne vidi sebe u listi korisnika (id=0)
@@ -15,8 +19,7 @@ Isto i za Mailer. U principu u kontrolere dodavati 'use' samo za modele.
 ## app
 
 ### Classes
-- Srediti Logger da loguje sta je izmenjeno (Log::prepareData(&$logs)), old, new, changed - serialize, unserialize
-	- da li logovati stari i novi model i razliku ili samo razliku!?
+- Ubaciti instancu Mailer-a u $container - dic.php
 
 ### Controllers
 - Proveriti sta sve jos moze da se doda u Controller.php pa da se koristi u drugim kontrolerima
@@ -29,14 +32,6 @@ Isto i za Mailer. U principu u kontrolere dodavati 'use' samo za modele.
 
 ### Views
 - organizovati sve poglede po folderima
-
-## pub
-
-### css
-- srediti stilove narocito print.css (minifikovati sta nije)
-
-### js
-- proveriti ajax u app.js, mislim da je laksi za koriscenje (csrf)
 
 
 # TODO
@@ -110,5 +105,3 @@ Isto i za Mailer. U principu u kontrolere dodavati 'use' samo za modele.
 27. Recepcija ???
 28. Sve cene vodoti duplo u eurima i dinarima
 29. Najave dnevne, nedeljne, mesecne (kao izvestaj za osoblje)
-
-Dragan 069 33 58 120

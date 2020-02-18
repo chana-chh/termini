@@ -9,10 +9,6 @@ class Logger
 {
     private $korisnik;
     private $model;
-    const DODAVANJE = "dodavanje";
-    const IZMENA = "izmena";
-    const BRISANJE = "brisanje";
-    const UPLOAD = "upload";
 
     public function __construct($korisnik)
     {
@@ -31,10 +27,33 @@ class Logger
             $tekst = "{$polje}: {$model->$polje}";
         }
 
+        $stari = '';
+
+        if ($tip == 'brisanje') {
+            $stari = serialize(get_object_vars($model));
+        }
+
+        if ($tip == 'izmena') {
+            $s = get_object_vars($model_stari);
+            $n = get_object_vars($model);
+            $dif = array_diff($n, $s);
+            $rez = [];
+
+            foreach ($dif as $key => $value) {
+                $rez[$key] = [
+                    'stara_vrednost' => $s[$key],
+                    'nova_vrednost' => $n[$key],
+                ];
+            }
+
+            $stari = serialize($rez);
+        }
+
+        // ako je model ugovor dodati i termin _id
         $data = [
             'opis' => "{$model->id}, {$model->table()} - {$tekst}",
             'tip' => $tip,
-            'stari' => $model_stari, // $model_stari === null ? '' : serialize(get_object_vars($model_stari)
+            'stari' => $stari,
             'korisnik_id' => $this->korisnik->id,
         ];
 

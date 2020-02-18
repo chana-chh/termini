@@ -4,15 +4,15 @@ use App\Middlewares\AuthMiddleware;
 use App\Middlewares\GuestMiddleware;
 use App\Middlewares\UserLevelMiddleware;
 
-$app->get('/', '\App\Controllers\HomeController:getHome')->setName('pocetna');
-$app->get('/kalendar[/{datum}]', '\App\Controllers\HomeController:getKalendar')->setName('kalendar');
-
 $app->group('', function () {
     $this->get('/prijava', '\App\Controllers\AuthController:getPrijava')->setName('prijava');
     $this->post('/prijava', '\App\Controllers\AuthController:postPrijava');
 })->add(new GuestMiddleware($container));
 
 $app->group('', function () {
+    $this->get('/', '\App\Controllers\HomeController:getHome')->setName('pocetna');
+    $this->get('/kalendar[/{datum}]', '\App\Controllers\HomeController:getKalendar')->setName('kalendar');
+
     $this->get('/odjava', '\App\Controllers\AuthController:getOdjava')->setName('odjava');
     // Promena lozinke
     $this->get('/promena', '\App\Controllers\AuthController:getPromena')->setName('promena');
