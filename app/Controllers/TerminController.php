@@ -137,7 +137,7 @@ class TerminController extends Controller
             // Upisivanje u bazu
             $data['korisnik_id'] = $this->auth->user()->id;
             $data['zauzet'] = isset($data['zauzet']) ? 1 : 0;
-            $data['vaznost'] = empty($vaznost) ? null : date('Y-m-d', strtotime("+".$vaznost." days"));
+            $data['vaznost'] = empty($vaznost) ? null : date('Y-m-d', strtotime("+".(int)$vaznost." days"));
             $model_termin->insert($data);
             $termin = $model_termin->find($model_termin->lastId());
             $link = $this->router->fullUrlFor($this->request->getUri(),'termin.detalj.get', ["id"=>$termin->id]);

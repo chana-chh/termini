@@ -13,15 +13,17 @@
 			<h4>Pregled rezervacija kojima uskoro ističe važnost ili je već istekla</h4>
 	</div>
 </div>
-<div class="table-responsive">
+<div class="table-responsive mt-2" style="font-size: 0.75rem">
   <table class="table">
     <thead class="thead-dark table-sm">
       <tr>
         <th class="w-5" scope="col">ID</th>
         <th class="w-20" scope="col">Sala</th>
-        <th class="w-15" scope="col">Datum</th>
-        <th class="w-15" scope="col">Datum važnosti</th>
-        <th class="w-30" scope="col">Opis</th>
+        <th class="w-10" scope="col">Datum</th>
+        <th class="w-10" scope="col">Datum važnosti</th>
+        <th class="w-10" scope="col">Datum važnosti</th>
+        <th class="w-10" scope="col">Obaveštenje</th>
+        <th class="w-20" scope="col">Opis</th>
         <th class="w-10" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
       </tr>
     </thead>
@@ -29,15 +31,19 @@
       {% for termin in termini %}
       <tr>
         <th scope="row" class="text-danger">{{ termin.id }}</th>
-        <td><strong>{{ termin.sala().naziv }}</strong></td>
+        <td><strong><a href="{{ path_for('termin.detalj.get', { id: termin.id }) }}" title="Detaljni pregled odabranog termina">{{ termin.sala().naziv }}</a></strong></td>
+        <td>{{ termin.datum|date() }}</td>
         <td>{{ termin.datum|date() }}</td>
         <td class="{{ termin.vaznost|date() <  'now'|date() ? "text-primary" : "text-danger" }}"><strong>{{ termin.vaznost|date() }}</strong></td>
+        <td>{{ termin.obavestenje !=  null ? "<i class=\"fas fa-check text-success\"></i>" : "" }}</td>
         <td class="font-italic">{{ termin.opis|length > 50 ? termin.opis|slice(0, 50) ~ ' ...' : termin.opis  }}</td>
         <td style="text-align:right;">
           <div class="btn-group btn-group-sm">
+            {% if termin. obavestenje ==  null %}
             <button class="btn btn-primary btn-sm"
             data-id="{{ termin.id }}" title="Pošalji upozorenje o otkazu rezervacije">
             <i class="fas fa-envelope"></i></button>
+            {% endif %}
             <button class="btn btn-success btn-sm"
             data-id="{{ termin.id }}" title="Poništi važnost">
             <i class="fas fa-recycle"></i></button>
