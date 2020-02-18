@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function getHome($request, $response)
     {
         $model_termin = new Termin();
-        $sql = "SELECT * FROM {$model_termin->getTable()} WHERE datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND vaznost <= CURDATE();";
+        $sql = "SELECT * FROM {$model_termin->getTable()} WHERE datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND vaznost <= DATE_ADD(CURDATE(), INTERVAL 5 DAY);";
         $termini = $model_termin->fetch($sql);
 
         $this->render($response, 'home.twig', compact('termini'));
@@ -40,5 +40,51 @@ class HomeController extends Controller
         $data = json_encode($data);
 
         $this->render($response, 'kalendar.twig', compact('data'));
+    }
+
+    public function postKalendarPretraga($request, $response)
+    {
+        $_SESSION['DATA_KALENDAR_PRETRAGA'] = $request->getParams();
+
+        return $response->withRedirect($this->router->pathFor('kalendar.filter'));
+    }
+
+    public function getKalendarPretraga($request, $response)
+    {
+        $data = $_SESSION['DATA_KALENDAR_PRETRAGA'];
+        array_shift($data);
+        array_shift($data);
+
+        if (empty($data['upit'])) {
+            $this->getKalendar($request, $response);
+        }
+
+
+        $where = " WHERE ";
+        $params = [];
+
+        if (!empty($data['sala_id'])) {
+            if ($where !== " WHERE ") {
+                $where .= " AND ";
+            }
+            $where .= "sala_id = :sala_id";
+            $params[':sala_id'] = $data['sala_id'];
+        }
+
+        if (!empty($data['tip_dogadjaja_id'])) {
+            if ($where !== " WHERE ") {
+                $where .= " AND ";
+            }
+            $where .= "tip_dogadjaja_id = :tip_dogadjaja_id";
+            $params[':tip_dogadjaja_id'] = $upit;
+        }
+
+
+        $where = $where === " WHERE " ? "" : $where;
+        $model_termin = new Termin();
+        $sql = "SELECT * FROM {$model_termin->getTable()}{$where} AND datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH);";
+        $termini = $model_termin->fetch($sql);
+
+        $this->render($response, 'kalendar.twig', compact('termini', 'data'));
     }
 }

@@ -34,7 +34,7 @@
         <td><strong><a href="{{ path_for('termin.detalj.get', { id: termin.id }) }}" title="Detaljni pregled odabranog termina">{{ termin.sala().naziv }}</a></strong></td>
         <td>{{ termin.datum|date() }}</td>
         <td>{{ termin.datum|date() }}</td>
-        <td class="{{ termin.vaznost|date() <  'now'|date() ? "text-primary" : "text-danger" }}"><strong>{{ termin.vaznost|date() }}</strong></td>
+        <td class="{{ termin.vaznost|date() <  'now'|date() ? "text-danger" : "text-primary" }}"><strong>{{ termin.vaznost|date() }}</strong></td>
         <td>{{ termin.obavestenje !=  null ? "<i class=\"fas fa-check text-success\"></i>" : "" }}</td>
         <td class="font-italic">{{ termin.opis|length > 50 ? termin.opis|slice(0, 50) ~ ' ...' : termin.opis  }}</td>
         <td style="text-align:right;">

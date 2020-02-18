@@ -1,5 +1,24 @@
-{% extends "templates/app.twig" %} {% block stil %} {% endblock stil %} {% block
-naslov %}
+{% extends "templates/app.twig" %} {% block stil %} {% endblock stil %} 
+{% block naslov %}
+{% if termin.vaznost %}
+{% if termin.vaznost|date() <  'now'|date() %}
+<div class="row mx-2 my-2">
+<div class="col">
+<div class="alert alert-danger text-center" role="alert">
+  Ponuda za ovaj termin je istekla {{ termin.vaznost|date() }}!
+</div>
+</div>
+</div>
+{% else %}
+<div class="row mx-2 my-2">
+<div class="col">
+<div class="alert alert-warning text-center" role="alert">
+  Ponuda za ovaj termin ističe {{ termin.vaznost|date() }}!
+</div>
+</div>
+</div>
+{% endif %}
+{% endif %}
 <div class="row">
   <div class="col">
     <h1>

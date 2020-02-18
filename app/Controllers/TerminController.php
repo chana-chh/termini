@@ -225,9 +225,11 @@ class TerminController extends Controller
         $data = $this->data();
         $id = (int) $data['termin_id'];
         unset($data['termin_id']);
+
+        $vaznost = $data['vaznost'];
+        unset($data['vaznost']);
         // unset($data['csrf_name']);
         // unset($data['csrf_value']);
-
         $pocetak = strtotime("{$data['datum']} {$data['pocetak']}");
         $kraj = strtotime("{$data['datum']} {$data['kraj']}");
 
@@ -290,6 +292,7 @@ class TerminController extends Controller
             }
             // Upisivanje u bazu
             $data['korisnik_id'] = $this->auth->user()->id;
+            $data['vaznost'] = empty($vaznost) ? null : $vaznost;
             $model_termin->update($data, $id);
             $termin = $model_termin->find($id);
             if (isset($data['zauzet'])) {
