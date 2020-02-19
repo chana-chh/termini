@@ -3,7 +3,6 @@
 namespace App\Classes;
 
 use App\Models\Log;
-use App\Models\Korisnik;
 
 class Logger
 {

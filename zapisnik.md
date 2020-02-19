@@ -15,6 +15,9 @@
 	Super admin ne vidi sebe u listi korisnika (id=0)
 !!!
 
+- Zakljucavanje/otkljucavanje logovanje!!!
+- Srediti logovanje u svim kontrolerima.
+
 
 ## app
 

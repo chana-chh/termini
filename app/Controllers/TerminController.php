@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Classes\Logger;
-use App\Classes\Mailer;
 use App\Models\Termin;
 use App\Models\Sala;
 use App\Models\TipDogadjaja;
@@ -144,19 +143,15 @@ class TerminController extends Controller
 			$d = date('d.m.Y', strtotime($termin->datum));
 			$p = date('H:i', strtotime($termin->pocetak));
             $k = date('H:i', strtotime($termin->kraj));
-            
+
             // ovde treba napraviti mails/zakazano.twig proslediti mu podatke
             // $termin, $link
-            // $telo = $this->renderPartial('mails/zakazano.twig', compact('termin', 'link'));
-            $telo = "<h1>U sali {$termin->sala()->naziv} je zakazan događaj: {$termin->tip()->tip}</h1>
-                    <h2>Dana {$d}. godine od {$p} do {$k}</h2>
-                    <h3>{$termin->opis}</h3>
-                    <p><a href=\"{$link}\">Link do termina</a></p>
-                    <p style=\"color: red\">* Milimo Vas da ne odgovarate na ovu poruku</p>
-                    <p><strong>Prijatan dan</strong></p>";
-            $this->log(Logger::DODAVANJE, $termin, 'opis');
+            // $telo = $this->renderPartial('mail/zakazano.twig', compact('termin', 'link'));
+            $telo = $this->renderPartial('mail/zakazan_termin.twig', compact('termin', 'link'));
 
-            Mailer::sendMail(
+            $this->log($this::DODAVANJE, $termin, 'opis');
+
+            $this->mailer->sendMail(
                 [['email' => 'stashakg@gmail.com', 'name' => 'Stanislav']],
                 "Zakazan je novi termin u sali {$termin->sala()->naziv} za {$d}. godine",
                 $telo
