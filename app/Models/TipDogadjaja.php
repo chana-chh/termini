@@ -6,7 +6,7 @@ use App\Classes\Model;
 
 class TipDogadjaja extends Model
 {
-    protected $table = 's_tip_dogadjaja';
+    protected $table = 'tipovi_dogadjaja';
 
     public function termini()
     {

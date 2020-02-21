@@ -6,7 +6,7 @@ use App\Classes\Model;
 
 class Meni extends Model
 {
-    protected $table = 's_meniji';
+    protected $table = 'meniji';
 
     public function ugovor()
     {
