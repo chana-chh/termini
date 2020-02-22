@@ -37,6 +37,7 @@ class LogController extends Controller
 
     public function getLogPretraga($request, $response)
     {
+        // TODO: izdvojiti u metodu koja pravi where
         $data = $_SESSION['DATA_LOGOVI_PRETRAGA'];
         array_shift($data);
         array_shift($data);
