@@ -38,8 +38,8 @@
 			</div>
 			<div class="form-group">
 				<label for="email">Email korisnika</label>
-				<input class="form-control{{ errors.email[0] ? ' is-invalid' : '' }}"
-					type="email" name="email" id="email" value="{{ old.email ? : korisnik.email }}" autocomplete="off" required />
+				<input class="form-control{{ errors.email[0] ? ' is-invalid' : '' }}" type="email" name="email"
+					id="email" value="{{ old.email ? : korisnik.email }}" autocomplete="off" required />
 				<div class="valid-feedback">Odgovarajući podatak</div>
 				<div class="invalid-feedback">
 					{{ errors.email[0] ? : 'Obavezno polje obavezno.' }}
@@ -48,10 +48,10 @@
 			<div class="form-row">
 				<div class="form-group col-md-6">
 					<label for="korisnicko_ime">Korisničko ime</label>
-					<input class="form-control{{ errors.korisnicko_ime[0] ? ' is-invalid' : '' }}"
-						type="text" name="korisnicko_ime" id="korisnicko_ime"
-					 	value="{{ old.korisnicko_ime ? : korisnik.korisnicko_ime }}"
-						autocomplete="off" required minlength="5" />
+					<input class="form-control{{ errors.korisnicko_ime[0] ? ' is-invalid' : '' }}" type="text"
+						name="korisnicko_ime" id="korisnicko_ime"
+						value="{{ old.korisnicko_ime ? : korisnik.korisnicko_ime }}" autocomplete="off" required
+						minlength="5" />
 					<div class="valid-feedback">Odgovarajući podatak</div>
 					<div class="invalid-feedback">
 						{{ errors.korisnicko_ime[0] ? : 'Obavezno polje sa najmanje 5, a najviše 50 karaktera' }}
@@ -64,10 +64,10 @@
 						<option value=""></option>
 						<option value="0" {{ korisnik.nivo == 0 ? ' selected' : '' }}>Admin</option>
 						{% if auth.user.nivo == 1000 %}
-						<option value="100"{{ korisnik.nivo == 100 ? ' selected' : '' }}>Vlasnik</option>
+						<option value="100" {{ korisnik.nivo == 100 ? ' selected' : '' }}>Vlasnik</option>
 						{% endif %}
-						<option value="200"{{ korisnik.nivo == 200 ? ' selected' : '' }}>Zakazivač</option>
-						<option value="300"{{ korisnik.nivo == 300 ? ' selected' : '' }}>Osoblje</option>
+						<option value="200" {{ korisnik.nivo == 200 ? ' selected' : '' }}>Zakazivač</option>
+						<option value="300" {{ korisnik.nivo == 300 ? ' selected' : '' }}>Osoblje</option>
 					</select>
 					<div class="valid-feedback">Odgovarajući podatak</div>
 					<div class="invalid-feedback">
@@ -78,8 +78,7 @@
 			<div class="row justify-content-end text-right">
 				<div class="col">
 					<button type="submit" class="btn btn-primary text-right">
-						<i class="fas fa-plus-square" title="Dodavanje novog korisnika"></i>
-						&emsp;Dodaj
+						<i class="fas fa-save" title="Dodavanje novog korisnika"></i> Snimi
 					</button>
 					<a href="{{ path_for('admin.korisnik.lista') }}" class="btn btn-secondary">
 						<i class="fas fa-ban"></i> Otkaži
@@ -98,74 +97,28 @@
 {% endblock traka %}
 {% block skripta %}
 <script>
-	$(document).ready(function () {
-		$(document).on("click", ".otvori-brisanje", function () {
-			var id = $(this).val();
-			$("#idBrisanje").val(id);
-		});
-
-		$(document).on("click", ".otvori-izmenu", function () {
-			$('#nivoM').find('option').remove();
-			var csrfName = $(".csrf_name").val();
-			var csrfValue = $(".csrf_value").val();
-			var id = $(this).data("id");
-
-			var csrfAndData = {
-				csrf_name: csrfName,
-				csrf_value: csrfValue,
-				id: id
-			};
-
-			var ruta = ["{{ path_for('admin.korisnik.detalj') }}"];
-
-			$.ajax({
-				url: ruta,
-				type: "POST",
-				data: csrfAndData,
-				success: function (data) {
-					$(".csrf_name").val(data.cname);
-					$(".csrf_value").val(data.cvalue);
-					$("#idIzmena").val(data.korisnik.id);
-					$("#imeM").val(data.korisnik.ime);
-					$("#korisnicko_imeM").val(data.korisnik.korisnicko_ime);
-
-					$.each(data.nivoi, function (index, lokObjekat) {
-						$("#nivoM").append(
-							'<option value="' +
-							lokObjekat.vrednost +
-							'">' +
-							lokObjekat.naziv +
-							"</option>"
-						);
-					});
-					$("#nivoM").val(data.korisnik.nivo);
-				}
-			});
-		});
-
-		(function () {
-			"use strict";
-			window.addEventListener(
-				"load",
-				function () {
-					var forms = document.getElementsByClassName("needs-validation");
-					var validation = Array.prototype.filter.call(forms, function (form) {
-						form.addEventListener(
-							"submit",
-							function (event) {
-								if (form.checkValidity() === false) {
-									event.preventDefault();
-									event.stopPropagation();
-								}
-								form.classList.add("was-validated");
-							},
-							false
-						);
-					});
-				},
-				false
-			);
-		})();
-	});
+	(function () {
+		"use strict";
+		window.addEventListener(
+			"load",
+			function () {
+				var forms = document.getElementsByClassName("needs-validation");
+				var validation = Array.prototype.filter.call(forms, function (form) {
+					form.addEventListener(
+						"submit",
+						function (event) {
+							if (form.checkValidity() === false) {
+								event.preventDefault();
+								event.stopPropagation();
+							}
+							form.classList.add("was-validated");
+						},
+						false
+					);
+				});
+			},
+			false
+		);
+	})();
 </script>
 {% endblock skripta %}

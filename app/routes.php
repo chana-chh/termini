@@ -31,7 +31,6 @@ $app->group('', function () {
     $this->post('/admin/korisnik-dodavanje', '\App\Controllers\KorisnikController:postKorisnikDodavanje')->setName('admin.korisnik.dodavanje');
     $this->get('/admin/korisnik-izmena[/{id}]', '\App\Controllers\KorisnikController:getKorisnikIzmena')->setName('admin.korisnik.izmena');
     $this->post('/admin/korisnik-izmena', '\App\Controllers\KorisnikController:postKorisnikIzmena')->setName('admin.korisnik.izmena');
-    $this->post('/admin/korisnik-detalj', '\App\Controllers\KorisnikController:postKorisnikDetalj')->setName('admin.korisnik.detalj');
     //Sale
     $this->get('/admin/sale', '\App\Controllers\SalaController:getSale')->setName('sale');
     $this->post('/admin/sale/dodavanje', '\App\Controllers\SalaController:postSalaDodavanje')->setName('sale.dodavanje');
