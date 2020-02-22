@@ -3,6 +3,6 @@
     <em>&copy; {{ 'now'|date('Y') }} ChaSha One All Rights Reserved</em>
   </p>
   <p class="float-right mb-1">
-    Korisnik: {{ auth.logged ? auth.user.ime : "Gost" }}
+    Korisnik: <em>{{ auth.logged ? auth.user.imePrezime : "Gost" }}</em>
   </p>
 </div>

@@ -1,3 +1,40 @@
 # ERRORS
-[19-Feb-2020 12:07:10 Europe/Belgrade] PHP Recoverable fatal error:  Object of class PHPMailer\PHPMailer\PHPMailer could not be converted to string in D:\xampp\htdocs\termini\app\Classes\Mailer.php on line 16
-[19-Feb-2020 12:09:21 Europe/Belgrade] PHP Recoverable fatal error:  Object of class PHPMailer\PHPMailer\PHPMailer could not be converted to string in D:\xampp\htdocs\termini\app\Classes\Mailer.php on line 16
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP Notice:  Undefined property: App\Models\Log::$stari in D:\xampp\htdocs\termini\app\Controllers\Controller.php on line 77
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP Stack trace:
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   1. {main}() D:\xampp\htdocs\termini\pub\index.php:0
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   2. Slim\App->run() D:\xampp\htdocs\termini\pub\index.php:5
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   3. Slim\App->process() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\App.php:297
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   4. Slim\App->callMiddlewareStack() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\App.php:392
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   5. Slim\App->Slim\{closure}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:117
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   6. call_user_func:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   7. Slim\DeferredCallable->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   8. call_user_func_array:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP   9. Slim\Csrf\Guard->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  10. Slim\App->Slim\{closure}() D:\xampp\htdocs\termini\vendor\slim\csrf\src\Guard.php:171
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  11. call_user_func:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  12. Slim\DeferredCallable->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  13. call_user_func_array:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  14. App\Middlewares\CsrfMiddleware->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  15. Slim\App->Slim\{closure}() D:\xampp\htdocs\termini\app\Middlewares\CsrfMiddleware.php:14
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  16. call_user_func:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  17. Slim\DeferredCallable->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  18. call_user_func_array:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  19. App\Middlewares\OldMiddleware->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  20. Slim\App->Slim\{closure}() D:\xampp\htdocs\termini\app\Middlewares\OldMiddleware.php:13
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  21. call_user_func:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  22. Slim\DeferredCallable->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  23. call_user_func_array:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  24. App\Middlewares\ValidationErrorsMiddleware->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  25. Slim\App->__invoke() D:\xampp\htdocs\termini\app\Middlewares\ValidationErrorsMiddleware.php:15
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  26. Slim\Route->run() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\App.php:503
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  27. Slim\Route->callMiddlewareStack() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\Route.php:268
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  28. Slim\Route->Slim\{closure}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:117
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  29. call_user_func:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  30. Slim\DeferredCallable->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\MiddlewareAwareTrait.php:70
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  31. call_user_func_array:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  32. App\Middlewares\UserLevelMiddleware->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\DeferredCallable.php:57
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  33. Slim\Route->__invoke() D:\xampp\htdocs\termini\app\Middlewares\UserLevelMiddleware.php:31
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  34. Slim\Handlers\Strategies\RequestResponse->__invoke() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\Route.php:281
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  35. call_user_func:{D:\xampp\htdocs\termini\vendor\slim\slim\Slim\Handlers\Strategies\RequestResponse.php:40}() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\Handlers\Strategies\RequestResponse.php:40
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  36. App\Controllers\LogController->getLog() D:\xampp\htdocs\termini\vendor\slim\slim\Slim\Handlers\Strategies\RequestResponse.php:40
+[22-Feb-2020 12:45:18 Europe/Belgrade] PHP  37. App\Controllers\LogController->unserializeLogs() D:\xampp\htdocs\termini\app\Controllers\LogController.php:24

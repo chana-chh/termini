@@ -67,18 +67,18 @@ class Controller
     {
         $data = $this->request->getParams();
         $id = $data[$id];
-        return $id;
+        return (int) $id;
     }
 
     protected function unserializeLogs(&$logs)
     {
         if (isset($logs['data'])) {
             foreach ($logs['data'] as $log) {
-                $log->stari = unserialize($log->stari);
+                $log->izmene = unserialize($log->izmene);
             }
         } else {
             foreach ($logs as $log) {
-                $log->stari = unserialize($log->stari);
+                $log->izmene = unserialize($log->izmene);
             }
         }
     }

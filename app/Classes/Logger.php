@@ -52,7 +52,7 @@ class Logger
         $data = [
             'opis' => "{$model->id}, {$model->table()} - {$tekst}",
             'tip' => $tip,
-            'stari' => $stari,
+            'izmene' => $stari,
             'korisnik_id' => $this->korisnik->id,
         ];
 

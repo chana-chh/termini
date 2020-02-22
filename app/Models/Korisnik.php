@@ -15,6 +15,23 @@ class Korisnik extends Model
         return $this->fetch($sql, $params)[0];
     }
 
+    public function findByEmail(string $email)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE email = :email LIMIT 1;";
+        $params = [':email' => $email];
+        return $this->fetch($sql, $params)[0];
+    }
+
+    public function imePrezime()
+    {
+        return "{$this->ime} {$this->prezime}";
+    }
+
+    public function prezimeIme()
+    {
+        return "{$this->prezime} {$this->ime}";
+    }
+
     public function logovi()
     {
         return $this->hasMany('App\Models\Log', 'korisnik_id');
@@ -53,10 +70,5 @@ class Korisnik extends Model
     public function uplate()
     {
         return $this->hasMany('App\Models\Uplata', 'korisnik_id');
-    }
-
-    public function __toString()
-    {
-        return 'Podaci iz modela: ime:' . $this->ime . ', korisnicko_ime:' . $this->korisnicko_ime. ', nivo:' . $this->nivo;
     }
 }

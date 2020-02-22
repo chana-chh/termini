@@ -5,8 +5,6 @@
 !!!
 
 	Zastita od neplacanja:
-	- db: opcije->datum_isteka (enkriptovano)
-	- config->kljuc za enkripciju
 	- kod prijavljivanja korisnika provera da li je isteko datum, ako je isteko datum pusta samo super admina
 	- super admin moze da unese novi datum
 
@@ -20,15 +18,6 @@
 
 
 ## app
-
-### Classes
-- Ubaciti instancu Mailer-a u $container - dic.php
-
-### Controllers
-- Proveriti sta sve jos moze da se doda u Controller.php pa da se koristi u drugim kontrolerima
-	- $this->page($naziv = 'page') - vraca stranicu za paginaciju (MeniController->getMeni())
-	- $this->data() - vraca podatke sa forme bez csrf (MeniController->postMeniDodavanje())
-	- $this->dataId($id = 'id') - nije korisceno (nisam siguran - prepravljeno sad je bolje)
 
 ### Models
 - Kada se sredi Logger.php ukloniti __toString() iz modela
@@ -64,12 +53,10 @@
 # KONCEPTI
 
 1. Posebno obratiti paznju na vlasnika i njegove potrebe za podacima
-
 2. Razmisliti o ulogama (nivoima) i dodati dashboard za administratora
-
 3. Izbeci modale za izmenu i dodavanje. (veliki posao - automatizovati)
-
-4. Na pocetnoj strani dodati termine za danas, isticanje ponuda za neki dan, podsetnike ...
+4. Na pocetnoj strani za prijavljene korisnike (zakazivace) dodati termine za danas, isticanje ponuda za neki dan, podsetnike ...
+5. Na pocetnoj strani za goste postaviti formu upita za slobodan termin
 
 
 # Hotel Kragujevac
