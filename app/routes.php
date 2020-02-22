@@ -38,6 +38,14 @@ $app->group('', function () {
     $this->post('/admin/sale/brisanje', '\App\Controllers\SalaController:postSalaBrisanje')->setName('sale.brisanje');
     $this->post('/admin/sale/detalj', '\App\Controllers\SalaController:postSalaDetalj')->setName('sale.detalj');
     $this->post('/admin/sale/izmena', '\App\Controllers\SalaController:postSalaIzmena')->setName('sale.izmena');
+    //Komitenti
+    $this->get('/admin/komitent', '\App\Controllers\KomitentController:getKomitenti')->setName('komitenti');
+    $this->get('/admin/komitent/pretraga', '\App\Controllers\KomitentController:getKomitentiPretraga')->setName('komitenti.pretraga');
+    $this->post('/admin/komitent/pretraga', '\App\Controllers\KomitentController:postKomitentiPretraga');
+    $this->post('/admin/komitent/dodavanje', '\App\Controllers\KomitentController:postKomitentiDodavanje')->setName('komitenti.dodavanje');
+    $this->post('/admin/komitent/brisanje', '\App\Controllers\KomitentController:postKomitentiBrisanje')->setName('komitenti.brisanje');
+    $this->post('/admin/komitent/detalj', '\App\Controllers\KomitentController:postKomitentiDetalj')->setName('komitenti.detalj');
+    $this->post('/admin/komitent/izmena', '\App\Controllers\KomitentController:postKomitentiIzmena')->setName('komitenti.izmena');
     //Tipovi događaja
     $this->get('/admin/tip', '\App\Controllers\TipDogadjajaController:getTipove')->setName('tip_dogadjaja');
     $this->post('/admin/tip/dodavanje', '\App\Controllers\TipDogadjajaController:postTipDodavanje')->setName('tip_dogadjaja.dodavanje');
@@ -60,8 +68,8 @@ $app->group('', function () {
     $this->get('/vlasnik/ugovori/pretraga', '\App\Controllers\VlasnikController:getUgovorPretragaVlasnik')->setName('vlasnik.ugovori.pretraga');
     $this->post('/vlasnik/ugovori/pretraga', '\App\Controllers\VlasnikController:postUgovorPretragaVlasnik');
     // izvestaji
-    $this->get('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:getPoSalama')->setName('izvestaji.sale');
-    $this->post('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:postPoSalama')->setName('izvestaji.sale.post');
+    $this->get('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:getPoSalama')->setName('izvestaji.Komitenti');
+    $this->post('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:postPoSalama')->setName('izvestaji.Komitenti.post');
     $this->get('/izvestaji/po-salama-lista', '\App\Controllers\IzvestajiController:getPoSalamaLista')->setName('izvestaji.sale.lista');
     $this->get('/izvestaji/po-tipovima', '\App\Controllers\IzvestajiController:getPoTipovima')->setName('izvestaji.tipovi');
     $this->post('/izvestaji/po-tipovima', '\App\Controllers\IzvestajiController:postPoTipovima')->setName('izvestaji.tipovi.post');

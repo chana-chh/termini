@@ -1,0 +1,358 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+  <style>
+  @media (max-width: 575.98px) {
+  .mobilni{
+    font-size: 0.75rem !important;
+  }
+  .btn, .btn-sm{
+    padding: .25rem .4rem;
+    font-size: .875rem;
+    line-height: .5;
+    border-radius: .2rem;
+  }
+  }
+  </style>
+{% endblock stil %}
+{% block naslov %}
+<div class="row mt-md-2 d-none d-sm-flex">
+  <div class="col">
+   <h1>
+      <i class="fas fa-handshake text-secondary"></i> Pregled komitenata
+    </h1>
+    {% if data %}
+    <small><em class="text-warning">[filtrirano]</em></small>
+    {% else %}
+    <small><em class="text-success">[svi komitenti]</em></small>
+    {% endif %}
+  </div>
+  <div class="col justify-content-end text-right">
+    <div class="btn-group btn-group mt-3">
+      <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
+        <i class="fas fa-filter"></i> Filter</button>
+      <a href="{{ path_for('komitenti') }}" class="btn btn-secondary btn-sm pretraga_div"><i class="fas fa-handshake"></i>&emsp;Svi komitenti</a>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-2 d-sm-none">
+  <div class="col">
+   <h4>
+      <i class="fas fa-handshake text-secondary"></i> Pregled komitenata
+    </h4>
+    {% if data %}
+    <small><em class="text-warning">[filtrirano]</em></small>
+    {% else %}
+    <small><em class="text-success">[svi komitenti]</em></small>
+    {% endif %}
+  </div>
+</div>
+<div class="row mt-2 d-sm-none">
+  <div class="col justify-content-end text-right">
+    <div class="btn-group btn-group">
+      <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
+        <i class="fas fa-filter"></i> Filter</button>
+      <a href="{{ path_for('komitenti') }}" class="btn btn-secondary btn-sm pretraga_div"><i class="fas fa-handshake"></i>&emsp;Svi komitenti</a>
+    </div>
+  </div>
+</div>
+<hr/>
+<div class="card border-dark mb-3 pretraga_div" style="display: none;">
+    <div class="card-header">Filtriranje komitenata</div>
+    <div class="card-body text-dark mobilni">
+    <form action="{{ path_for('komitenti.pretraga') }}" method="POST">
+        {{ csrf|raw }}
+        <div class="form-row">
+        <div class="form-group col-md-2">
+        <label for="nazivf">Naziv: </label>
+        <input type="text" name="nazivf" id="nazivf" class="form-control"
+            value="{{ data.nazivf }}" autocomplete="off" placeholder="Naziv komitenta">
+        </div>
+        <div class="form-group col-md-2">
+        <label for="kategorijaf">Kategorija</label>
+        <select class="custom-select" id="kategorijaf" name="kategorijaf">
+          <option value=""></option>
+          <option value="Muzika">Muzika</option>
+          <option value="Fotograf">Fotograf</option>
+          <option value="Torta">Torta</option>
+          <option value="Dekoracija">Dekoracija</option>
+          <option value="Kokteli">Kokteli</option>
+          <option value="Slatki sto">Slatki sto</option>
+          <option value="Voćni sto">Voćni sto</option>
+          <option value="Trubači">Trubači</option>
+          <option value="Animator">Animator</option>
+        </select>
+        </div>
+        <div class="col-md-8 text-right mt-4">
+        <div class="btn-group">
+          <button type="submit" class="btn btn-success btn-sm">
+          <i class="fas fa-filter"></i> Filtriraj
+          </button>
+            <a href="{{ path_for('komitenti') }}" class="btn btn-secondary btn-sm"><i class="fas fa-handshake"></i>&emsp;Svi komitenti</a>
+        </div>
+        </div>
+        </div>
+    </form>
+  </div>
+</div>
+{% endblock naslov %} 
+{% block sadrzaj %}
+<div class="table-responsive">
+  <table class="table mobilni">
+    <thead class="thead-dark">
+      <tr>
+        <th class="w-5" scope="col">ID</th>
+        <th class="w-70" scope="col">Naziv</th>
+        <th class="w-15" scope="col">Kategorija</th>
+        <th class="w-10" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for komitent in komitenti.data %}
+      <tr>
+        <th scope="row" class="text-danger">{{ komitent.id }}</th>
+        <td><strong>{{ komitent.naziv }}</strong></td>
+        <td>{{ komitent.kategorija }}</td>
+        <td style="text-align:right;">
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
+            data-id="{{ komitent.id }}" title="Izmena podataka odabranog komitenta">
+            <i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
+            data-id="{{ komitent.id }}" title="Brisanje odabranog komitenta">
+            <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="row mobilni">
+  <nav class="col">
+    <ul class="pagination pagination-sm">
+      {% for button in komitenti.links.buttons %}
+      <li class="page-item{{ button.current ? ' active' : '' }}">
+        <a class="page-link" href="{{ button.url }}">{{ button.page }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  <p class="col justify-content-end text-right text-info"><strong>
+      Prikazani redovi od
+      <em>{{ komitenti.links.row_from }}</em> do
+      <em>{{ komitenti.links.row_to }}</em> od ukupno
+      <em>{{ komitenti.links.total_rows }}</em>
+    </strong>
+  </p>
+</div>
+  {# Modal za brisanje #}
+  <div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Upozorenje!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4>Da li želite trajno da obrišete komitenta?</h4>
+          <p class="text-danger">* Ova akcija je nepovratna!</p>
+          <form id="brisanje-forma" action="{{ path_for('komitenti.brisanje') }}" method="POST">
+            {{ csrf|raw }}
+            <input type="hidden" id="idBrisanje" name="idBrisanje">
+            <hr style="margin-top: 30px;">
+
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-obrisi" type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash-alt"></i>&emsp;Obriši
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# Kraj modala za brisanje #}
+
+  {# Modal za izmenu #}
+  <div id="izmenaModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Izmeni stavku</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="izmena-forma" action="{{ path_for('komitenti.izmena') }}" method="POST" class="needs-validation" novalidate>
+            {{ csrf|raw }}
+            <input type="hidden" id="idIzmena" name="idIzmena">
+            <div class="form-group">
+              <label for="nazivModal">Naziv</label>
+              <input type="text" class="form-control{{ errors.nazivModal[0] ? ' is-invalid' : '' }}" name="nazivModal" id="nazivModal" aria-describedby="naziv komitenta" required>
+              <div class="valid-feedback">Odgovarajući podatak</div>
+              <div class="invalid-feedback">
+                {{ errors.naziv[0] ? : 'Obavezno polje' }}
+              </div>
+            </div>
+          <div class="form-group">
+            <label for="kategorijaModal">Kategorija</label>
+            <select class="form-control{{ errors.kategorijaModal[0] ? ' is-invalid' : '' }}" id="kategorijaModal" name="kategorijaModal" required>
+            </select>
+            <div class="valid-feedback">Odgovarajući podatak</div>
+            <div class="invalid-feedback">
+              {{ errors.kategorijaModal[0] ? : 'Obavezno polje' }}
+            </div>
+          </div>
+            <hr style="margin-top: 30px;">
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-izmeni" type="submit" class="btn btn-warning">
+                  <i class="fas fa-save"></i>&emsp;Snimi
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {# Kraj modala za izmenu #}
+
+{% endblock sadrzaj %} 
+{% block traka %}
+  <div class="card border-dark mb-3">
+    <div class="card-header">Dodavanje komitenta</div>
+    <div class="card-body text-dark mobilni">
+      <form action="{{ path_for('komitenti.dodavanje') }}" method="POST" class="needs-validation" novalidate>
+        {{ csrf|raw }}
+        <div class="form-group">
+          <label for="naziv">Naziv</label>
+          <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}" name="naziv" id="naziv" aria-describedby="Naziv komitenta" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.naziv[0] ? : 'Obavezno polje' }}
+          </div>
+        </div>
+        <div class="form-group">
+        <label for="kategorija">Kategorija</label>
+        <select class="custom-select{{ errors.kategorija[0] ? ' is-invalid' : '' }}" id="kategorija" name="kategorija" required>
+          <option value=""></option>
+          <option value="Muzika">Muzika</option>
+          <option value="Fotograf">Fotograf</option>
+          <option value="Torta">Torta</option>
+          <option value="Dekoracija">Dekoracija</option>
+          <option value="Kokteli">Kokteli</option>
+          <option value="Slatki sto">Slatki sto</option>
+          <option value="Voćni sto">Voćni sto</option>
+          <option value="Trubači">Trubači</option>
+          <option value="Animator">Animator</option>
+        </select>
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.kategorija[0] ? : 'Obavezno polje' }}
+        </div>
+      </div>
+         <div class="row justify-content-end text-right">
+            <div class="col">
+              <button type="submit" class="btn btn-primary text-right"><i class="fas fa-plus-square" title="Dodavanje komitenta"></i> &emsp;Dodaj</button>
+              <a href="{{ path_for('komitenti') }}" class="btn btn-secondary"><i class="fas fa-ban"></i> &emsp;Otkaži</a>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock traka %}
+{% block skripta %}
+  <script>
+    $(document).ready(function () {
+
+        $('.prikazi').click(function () {
+          $('.pretraga_div').toggle();
+        });
+
+        (function() {
+            "use strict";
+            window.addEventListener(
+              "load",
+              function() {
+                var forms = document.getElementsByClassName("needs-validation");
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                  form.addEventListener(
+                    "submit",
+                    function(event) {
+                      if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }
+                      form.classList.add("was-validated");
+                    },
+                    false
+                  );
+                });
+              },
+              false
+            );
+          })();
+
+      $(document).on('click', '.otvori-brisanje', function () {
+        var id = $(this).data("id");
+        $('#idBrisanje').val(id);
+      });
+
+
+      $(document).on('click', '.otvori-izmenu', function () {
+
+        var csrfName = $(".csrf_name").val();
+        var csrfValue = $(".csrf_value").val();
+        var id = $(this).data("id");
+
+        var csrfAndData = {
+          "csrf_name": csrfName,
+          "csrf_value": csrfValue,
+          "id": id
+        };
+
+        var ruta = ["{{ path_for('komitenti.detalj') }}"];
+
+        $.ajax({
+          url: ruta,
+          type: "POST",
+          data: csrfAndData,
+          success: function (data) {
+            $(".csrf_name").val(data.cname);
+            $(".csrf_value").val(data.cvalue);
+            $("#idIzmena").val(data.komitent.id);
+            $("#nazivModal").val(data.komitent.naziv);
+            
+            $.each(data.kategorije, function (index, lokObjekat) {
+            $("#kategorijaModal").append(
+              '<option value="' +
+              lokObjekat.vrednost +
+              '">' +
+              lokObjekat.naziv +
+              "</option>"
+            );
+          });
+          $("#kategorijaModal").val(data.komitent.kategorija);
+          }
+        });
+
+      });
+
+    });
+  </script>
+{% endblock skripta %}
+
