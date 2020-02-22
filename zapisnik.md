@@ -5,6 +5,7 @@
 !!!
 
 	Zastita od neplacanja:
+	- db: opcije->datum_isteka
 	- kod prijavljivanja korisnika provera da li je isteko datum, ako je isteko datum pusta samo super admina
 	- super admin moze da unese novi datum
 

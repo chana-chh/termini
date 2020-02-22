@@ -92,34 +92,6 @@ class KorisnikController extends Controller
         return $response->withRedirect($this->router->pathFor('admin.korisnik.lista'));
     }
 
-    public function postKorisnikDetalj($request, $response)
-    {
-        $nivoA = (object)[];
-        $nivoA->vrednost = 0;
-        $nivoA->naziv = "Admin";
-
-        $nivoZ = (object)[];
-        $nivoZ->vrednost = 200;
-        $nivoZ->naziv = "Zakazivač";
-
-        $nivoO = (object)[];
-        $nivoO->vrednost = 300;
-        $nivoO->naziv = "Osoblje";
-
-        $nivoi = [$nivoA, $nivoZ, $nivoO];
-
-        $data = $request->getParams();
-        $cName = $this->csrf->getTokenName();
-        $cValue = $this->csrf->getTokenValue();
-        $id = $data['id'];
-        $model = new Korisnik();
-        $korisnik = $model->find($id);
-
-        $ar = ["cname" => $cName, "cvalue"=>$cValue, "korisnik"=>$korisnik, "nivoi"=>$nivoi];
-
-        return $response->withJson($ar);
-    }
-
     public function getKorisnikIzmena($request, $response, $args)
     {
         $id = (int)$args['id'];
@@ -131,68 +103,46 @@ class KorisnikController extends Controller
 
     public function postKorisnikIzmena($request, $response)
     {
-        $data = $this->data();
-        $id = $data['idIzmena'];
-        unset($data['idIzmena']);
-
-        $datam = [
-            "ime" => $data['imeM'],
-            "korisnicko_ime" => $data['korisnicko_imeM'],
-            "lozinka" => $data['lozinkaM'],
-            "lozinka_potvrda" => $data['lozinka_potvrdaM'],
-            "nivo" => $data['nivoM']
-        ];
+        $data = $this->data('id');
+        $id = $this->dataId();
 
         $validation_rules = [
             'ime' => [
                 'required' => true,
-                'minlen' => 5,
+                'alnum' => true,
+            ],
+            'prezime' => [
+                'required' => true,
                 'alnum' => true,
             ],
             'korisnicko_ime' => [
                 'required' => true,
-                'minlen' => 3,
+                'minlen' => 5,
                 'maxlen' => 50,
                 'alnum' => true,
-                'unique' => 'korisnici.korisnicko_ime#id:' . $id,
+                'unique' => 'korisnici.korisnicko_ime#id:'.$id, // tabela.kolona#id_kol:id_val
+            ],
+            'email' => [
+                'required' => true,
+                'unique' => 'korisnici.email#id:'.$id, // tabela.kolona#id_kol:id_val
             ],
             'nivo' => [
                 'required' => true
-            ],
-        ];
-
-        $validation_pass = [
-            'lozinka' => [
-                'required' => true,
-                'minlen' => 6,
-            ],
-            'lozinka_potvrda' => [
-                'match_field' => 'lozinka',
             ]
         ];
 
-        if (!empty($datam['lozinka'])) {
-            array_push($validation_rules, $validation_pass);
-        }
-
-        $this->validator->validate($datam, $validation_rules);
+        $this->validator->validate($data, $validation_rules);
 
         if ($this->validator->hasErrors()) {
-            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka korisnika.');
-            return $response->withRedirect($this->router->pathFor('korisnici.izmena', ['id' => $id]));
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka o korisniku.');
+            return $response->withRedirect($this->router->pathFor('admin.korisnik.izmena', ['id' => $id]));
         } else {
             $this->flash->addMessage('success', 'Podaci o korisniku su uspešno izmenjeni.');
             $modelKorisnik = new Korisnik();
             $stari = $modelKorisnik->find($id);
-            unset($datam['lozinka_potvrda']);
-            if (!empty($datam['lozinka'])) {
-                $datam['lozinka'] = password_hash($datam['lozinka'], PASSWORD_DEFAULT);
-            } else {
-                unset($datam['lozinka']);
-            }
-            $modelKorisnik->update($datam, $id);
+            $modelKorisnik->update($data, $id);
             $korisnik = $modelKorisnik->find($id);
-            $this->log(Logger::IZMENA, $korisnik, 'ime', $stari);
+            $this->log($this::IZMENA, $korisnik, ['ime','prezime'], $stari);
             return $response->withRedirect($this->router->pathFor('admin.korisnik.lista'));
         }
     }

@@ -12,17 +12,14 @@ class TipDogadjajaController extends Controller
         $model = new TipDogadjaja();
         $tipovi = $model->all();
 
-        $this->render($response, 'tip_dogadjaja.twig', compact('tipovi'));
+        $this->render($response, 'tip_dogadjaja/lista.twig', compact('tipovi'));
     }
 
     public function postTipDodavanje($request, $response)
     {
-        // $data = $request->getParams();
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
-
         $data = $this->data();
 
+        // TODO: izdvojiti u metodu koja pravi chechbox vrednosti
         $multi_ugovori = isset($data['multi_ugovori']) ? 1 : 0;
         $data['multi_ugovori'] = $multi_ugovori;
 
@@ -33,12 +30,6 @@ class TipDogadjajaController extends Controller
                 'maxlen' => 50,
                 'unique' => 's_tip_dogadjaja.tip'
             ],
-            'multi_ugovori' => [
-                'required' => true,
-            ],
-            'korisnik_id' => [
-                'required' => true,
-            ]
         ];
 
         $data['korisnik_id'] = $this->auth->user()->id;
@@ -52,9 +43,8 @@ class TipDogadjajaController extends Controller
             $this->flash->addMessage('success', 'Nov tip događaja je uspešno dodat.');
             $model = new TipDogadjaja();
             $model->insert($data);
-            $id_tipa = $model->lastId();
-            $tip_dogadjaja = $model->find($id_tipa);
-            $this->log(Logger::DODAVANJE, $tip_dogadjaja, 'tip');
+            $tip_dogadjaja = $model->find($model->lastId());
+            $this->log($this::DODAVANJE, $tip_dogadjaja, 'tip');
             return $response->withRedirect($this->router->pathFor('tip_dogadjaja'));
         }
     }

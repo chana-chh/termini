@@ -35,9 +35,9 @@
     <tr>
       <th class="w-5">ID</th>
       <th class="w-30">Ime i prezime</th>
-      <th class="w-25">Email</th>
-      <th class="w-20">Korisničko ime</th>
-      <th class="w-10">Nivo</th>
+      <th class="w-30">Email</th>
+      <th class="w-15">Korisničko ime</th>
+      <th class="w-10">Nivo prava</th>
       <th class="w-10 text-right"><i class="fas fa-cogs text-warning"></i></th>
     </tr>
   </thead>
@@ -81,7 +81,7 @@
           </a>
           <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
             value="{{ korisnik.id }}" title="Brisanje odabranog korisnika">
-            <i class="fas fa-trash-alt"></i>
+            <i class="fas fa-trash"></i>
           </button>
         </div>
         {% endif %}
@@ -247,45 +247,6 @@
     $(document).on("click", ".otvori-brisanje", function () {
       var id = $(this).val();
       $("#idBrisanje").val(id);
-    });
-
-    $(document).on("click", ".otvori-izmenu", function () {
-      $('#nivoM').find('option').remove();
-      var csrfName = $(".csrf_name").val();
-      var csrfValue = $(".csrf_value").val();
-      var id = $(this).data("id");
-
-      var csrfAndData = {
-        csrf_name: csrfName,
-        csrf_value: csrfValue,
-        id: id
-      };
-
-      var ruta = ["{{ path_for('admin.korisnik.detalj') }}"];
-
-      $.ajax({
-        url: ruta,
-        type: "POST",
-        data: csrfAndData,
-        success: function (data) {
-          $(".csrf_name").val(data.cname);
-          $(".csrf_value").val(data.cvalue);
-          $("#idIzmena").val(data.korisnik.id);
-          $("#imeM").val(data.korisnik.ime);
-          $("#korisnicko_imeM").val(data.korisnik.korisnicko_ime);
-
-          $.each(data.nivoi, function (index, lokObjekat) {
-            $("#nivoM").append(
-              '<option value="' +
-              lokObjekat.vrednost +
-              '">' +
-              lokObjekat.naziv +
-              "</option>"
-            );
-          });
-          $("#nivoM").val(data.korisnik.nivo);
-        }
-      });
     });
 
     (function () {
