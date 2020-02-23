@@ -48,6 +48,26 @@
 					</div>
 				</div>
 			</div>
+			<div class="form-row">
+				<div class="form-group col-4">
+					<label for="vreme_pripreme">Vreme pripreme (min)</label>
+					<input class="form-control{{ errors.vreme_pripreme[0] ? ' is-invalid' : '' }}" type="text" name="vreme_pripreme" id="vreme_pripreme"
+						value="{{ old.vreme_pripreme ? : stavka.vreme_pripreme  }}" autocomplete="off" />
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.vreme_pripreme[0] ? : 'Obavezno polje.' }}
+					</div>
+				</div>
+				<div class="form-group col-4">
+					<label for="kolicina">Količina (g)</label>
+					<input class="form-control{{ errors.kolicina[0] ? ' is-invalid' : '' }}" type="text" name="kolicina" id="kolicina"
+						value="{{ old.kolicina ? : stavka.kolicina  }}" autocomplete="off" />
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.kolicina[0] ? : 'Obavezno polje.' }}
+					</div>
+				</div>
+			</div>
 			<div class="row text-right">
 				<div class="col">
 					<button type="submit" class="btn btn-primary text-right">

@@ -109,10 +109,12 @@
   <table class="table mobilni">
     <thead class="thead-dark">
       <tr>
-        <th class="w-10">ID</th>
-        <th class="w-40">Naziv</th>
-        <th class="w-20 text-right">Cena</th>
-        <th class="w-20">Kategorija</th>
+        <th class="w-5">ID</th>
+        <th class="w-20">Naziv</th>
+        <th class="w-15 text-right">Cena</th>
+        <th class="w-15">Kategorija</th>
+        <th class="w-20 text-right">Vreme pripreme (min)</th>
+        <th class="w-15 text-right">Količina (g)</th>
         <th class="w-10 text-right"><i class="fas fa-cogs text-warning"></i></th>
       </tr>
     </thead>
@@ -123,6 +125,8 @@
         <td>{{ stavka.naziv }}</td>
         <td class="text-right">{{ stavka.cena|number_format() }}</td>
         <td>{{ stavka.kategorija }}</td>
+        <td class="text-right">{{ stavka.vreme_pripreme }}</td>
+        <td class="text-right">{{ stavka.kolicina }}</td>
         <td class="text-right">
           <div class="btn-group btn-group-sm">
             <a class="btn btn-warning btn-smu" title="Izmena stavke menija"
@@ -134,7 +138,6 @@
               <i class="fas fa-trash"></i>
             </button>
           </div>
-
         </td>
       </tr>
       {% endfor %}
@@ -270,6 +273,24 @@
         <div class="valid-feedback">Odgovarajući podatak</div>
         <div class="invalid-feedback">
           {{ errors.cena[0] ? : 'Obavezno polje' }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="vreme_pripreme">Vreme pripreme (min)</label>
+        <input type="number" class="form-control{{ errors.vreme_pripreme[0] ? ' is-invalid' : '' }}"
+          value="{{ old.vreme_pripreme ? : 0 }}" name="vreme_pripreme" id="vreme_pripreme" min="0" step="1">
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.vreme_pripreme[0] ? : 'Obavezno polje' }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="kolicina">Količina (g)</label>
+        <input type="number" class="form-control{{ errors.kolicina[0] ? ' is-invalid' : '' }}"
+          value="{{ old.kolicina ? : 0 }}" name="kolicina" id="kolicina" min="0" step="1">
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.kolicina[0] ? : 'Obavezno polje' }}
         </div>
       </div>
       <div class="form-group">

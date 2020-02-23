@@ -94,20 +94,20 @@
     <thead class="thead-dark">
       <tr>
         <th class="w-10">ID</th>
-        <th class="w-20">Naziv</th>
-        <th class="w-10 text-right">Cena</th>
-        <th class="w-50">Stavke</th>
-        <th class="w-10" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
+        <th class="w-30">Naziv</th>
+        <th class="w-15 text-right">Cena</th>
+        <th class="w-30"></th>
+        <th class="w-15 text-right"><i class="fas fa-cogs text-warning"></i></th>
       </tr>
     </thead>
     <tbody>
       {% for me in meniji.data %}
       <tr>
         <th class="text-danger">{{ me.id }}</th>
-        <td>{{ me.naziv }}</td>
+        <td><em>{{ me.naziv }}</em></td>
         <td class="text-right">{{ me.cena|number_format()}}</td>
-        <td>{{ me.stavke()[0].naziv }}, {{ me.stavke()[0].cena }}</td>
-        <td style="text-align:right;">
+        <td><small><em>{{ me.stavke }}</em></small></td>
+        <td class="text-right">
           <div class="btn-group btn-group-sm">
             <a class="btn btn-success btn-sm" href="{{ path_for('meni.detalj', { id: me.id }) }}"
               title="Detaljni pregled odabranog menija"><i class="fas fa-eye"></i></a>
@@ -115,7 +115,7 @@
               title="Izmena odabranog menija"><i class="fas fa-edit"></i></a>
             <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
               data-id="{{ me.id }}" title="Brisanje odabranog menija">
-              <i class="fas fa-trash-alt"></i>
+              <i class="fas fa-trash"></i>
             </button>
           </div>
         </td>
