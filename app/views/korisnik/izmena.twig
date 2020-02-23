@@ -12,8 +12,8 @@
 			</div>
 		</div>
 		<hr />
-		<form id="izmena-forma" action="{{ path_for('admin.korisnik.izmena') }}" method="POST" class="needs-validation"
-			novalidate>
+		<form id="izmena-forma" action="{{ path_for('admin.korisnik.izmena.post') }}" method="POST"
+			class="needs-validation" novalidate>
 			{{ csrf | raw }}
 			<input type="hidden" id="id" name="id" value="{{ korisnik.id }}" />
 			<div class="form-row">

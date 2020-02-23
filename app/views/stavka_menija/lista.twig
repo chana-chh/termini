@@ -124,23 +124,22 @@
         <td class="text-right">{{ stavka.cena|number_format() }}</td>
         <td>{{ stavka.kategorija }}</td>
         <td class="text-right">
-          {#
           <div class="btn-group btn-group-sm">
-            <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
-              data-id="{{ komitent.id }}" title="Izmena podataka odabranog komitenta">
-              <i class="fas fa-edit"></i></button>
-              #}
-          <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
-            data-id="{{ stavka.id }}" title="Brisanje odabrane stavke">
-            <i class="fas fa-trash"></i>
-          </button>
-</div>
+            <a class="btn btn-warning btn-smu" title="Izmena stavke menija"
+              href="{{ path_for('stavke_menija.izmena.get', { id: stavka.id }) }}">
+              <i class="fas fa-edit"></i>
+            </a>
+            <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
+              data-id="{{ stavka.id }}" title="Brisanje odabrane stavke">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
 
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 <div class="row mobilni">
   <nav class="col">

@@ -110,113 +110,66 @@ class StavkaMenijaController extends Controller
     }
 
 
-        public function postStavkaMenijaBrisanje($request, $response)
-        {
-            $id = $this->dataId('idBrisanje');
-            $model = new StavkaMenija();
-            $stavka = $model->find($id);
-            $success = $model->deleteOne($id);
+    public function postStavkaMenijaBrisanje($request, $response)
+    {
+        $id = $this->dataId('idBrisanje');
+        $model = new StavkaMenija();
+        $stavka = $model->find($id);
+        $success = $model->deleteOne($id);
 
-            if ($success) {
-                $this->flash->addMessage('success', "Stavka menija je uspešno obrisana.");
-                $this->log($this::BRISANJE, $stavka, 'naziv');
-                return $response->withRedirect($this->router->pathFor('stavke_menija'));
-            } else {
-                $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja stavke menija.");
-                return $response->withRedirect($this->router->pathFor('stavke_menija'));
-            }
+        if ($success) {
+            $this->flash->addMessage('success', "Stavka menija je uspešno obrisana.");
+            $this->log($this::BRISANJE, $stavka, 'naziv');
+            return $response->withRedirect($this->router->pathFor('stavke_menija'));
+        } else {
+            $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja stavke menija.");
+            return $response->withRedirect($this->router->pathFor('stavke_menija'));
         }
-/*
-        public function postKomitentiDetalj($request, $response)
-        {
-            $data = $request->getParams();
-            $cName = $this->csrf->getTokenName();
-            $cValue = $this->csrf->getTokenValue();
+    }
 
-            //Zli enum
-            $kategorijaA = (object)[];
-            $kategorijaA->vrednost = "Muzika";
-            $kategorijaA->naziv = "Muzika";
+    public function getStavkaMenijaIzmena($request, $response, $args)
+    {
+        $id = (int)$args['id'];
+        $model = new StavkaMenija();
+        $stavka = $model->find($id);
+        $kategorije = $stavka->enumOrSetList('kategorija');
 
-            $kategorijaB = (object)[];
-            $kategorijaB->vrednost = "Fotograf";
-            $kategorijaB->naziv = "Fotograf";
+        $this->render($response, 'stavka_menija/izmena.twig', compact('stavka', 'kategorije'));
+    }
 
-            $kategorijaC = (object)[];
-            $kategorijaC->vrednost = "Torta";
-            $kategorijaC->naziv = "Torta";
+    public function postStavkaMenijaIzmena($request, $response)
+    {
+        $data = $this->data('id');
+        $id = $this->dataId();
 
-            $kategorijaD = (object)[];
-            $kategorijaD->vrednost = "Dekoracija";
-            $kategorijaD->naziv = "Dekoracija";
-
-            $kategorijaE = (object)[];
-            $kategorijaE->vrednost = "Kokteli";
-            $kategorijaE->naziv = "Kokteli";
-
-            $kategorijaF = (object)[];
-            $kategorijaF->vrednost = "Slatki sto";
-            $kategorijaF->naziv = "Slatki sto";
-
-            $kategorijaG = (object)[];
-            $kategorijaG->vrednost = "Voćni sto";
-            $kategorijaG->naziv = "Voćni sto";
-
-            $kategorijaH = (object)[];
-            $kategorijaH->vrednost = "Trubači";
-            $kategorijaH->naziv = "Trubači";
-
-            $kategorijaI = (object)[];
-            $kategorijaI->vrednost = "Animator";
-            $kategorijaI->naziv = "Animator";
-
-            $kategorije = [$kategorijaA, $kategorijaB, $kategorijaC, $kategorijaD, $kategorijaE, $kategorijaF, $kategorijaG, $kategorijaH, $kategorijaI];
-
-            $id = $data['id'];
-            $modelKomitent = new Komitent();
-            // $kategorije = $modelKomitent->enumOrSetList('kategorija');
-            $komitent = $modelKomitent->find($id);
-            $ar = ["cname" => $cName, "cvalue"=>$cValue, "komitent"=>$komitent, "kategorije"=>$kategorije];
-
-            return $response->withJson($ar);
-        }
-
-        public function postKomitentiIzmena($request, $response)
-        {
-            $data = $this->data();
-            $id = $data['idIzmena'];
-            unset($data['idIzmena']);
-
-            $datam = [
-                "naziv" => $data['nazivModal'],
-                "kategorija" => $data['kategorijaModal']
-            ];
-
-            $validation_rules = [
+        $validation_rules = [
                 'naziv' => [
                     'required' => true,
-                    'maxlen' => 255,
-                    'unique' => 'komintenti.naziv#id:' . $id,
+                    'maxlen' => 150,
+                    'unique' => 'stavke_menija.naziv#id:' . $id,
+                ],
+                'cena' => [
+                    'required' => true,
+                    'min' => 0,
                 ],
                 'kategorija' => [
                     'required' => true
                 ]
             ];
 
-            $this->validator->validate($datam, $validation_rules);
+        $this->validator->validate($data, $validation_rules);
 
-            if ($this->validator->hasErrors()) {
-                $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka komitenta.');
-                return $response->withRedirect($this->router->pathFor('komitenti'));
-            } else {
-                $this->flash->addMessage('success', 'Podaci o komitentu su uspešno izmenjeni.');
-                $modelKomitent = new Komitent();
-                $stari = $modelKomitent->find($id);
-                $modelKomitent->update($datam, $id);
-                $komitent = $modelKomitent->find($id);
-                $this->log($this::IZMENA, $komitent, 'naziv', $stari);
-                return $response->withRedirect($this->router->pathFor('komitenti'));
-            }
+        if ($this->validator->hasErrors()) {
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene stavke menija.');
+            return $response->withRedirect($this->router->pathFor('stavke_menija'));
+        } else {
+            $this->flash->addMessage('success', 'Stavka menija je uspešno izmenjena.');
+            $model = new StavkaMenija();
+            $stari = $model->find($id);
+            $model->update($data, $id);
+            $stavka = $model->find($id);
+            $this->log($this::IZMENA, $stavka, 'naziv', $stari);
+            return $response->withRedirect($this->router->pathFor('stavke_menija'));
         }
-        */
+    }
 }

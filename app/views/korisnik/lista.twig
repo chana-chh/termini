@@ -63,7 +63,7 @@
         {% if korisnik.nivo == 100 %}
         {% if auth.user.nivo == 1000 %}
         <div class="btn-group btn-group-sm">
-          <a class="btn btn-warning btn-sm" href="{{ path_for('admin.korisnik.izmena', { id: korisnik.id }) }}"
+          <a class="btn btn-warning btn-sm" href="{{ path_for('admin.korisnik.izmena.get', { id: korisnik.id }) }}"
             title="Izmena podataka o korisniku">
             <i class="fas fa-edit"></i>
           </a>
@@ -75,7 +75,7 @@
         {% endif %}
         {% else %}
         <div class="btn-group btn-group-sm">
-          <a class="btn btn-warning btn-sm" href="{{ path_for('admin.korisnik.izmena', { id: korisnik.id }) }}"
+          <a class="btn btn-warning btn-sm" href="{{ path_for('admin.korisnik.izmena.get', { id: korisnik.id }) }}"
             title="Izmena podataka o korisniku">
             <i class="fas fa-edit"></i>
           </a>

@@ -3,20 +3,15 @@
 namespace App\Controllers;
 
 use App\Models\Meni;
-use App\Classes\Logger;
 
 class MeniController extends Controller
 {
     public function getMeni($request, $response)
     {
-        // $query = [];
-        // parse_str($request->getUri()->getQuery(), $query);
-        // $page = isset($query['page']) ? (int)$query['page'] : 1;
-
         $model = new Meni();
-        $meni = $model->paginate($this->page());
+        $meniji = $model->paginate($this->page());
 
-        $this->render($response, 'meni.twig', compact('meni'));
+        $this->render($response, 'meni/lista.twig', compact('meniji'));
     }
 
     public function postMeniPretraga($request, $response)
