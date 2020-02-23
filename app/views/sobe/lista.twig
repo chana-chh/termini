@@ -18,19 +18,19 @@
 <div class="row mt-md-2 d-none d-sm-flex">
   <div class="col">
    <h1>
-      <i class="fas fa-handshake text-secondary"></i> Pregled komitenata
+      <i class="fas fa-bed text-secondary"></i> Pregled soba
     </h1>
     {% if data %}
     <small><em class="text-warning">[filtrirano]</em></small>
     {% else %}
-    <small><em class="text-success">[svi komitenti]</em></small>
+    <small><em class="text-success">[sve sobe]</em></small>
     {% endif %}
   </div>
   <div class="col justify-content-end text-right">
     <div class="btn-group btn-group mt-3">
       <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
         <i class="fas fa-filter"></i> Filter</button>
-      <a href="{{ path_for('komitenti') }}" class="btn btn-secondary btn-sm pretraga_div"><i class="fas fa-handshake"></i>&emsp;Svi komitenti</a>
+      <a href="{{ path_for('sobe') }}" class="btn btn-secondary btn-sm pretraga_div"><i class="fas fa-bed"></i>&emsp;Sve sobe</a>
     </div>
   </div>
 </div>
@@ -38,12 +38,12 @@
 <div class="row mt-2 d-sm-none">
   <div class="col">
    <h4>
-      <i class="fas fa-handshake text-secondary"></i> Pregled komitenata
+      <i class="fas fa-bed text-secondary"></i> Pregled soba
     </h4>
     {% if data %}
     <small><em class="text-warning">[filtrirano]</em></small>
     {% else %}
-    <small><em class="text-success">[svi komitenti]</em></small>
+    <small><em class="text-success">[sve sobe]</em></small>
     {% endif %}
   </div>
 </div>
@@ -52,43 +52,29 @@
     <div class="btn-group btn-group">
       <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
         <i class="fas fa-filter"></i> Filter</button>
-      <a href="{{ path_for('komitenti') }}" class="btn btn-secondary btn-sm pretraga_div"><i class="fas fa-handshake"></i>&emsp;Svi komitenti</a>
+      <a href="{{ path_for('sobe') }}" class="btn btn-secondary btn-sm pretraga_div"><i class="fas fa-bed"></i>&emsp;Sve sobe</a>
     </div>
   </div>
 </div>
 <hr/>
 <div class="card border-dark mb-3 pretraga_div" style="display: none;">
-    <div class="card-header">Filtriranje komitenata</div>
+    <div class="card-header">Filtriranje soba</div>
     <div class="card-body text-dark mobilni">
-    <form action="{{ path_for('komitenti.pretraga') }}" method="POST">
+    <form action="{{ path_for('sobe.pretraga') }}" method="POST">
         {{ csrf|raw }}
         <div class="form-row">
         <div class="form-group col-md-2">
-        <label for="nazivf">Naziv: </label>
+        <label for="nazivf">Naziv (tip) sobe: </label>
         <input type="text" name="nazivf" id="nazivf" class="form-control"
-            value="{{ data.nazivf }}" autocomplete="off" placeholder="Naziv komitenta">
+            value="{{ data.nazivf }}" autocomplete="off" placeholder="Naziv / tip sobe">
         </div>
-        <div class="form-group col-md-2">
-        <label for="kategorijaf">Kategorija</label>
-        <select class="custom-select" id="kategorijaf" name="kategorijaf">
-          <option value=""></option>
-          <option value="Muzika">Muzika</option>
-          <option value="Fotograf">Fotograf</option>
-          <option value="Torta">Torta</option>
-          <option value="Dekoracija">Dekoracija</option>
-          <option value="Kokteli">Kokteli</option>
-          <option value="Slatki sto">Slatki sto</option>
-          <option value="Voćni sto">Voćni sto</option>
-          <option value="Trubači">Trubači</option>
-          <option value="Animator">Animator</option>
-        </select>
-        </div>
-        <div class="col-md-8 text-right mt-4">
+
+        <div class="col-md-10 text-right mt-4">
         <div class="btn-group">
           <button type="submit" class="btn btn-success btn-sm">
           <i class="fas fa-filter"></i> Filtriraj
           </button>
-            <a href="{{ path_for('komitenti') }}" class="btn btn-secondary btn-sm"><i class="fas fa-handshake"></i>&emsp;Svi komitenti</a>
+            <a href="{{ path_for('sobe') }}" class="btn btn-secondary btn-sm"><i class="fas fa-bed"></i>&emsp;Sve sobe</a>
         </div>
         </div>
         </div>
@@ -102,24 +88,24 @@
     <thead class="thead-dark">
       <tr>
         <th class="w-5" scope="col">ID</th>
-        <th class="w-70" scope="col">Naziv</th>
-        <th class="w-15" scope="col">Kategorija</th>
+        <th class="w-50" scope="col">Naziv (tip) sobe</th>
+        <th class="w-35" scope="col">Cena</th>
         <th class="w-10" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
       </tr>
     </thead>
     <tbody>
-      {% for komitent in komitenti.data %}
+      {% for soba in sobe.data %}
       <tr>
-        <th scope="row" class="text-danger">{{ komitent.id }}</th>
-        <td><strong>{{ komitent.naziv }}</strong></td>
-        <td>{{ komitent.kategorija }}</td>
+        <th scope="row" class="text-danger">{{ soba.id }}</th>
+        <td><strong>{{ soba.naziv }}</strong></td>
+        <td class="text-success">{{ soba.cena|number_format(2, '.', ',') }}</td>
         <td style="text-align:right;">
           <div class="btn-group btn-group-sm">
             <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
-            data-id="{{ komitent.id }}" title="Izmena podataka odabranog komitenta">
+            data-id="{{ soba.id }}" title="Izmena podataka odabrane sobe">
             <i class="fas fa-edit"></i></button>
             <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
-            data-id="{{ komitent.id }}" title="Brisanje odabranog komitenta">
+            data-id="{{ soba.id }}" title="Brisanje odabrane sobe">
             <i class="fas fa-trash-alt"></i>
             </button>
           </div>
@@ -132,7 +118,7 @@
 <div class="row mobilni">
   <nav class="col">
     <ul class="pagination pagination-sm">
-      {% for button in komitenti.links.buttons %}
+      {% for button in sobe.links.buttons %}
       <li class="page-item{{ button.current ? ' active' : '' }}">
         <a class="page-link" href="{{ button.url }}">{{ button.page }}</a>
       </li>
@@ -141,9 +127,9 @@
   </nav>
   <p class="col justify-content-end text-right text-info"><strong>
       Prikazani redovi od
-      <em>{{ komitenti.links.row_from }}</em> do
-      <em>{{ komitenti.links.row_to }}</em> od ukupno
-      <em>{{ komitenti.links.total_rows }}</em>
+      <em>{{ sobe.links.row_from }}</em> do
+      <em>{{ sobe.links.row_to }}</em> od ukupno
+      <em>{{ sobe.links.total_rows }}</em>
     </strong>
   </p>
 </div>
@@ -158,9 +144,9 @@
           </button>
         </div>
         <div class="modal-body">
-          <h4>Da li želite trajno da obrišete komitenta?</h4>
+          <h4>Da li želite trajno da obrišete sobu?</h4>
           <p class="text-danger">* Ova akcija je nepovratna!</p>
-          <form id="brisanje-forma" action="{{ path_for('komitenti.brisanje') }}" method="POST">
+          <form id="brisanje-forma" action="{{ path_for('sobe.brisanje') }}" method="POST">
             {{ csrf|raw }}
             <input type="hidden" id="idBrisanje" name="idBrisanje">
             <hr style="margin-top: 30px;">
@@ -193,25 +179,33 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="izmena-forma" action="{{ path_for('komitenti.izmena') }}" method="POST" class="needs-validation" novalidate>
+          <form id="izmena-forma" action="{{ path_for('sobe.izmena') }}" method="POST" class="needs-validation" novalidate>
             {{ csrf|raw }}
             <input type="hidden" id="idIzmena" name="idIzmena">
             <div class="form-group">
-              <label for="nazivModal">Naziv</label>
-              <input type="text" class="form-control{{ errors.nazivModal[0] ? ' is-invalid' : '' }}" name="nazivModal" id="nazivModal" aria-describedby="naziv komitenta" required>
+              <label for="nazivModal">Naziv (tip) sobe</label>
+              <input type="text" class="form-control{{ errors.nazivModal[0] ? ' is-invalid' : '' }}" name="nazivModal" id="nazivModal" aria-describedby="naziv (tip) sobe" required>
               <div class="valid-feedback">Odgovarajući podatak</div>
               <div class="invalid-feedback">
                 {{ errors.naziv[0] ? : 'Obavezno polje' }}
               </div>
             </div>
           <div class="form-group">
-            <label for="kategorijaModal">Kategorija</label>
-            <select class="form-control{{ errors.kategorijaModal[0] ? ' is-invalid' : '' }}" id="kategorijaModal" name="kategorijaModal" required>
-            </select>
-            <div class="valid-feedback">Odgovarajući podatak</div>
-            <div class="invalid-feedback">
-              {{ errors.kategorijaModal[0] ? : 'Obavezno polje' }}
-            </div>
+            <label for="cenaModal">CenaModal</label>
+              <input
+                type="number"
+                class="form-control{{ errors.cenaModal[0] ? ' is-invalid' : '' }}"
+                name="cenaModal"
+                id="cenaModal"
+                min="0"
+                step="0.01"
+                autocomplete="off"
+                required
+              />
+              <div class="valid-feedback">Odgovarajući podatak</div>
+              <div class="invalid-feedback">
+                {{ errors.cenaModal[0] ? : 'Obavezno polje' }}
+              </div>
           </div>
             <hr style="margin-top: 30px;">
             <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
@@ -234,35 +228,30 @@
 {% endblock sadrzaj %} 
 {% block traka %}
   <div class="card border-dark mb-3">
-    <div class="card-header">Dodavanje komitenta</div>
+    <div class="card-header">Dodavanje sobe</div>
     <div class="card-body text-dark mobilni">
-      <form action="{{ path_for('komitenti.dodavanje') }}" method="POST" class="needs-validation" novalidate>
+      <form action="{{ path_for('sobe.dodavanje') }}" method="POST" class="needs-validation" novalidate>
         {{ csrf|raw }}
         <div class="form-group">
-          <label for="naziv">Naziv</label>
-          <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}" name="naziv" id="naziv" aria-describedby="Naziv komitenta" required>
+          <label for="naziv">Naziv (tip) sobe</label>
+          <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}" name="naziv" id="naziv" aria-describedby="Naziv sobe" required>
           <div class="valid-feedback">Odgovarajući podatak</div>
           <div class="invalid-feedback">
             {{ errors.naziv[0] ? : 'Obavezno polje' }}
           </div>
         </div>
         <div class="form-group">
-        <label for="kategorija">Kategorija</label>
-        <select class="custom-select{{ errors.kategorija[0] ? ' is-invalid' : '' }}" id="kategorija" name="kategorija" required>
-          <option value=""></option>
-          {% for kat in kategorije %}
-              <option value="{{ kat }}" {{ old.kat == kat ? ' selected' : '' }}>{{ kat }}</option>
-          {% endfor %}
-        </select>
-        <div class="valid-feedback">Odgovarajući podatak</div>
-        <div class="invalid-feedback">
-          {{ errors.kategorija[0] ? : 'Obavezno polje' }}
+          <label for="cena">Cena</label>
+          <input type="number" class="form-control{{ errors.cena[0] ? ' is-invalid' : '' }}" value="{{ old.cena ? : '' }}" name="cena" id="cena" value="{{ old.cena ? : 0 }}" min="0" step="1" autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">
+            {{ errors.cena[0] ? : 'Obavezno polje' }}
+          </div>
         </div>
-      </div>
          <div class="row justify-content-end text-right">
             <div class="col">
-              <button type="submit" class="btn btn-primary text-right"><i class="fas fa-plus-square" title="Dodavanje komitenta"></i> &emsp;Dodaj</button>
-              <a href="{{ path_for('komitenti') }}" class="btn btn-secondary"><i class="fas fa-ban"></i> &emsp;Otkaži</a>
+              <button type="submit" class="btn btn-primary text-right"><i class="fas fa-plus-square" title="Dodavanje sobe"></i> &emsp;Dodaj</button>
+              <a href="{{ path_for('sobe') }}" class="btn btn-secondary"><i class="fas fa-ban"></i> &emsp;Otkaži</a>
             </div>
         </div>
       </form>
@@ -309,7 +298,6 @@
 
       $(document).on('click', '.otvori-izmenu', function () {
 
-        $('#kategorijaModal').find('option').remove();
         var csrfName = $(".csrf_name").val();
         var csrfValue = $(".csrf_value").val();
         var id = $(this).data("id");
@@ -320,7 +308,7 @@
           "id": id
         };
 
-        var ruta = ["{{ path_for('komitenti.detalj') }}"];
+        var ruta = ["{{ path_for('sobe.detalj') }}"];
 
         $.ajax({
           url: ruta,
@@ -329,19 +317,9 @@
           success: function (data) {
             $(".csrf_name").val(data.cname);
             $(".csrf_value").val(data.cvalue);
-            $("#idIzmena").val(data.komitent.id);
-            $("#nazivModal").val(data.komitent.naziv);
-            
-            $.each(data.kategorije, function (index, lokObjekat) {
-            $("#kategorijaModal").append(
-              '<option value="' +
-              lokObjekat +
-              '">' +
-              lokObjekat +
-              "</option>"
-            );
-          });
-          $("#kategorijaModal").val(data.komitent.kategorija);
+            $("#idIzmena").val(data.soba.id);
+            $("#nazivModal").val(data.soba.naziv);
+            $("#cenaModal").val(data.soba.cena);
           }
         });
 
