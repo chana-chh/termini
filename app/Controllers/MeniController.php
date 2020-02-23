@@ -3,26 +3,21 @@
 namespace App\Controllers;
 
 use App\Models\Meni;
-use App\Classes\Logger;
+use App\Models\StavkaMenija;
 
 class MeniController extends Controller
 {
     public function getMeni($request, $response)
     {
-        // $query = [];
-        // parse_str($request->getUri()->getQuery(), $query);
-        // $page = isset($query['page']) ? (int)$query['page'] : 1;
-
         $model = new Meni();
-        $meni = $model->paginate($this->page());
+        $meniji = $model->paginate($this->page());
 
-        $this->render($response, 'meni.twig', compact('meni'));
+        $this->render($response, 'meni/lista.twig', compact('meniji'));
     }
 
     public function postMeniPretraga($request, $response)
     {
         $_SESSION['DATA_MENI_PRETRAGA'] = $request->getParams();
-
         return $response->withRedirect($this->router->pathFor('meni.pretraga'));
     }
 
@@ -126,15 +121,17 @@ class MeniController extends Controller
 
     public function getMeniDodavanje($request, $response)
     {
-        $this->render($response, 'meni_dodavanje.twig');
+        $modelMeni = new Meni();
+        $model = new StavkaMenija();
+        $stavke = $model->all()[0];
+        $standard = explode(',', $modelMeni->find(1)->stavke);
+        $kategorije = $model->enumOrSetList('kategorija');
+
+        $this->render($response, 'meni/dodavanje.twig', compact('kategorije', 'stavke', 'standard'));
     }
 
     public function postMeniDodavanje($request, $response)
     {
-        // $data = $request->getParams();
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
-
         $data = $this->data();
 
         $validation_rules = [
@@ -144,28 +141,16 @@ class MeniController extends Controller
                 'unique' => 's_meniji.naziv'
             ],
             'cena' => [
-                'required' => true
-            ],
-            'korisnik_id' => [
                 'required' => true,
-            ]
+                'min' => 0,
+            ],
+            'odabrane_stavke' => [
+                'required' => true,
+            ],
         ];
 
-        $data['hladno_predjelo'] = rtrim($data['hladno_predjelo']);
-        $data['sirevi'] = rtrim($data['sirevi']);
-        $data['corba'] = rtrim($data['corba']);
-        $data['glavno_jelo'] = rtrim($data['glavno_jelo']);
-        $data['meso'] = rtrim($data['meso']);
-        $data['hleb'] = rtrim($data['hleb']);
-        $data['karta_pica'] = rtrim($data['karta_pica']);
-
-        $data['hladno_predjelo'] = rtrim($data['hladno_predjelo'], ';');
-        $data['sirevi'] = rtrim($data['sirevi'], ';');
-        $data['corba'] = rtrim($data['corba'], ';');
-        $data['glavno_jelo'] = rtrim($data['glavno_jelo'], ';');
-        $data['meso'] = rtrim($data['meso'], ';');
-        $data['hleb'] = rtrim($data['hleb'], ';');
-        $data['karta_pica'] = rtrim($data['karta_pica'], ';');
+        $data['stavke'] = implode(',', $data['odabrane_stavke']);
+        unset($data['odabrane_stavke']);
 
         $data['korisnik_id'] = $this->auth->user()->id;
 
@@ -176,11 +161,10 @@ class MeniController extends Controller
             return $response->withRedirect($this->router->pathFor('meni'));
         } else {
             $this->flash->addMessage('success', 'Nov meni je uspešno dodat.');
-            $modelMenija = new Meni();
-            $modelMenija->insert($data);
-            $id_menija = $modelMenija->lastId();
-            $meni = $modelMenija->find($id_menija);
-            $this->log(Logger::DODAVANJE, $meni, 'naziv');
+            $model = new Meni();
+            $model->insert($data);
+            $meni = $model->find($model->lastId());
+            $this->log($this::DODAVANJE, $meni, 'naziv');
             return $response->withRedirect($this->router->pathFor('meni'));
         }
     }

@@ -29,8 +29,8 @@ $app->group('', function () {
     $this->get('/admin/korisnik-lista', '\App\Controllers\KorisnikController:getKorisnikLista')->setName('admin.korisnik.lista');
     $this->post('/admin/korisnik-brisanje', '\App\Controllers\KorisnikController:postKorisnikBrisanje')->setName('admin.korisnik.brisanje');
     $this->post('/admin/korisnik-dodavanje', '\App\Controllers\KorisnikController:postKorisnikDodavanje')->setName('admin.korisnik.dodavanje');
-    $this->get('/admin/korisnik-izmena[/{id}]', '\App\Controllers\KorisnikController:getKorisnikIzmena')->setName('admin.korisnik.izmena');
-    $this->post('/admin/korisnik-izmena', '\App\Controllers\KorisnikController:postKorisnikIzmena')->setName('admin.korisnik.izmena');
+    $this->get('/admin/korisnik-izmena/{id}', '\App\Controllers\KorisnikController:getKorisnikIzmena')->setName('admin.korisnik.izmena.get');
+    $this->post('/admin/korisnik-izmena', '\App\Controllers\KorisnikController:postKorisnikIzmena')->setName('admin.korisnik.izmena.post');
     //Sale
     $this->get('/admin/sale', '\App\Controllers\SalaController:getSale')->setName('sale');
     $this->post('/admin/sale/dodavanje', '\App\Controllers\SalaController:postSalaDodavanje')->setName('sale.dodavanje');
@@ -69,8 +69,8 @@ $app->group('', function () {
     $this->post('/admin/stavka-menija/pretraga', '\App\Controllers\StavkaMenijaController:postStavkaMenijaPretraga');
     $this->post('/admin/stavka-menija/dodavanje', '\App\Controllers\StavkaMenijaController:postStavkaMenijaDodavanje')->setName('stavke_menija.dodavanje');
     $this->post('/admin/stavka-menija/brisanje', '\App\Controllers\StavkaMenijaController:postStavkaMenijaBrisanje')->setName('stavke_menija.brisanje');
-    $this->post('/admin/stavka-menija/detalj', '\App\Controllers\StavkaMenijaController:postStavkaMenijaDetalj')->setName('stavke_menija.detalj');
-    $this->post('/admin/stavka-menija/izmena', '\App\Controllers\StavkaMenijaController:postStavkaMenijaIzmena')->setName('stavke_menija.izmena');
+    $this->get('/admin/stavka-menija/izmena/{id}', '\App\Controllers\StavkaMenijaController:getStavkaMenijaIzmena')->setName('stavke_menija.izmena.get');
+    $this->post('/admin/stavka-menija/izmena', '\App\Controllers\StavkaMenijaController:postStavkaMenijaIzmena')->setName('stavke_menija.izmena.post');
 
 })->add(new UserLevelMiddleware($container, [0]));
 

@@ -135,7 +135,7 @@ class KorisnikController extends Controller
 
         if ($this->validator->hasErrors()) {
             $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka o korisniku.');
-            return $response->withRedirect($this->router->pathFor('admin.korisnik.izmena', ['id' => $id]));
+            return $response->withRedirect($this->router->pathFor('admin.korisnik.izmena.get', ['id' => $id]));
         } else {
             $this->flash->addMessage('success', 'Podaci o korisniku su uspešno izmenjeni.');
             $modelKorisnik = new Korisnik();

@@ -18,11 +18,15 @@ class Meni extends Model
         return $this->belongsTo('App\Models\Korisnik', 'korisnik_id');
     }
 
-    public function stavke()
+    public function stavke($kategorija = '')
     {
         $in = "({$this->stavke})";
-        $sql = "SELECT * FROM stavke_menija WHERE id IN {$in}";
-        $rez = $this->fetch($sql,null, 'App\Models\StavkaMenija');
+        if ($kategorija === '') {
+            $sql = "SELECT * FROM stavke_menija WHERE id IN {$in}";
+        } else {
+            $sql = "SELECT * FROM stavke_menija WHERE id IN {$in} AND kategorija = '{$kategorija}'";
+        }
+        $rez = $this->fetch($sql, null, 'App\Models\StavkaMenija');
         return $rez;
     }
 }
