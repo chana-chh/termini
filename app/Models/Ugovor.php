@@ -28,6 +28,11 @@ class Ugovor extends Model
         return $this->belongsTo('App\Models\Meni', 'meni_id');
     }
 
+    public function sobe()
+    {
+        return $this->belongsToMany('App\Models\Soba', 'ugovor_soba', 'ugovor_id', 'soba_id');
+    }
+
     public function kapara()
     {
         $sql = "SELECT iznos FROM uplate WHERE ugovor_id = {$this->id} AND opis = 'kapara';";
@@ -141,5 +146,15 @@ class Ugovor extends Model
                 ', posebni_zahtevi:' . $this->posebni_zahtevi .
                 ', posebni_zahtevi_iznos:' . $this->posebni_zahtevi_iznos .
                 ', napomena:' . $this->napomena;
+    }
+
+    public function sobeSuma()
+    {
+        $sql = "SELECT ugovor_soba.*,sobe.cena,sum(ugovor_soba.komada * (sobe.cena - ugovor_soba.popust)) AS rezultat
+                FROM ugovor_soba JOIN sobe
+                on ugovor_soba.soba_id = sobe.id
+                WHERE ugovor_soba.ugovor_id = {$this->id}
+                GROUP BY ugovor_soba.ugovor_id;";
+        return (float) $this->fetch($sql)[0]->rezultat;
     }
 }

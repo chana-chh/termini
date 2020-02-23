@@ -4,24 +4,17 @@ namespace App\Controllers;
 
 use App\Models\Komitent;
 
-class Stavka
-{
-    public $vrednost;
-    public $naziv;
-}
-
 class KomitentController extends Controller
 {
     
-
-    
-
     public function getKomitenti($request, $response)
     {
         $model = new Komitent();
         $komitenti = $model->paginate($this->page(), 'page', "SELECT * FROM komintenti ORDER BY kategorija;");
 
-        $this->render($response, 'komitenti/lista.twig', compact('komitenti'));
+        $kategorije = $model->enumOrSetList('kategorija');
+
+        $this->render($response, 'komitenti/lista.twig', compact('komitenti', 'kategorije'));
     }
 
     public function postKomitentiPretraga($request, $response)
@@ -137,22 +130,9 @@ class KomitentController extends Controller
         $cName = $this->csrf->getTokenName();
         $cValue = $this->csrf->getTokenValue();
 
-        $enum = array("Muzika", "Fotograf", "Dekoracija", "Torta", "Kokteli", "Slatki sto", "Voćni sto", "Trubači", "Animator");
-
-        $duzina = count($enum);
-        $kategorije = array();
-
-        for ($i = 0; $i < $duzina; $i++) {
-            $objekat = new Stavka();
-            $objekat->vrednost = $enum[$i];
-            $objekat->naziv = $enum[$i];
-
-            array_push($kategorije, $objekat);
-        }
-
         $id = $data['id'];
         $modelKomitent = new Komitent();
-        // $kategorije = $modelKomitent->enumOrSetList('kategorija');
+        $kategorije = $modelKomitent->enumOrSetList('kategorija');
         $komitent = $modelKomitent->find($id);
         $ar = ["cname" => $cName, "cvalue"=>$cValue, "komitent"=>$komitent, "kategorije"=>$kategorije];
 

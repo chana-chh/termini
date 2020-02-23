@@ -45,6 +45,14 @@ $app->group('', function () {
     $this->post('/admin/komitent/brisanje', '\App\Controllers\KomitentController:postKomitentiBrisanje')->setName('komitenti.brisanje');
     $this->post('/admin/komitent/detalj', '\App\Controllers\KomitentController:postKomitentiDetalj')->setName('komitenti.detalj');
     $this->post('/admin/komitent/izmena', '\App\Controllers\KomitentController:postKomitentiIzmena')->setName('komitenti.izmena');
+    //Sobe
+    $this->get('/admin/sobe', '\App\Controllers\SobaController:getSobe')->setName('sobe');
+    $this->get('/admin/sobe/pretraga', '\App\Controllers\SobaController:getSobePretraga')->setName('sobe.pretraga');
+    $this->post('/admin/sobe/pretraga', '\App\Controllers\SobaController:postSobePretraga');
+    $this->post('/admin/sobe/dodavanje', '\App\Controllers\SobaController:postSobeDodavanje')->setName('sobe.dodavanje');
+    $this->post('/admin/sobe/brisanje', '\App\Controllers\SobaController:postSobeBrisanje')->setName('sobe.brisanje');
+    $this->post('/admin/sobe/detalj', '\App\Controllers\SobaController:postSobeDetalj')->setName('sobe.detalj');
+    $this->post('/admin/sobe/izmena', '\App\Controllers\SobaController:postSobeIzmena')->setName('sobe.izmena');
     //Tipovi događaja
     $this->get('/admin/tip', '\App\Controllers\TipDogadjajaController:getTipove')->setName('tip_dogadjaja');
     $this->post('/admin/tip/dodavanje', '\App\Controllers\TipDogadjajaController:postTipDodavanje')->setName('tip_dogadjaja.dodavanje');
@@ -100,6 +108,7 @@ $app->group('', function () {
     $this->post('/termin/ugovori/brisanje', '\App\Controllers\UgovorController:postUgovorBrisanje')->setName('termin.ugovor.brisanje');
     $this->get('/termin/ugovori/detalj/{id}', '\App\Controllers\UgovorController:getUgovorDetalj')->setName('termin.ugovor.detalj.get');
     $this->get('/termin/ugovori/uplate/{id}', '\App\Controllers\UgovorController:getUgovorUplateDetalj')->setName('ugovor.uplate.lista');
+    $this->get('/termin/ugovori/sobe/{id}', '\App\Controllers\UgovorController:getUgovorSobe')->setName('ugovor.sobe.lista');
     // Stampa ugovora
     $this->get('/ugovori/stampa/fizicka/single/{id}', '\App\Controllers\StampaController:getUgovorStampaFizickaSingle')->setName('ugovori.stampa.fizicka.single');
     $this->get('/ugovori/stampa/pravna/single/{id}', '\App\Controllers\StampaController:getUgovorStampaPravnaSingle')->setName('ugovori.stampa.pravna.single');

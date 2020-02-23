@@ -337,7 +337,7 @@ abstract class Model
         $o = $order === null ? '' : ' ORDER BY ' . $order;
         $pk = $this->getPrimaryKey();
         $params = [":{$pk}" => $this->$pk];
-        $sql = "SELECT {$tbl}.* FROM {$tbl} JOIN {$pivot_table} ON {$tbl}.{$m->getPrimaryKey()} = {$pivot_table}.{$pt_foreign_table_fk} WHERE {$pivot_table}.{$pt_this_table_fk} = :{$pk}{$o};";
+        $sql = "SELECT {$tbl}.*, {$pivot_table}.*  FROM {$tbl} JOIN {$pivot_table} ON {$tbl}.{$m->getPrimaryKey()} = {$pivot_table}.{$pt_foreign_table_fk} WHERE {$pivot_table}.{$pt_this_table_fk} = :{$pk}{$o};";
         $result = $this->fetch($sql, $params, $model_class);
         return $result;
     }
