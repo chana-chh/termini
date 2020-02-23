@@ -13,23 +13,8 @@
 	Proveriti sva brisanja (negde, mislim da je meni, se ne proverava da li je za nesto vezano)
 !!!
 
-- Zakljucavanje/otkljucavanje logovanje!!!
-- Srediti logovanje u svim kontrolerima.
-
-
-## app
-
-### Models
-- Kada se sredi Logger.php ukloniti __toString() iz modela
-
-### Views
-- organizovati sve poglede po folderima
-
 
 # TODO
-
-- Dodati matematiku za cenu menija
-
 
 - Dugme nazad ukloniti (vraca na dodavanje, izmenu) i dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
 - Filter po salama
@@ -59,7 +44,7 @@
 2. Razmisliti o ulogama (nivoima) i dodati dashboard za administratora
 3. Izbeci modale za izmenu i dodavanje. (veliki posao - automatizovati)
 4. Na pocetnoj strani za prijavljene korisnike (zakazivace) dodati termine za danas, isticanje ponuda za neki dan, podsetnike ...
-5. Na pocetnoj strani za goste postaviti formu upita za slobodan termin
+5. Na pocetnoj strani za goste postaviti formu upita za slobodan termin (honeypot)
 
 
 # Hotel Kragujevac

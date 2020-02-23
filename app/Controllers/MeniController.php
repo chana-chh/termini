@@ -27,96 +27,53 @@ class MeniController extends Controller
         array_shift($data);
         array_shift($data);
 
-        if (empty($data['upit'])) {
-            $this->getMeni($request, $response);
+        $cena = (int) $data['cena'];
+
+        if (empty($data['naziv']) &&
+            empty($data['napomena']) &&
+            $cena === 0) {
+            return $response->withRedirect($this->router->pathFor('meni'));
         }
 
-        $data['upit'] = str_replace('%', '', $data['upit']);
+        $data['naziv'] = str_replace('%', '', $data['naziv']);
+        $data['napomena'] = str_replace('%', '', $data['napomena']);
 
-        $upit = '%' . filter_var($data['upit'], FILTER_SANITIZE_STRING) . '%';
-
-        $query = [];
-        parse_str($request->getUri()->getQuery(), $query);
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
+        $naziv = '%' . filter_var($data['naziv'], FILTER_SANITIZE_STRING) . '%';
+        $napomena = '%' . filter_var($data['napomena'], FILTER_SANITIZE_STRING) . '%';
 
         $where = " WHERE ";
         $params = [];
 
-        if (!empty($data['upit'])) {
+        if (!empty($data['naziv'])) {
+            if ($where !== " WHERE ") {
+                $where .= " AND ";
+            }
             $where .= "naziv LIKE :naziv";
-            $params[':naziv'] = $upit;
+            $params[':naziv'] = $naziv;
         }
 
-        if (!empty($data['upit'])) {
+        if (!empty($data['napomena'])) {
             if ($where !== " WHERE ") {
-                $where .= " OR ";
-            }
-            $where .= "hladno_predjelo LIKE :hladno_predjelo";
-            $params[':hladno_predjelo'] = $upit;
-        }
-
-        if (!empty($data['upit'])) {
-            if ($where !== " WHERE ") {
-                $where .= " OR ";
-            }
-            $where .= "sirevi LIKE :sirevi";
-            $params[':sirevi'] = $upit;
-        }
-
-        if (!empty($data['upit'])) {
-            if ($where !== " WHERE ") {
-                $where .= " OR ";
-            }
-            $where .= "corba LIKE :corba";
-            $params[':corba'] = $upit;
-        }
-
-        if (!empty($data['upit'])) {
-            if ($where !== " WHERE ") {
-                $where .= " OR ";
-            }
-            $where .= "glavno_jelo LIKE :glavno_jelo";
-            $params[':glavno_jelo'] = $upit;
-        }
-
-        if (!empty($data['upit'])) {
-            if ($where !== " WHERE ") {
-                $where .= " OR ";
-            }
-            $where .= "meso LIKE :meso";
-            $params[':meso'] = $upit;
-        }
-
-        if (!empty($data['upit'])) {
-            if ($where !== " WHERE ") {
-                $where .= " OR ";
-            }
-            $where .= "hleb LIKE :hleb";
-            $params[':hleb'] = $upit;
-        }
-
-        if (!empty($data['upit'])) {
-            if ($where !== " WHERE ") {
-                $where .= " OR ";
-            }
-            $where .= "karta_pica LIKE :karta_pica";
-            $params[':karta_pica'] = $upit;
-        }
-
-        if (!empty($data['upit'])) {
-            if ($where !== " WHERE ") {
-                $where .= " OR ";
+                $where .= " AND ";
             }
             $where .= "napomena LIKE :napomena";
-            $params[':napomena'] = $upit;
+            $params[':napomena'] = $napomena;
+        }
+
+        if ($cena !== 0) {
+            if ($where !== " WHERE ") {
+                $where .= " AND ";
+            }
+            $where .= "cena = :cena";
+            $params[':cena'] = $cena;
         }
 
         $where = $where === " WHERE " ? "" : $where;
         $model = new Meni();
         $sql = "SELECT * FROM {$model->getTable()}{$where} ORDER BY id;";
-        $meni = $model->paginate($page, 'page', $sql, $params);
+        $meniji = $model->paginate($this->page(), 'page', $sql, $params);
 
-        $this->render($response, 'meni.twig', compact('meni', 'data'));
+        $this->render($response, 'meni/lista.twig', compact('meniji', 'data'));
     }
 
     public function getMeniDodavanje($request, $response)
@@ -208,7 +165,6 @@ class MeniController extends Controller
         $kategorije = $model->enumOrSetList('kategorija');
 
         $this->render($response, 'meni/izmena.twig', compact('meni', 'kategorije', 'stavke', 'odabrano'));
-
     }
 
     public function postMeniIzmena($request, $response)

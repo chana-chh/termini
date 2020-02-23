@@ -30,12 +30,12 @@
   <div class="col justify-content-end text-right">
     <div class="btn-group btn-group mt-3">
       <a href="{{ path_for('meni.dodavanje.get') }}" class="btn-sm btn btn-primary">
-        <i class="fas fa-plus-square"></i>&emsp;Dodaj
+        <i class="fas fa-plus-square"></i> Dodaj meni
       </a>
       <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
         <i class="fas fa-filter"></i> Filter</button>
       <a href="{{ path_for('meni') }}" class="btn btn-secondary btn-sm pretraga_div"><i
-          class="fas fa-drumstick-bite"></i>&emsp;Svi meniji</a>
+          class="fas fa-drumstick-bite"></i> Svi meniji</a>
     </div>
   </div>
 </div>
@@ -55,12 +55,12 @@
   <div class="col justify-content-end text-right">
     <div class="btn-group btn-group">
       <a href="{{ path_for('meni.dodavanje.get') }}" class="btn-sm btn btn-primary">
-        <i class="fas fa-plus-square"></i>&emsp;Dodaj
+        <i class="fas fa-plus-square"></i> Dodaj meni
       </a>
       <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
         <i class="fas fa-filter"></i> Filter</button>
       <a href="{{ path_for('meni') }}" class="btn btn-secondary btn-sm pretraga_div"><i
-          class="fas fa-drumstick-bite"></i>&emsp;Svi meniji</a>
+          class="fas fa-drumstick-bite"></i> Svi meniji</a>
     </div>
   </div>
 </div>
@@ -72,17 +72,26 @@
       {{ csrf|raw }}
       <div class="form-row">
         <div class="form-group col-md-2">
-          <label for="upit">Ključna reč za pretragu: </label>
-          <input type="text" name="upit" id="upit" class="form-control" value="{{ data.upit }}" autocomplete="off"
-            placeholder="Opis" required>
+          <label for="naziv">Naziv</label>
+          <input type="text" name="naziv" id="naziv" class="form-control" value="{{ data.naziv }}" autocomplete="off">
         </div>
-        <div class="col-md-10 text-right mt-4">
+        <div class="form-group col-md-2">
+          <label for="cena">Cena</label>
+          <input type="number" name="cena" id="cena" class="form-control" value="{{ data.cena ? : 0 }}" min="0" step="0.01"
+            autocomplete="off">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="napomena">Napomena</label>
+          <input type="text" name="napomena" id="napomena" class="form-control" value="{{ data.napomena }}"
+            autocomplete="off">
+        </div>
+        <div class="col-md-6 text-right mt-4">
           <div class="btn-group">
             <button type="submit" class="btn btn-success btn-sm">
               <i class="fas fa-filter"></i> Filtriraj
             </button>
-            <a href="{{ path_for('meni') }}" class="btn btn-secondary btn-sm"><i
-                class="fas fa-drumstick-bite"></i>&emsp;Svi meniji</a>
+            <a href="{{ path_for('meni') }}" class="btn btn-secondary btn-sm"><i class="fas fa-drumstick-bite"></i> Svi
+              meniji</a>
           </div>
         </div>
       </div>
@@ -104,7 +113,7 @@
       {% for me in meniji.data %}
       <tr>
         <th class="text-danger">{{ me.id }}</th>
-        <td><em>{{ me.naziv }}</em></td>
+        <td>{{ me.naziv }}</td>
         <td class="text-right">{{ me.cena|number_format()}}</td>
         <td>
           {{ me.napomena|nl2br }}
@@ -129,7 +138,7 @@
 <div class="row mobilni">
   <nav class="col">
     <ul class="pagination pagination-sm">
-      {% for button in meni.links.buttons %}
+      {% for button in meniji.links.buttons %}
       <li class="page-item{{ button.current ? ' active' : '' }}">
         <a class="page-link" href="{{ button.url }}">{{ button.page }}</a>
       </li>
@@ -138,9 +147,9 @@
   </nav>
   <p class="col justify-content-end text-right text-info"><strong>
       Prikazani redovi od
-      <em>{{ meni.links.row_from }}</em> do
-      <em>{{ meni.links.row_to }}</em> od ukupno
-      <em>{{ meni.links.total_rows }}</em>
+      <em>{{ meniji.links.row_from }}</em> do
+      <em>{{ meniji.links.row_to }}</em> od ukupno
+      <em>{{ meniji.links.total_rows }}</em>
     </strong>
   </p>
 </div>
