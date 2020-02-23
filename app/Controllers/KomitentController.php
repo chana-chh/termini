@@ -4,8 +4,18 @@ namespace App\Controllers;
 
 use App\Models\Komitent;
 
+class Stavka
+{
+    public $vrednost;
+    public $naziv;
+}
+
 class KomitentController extends Controller
 {
+    
+
+    
+
     public function getKomitenti($request, $response)
     {
         $model = new Komitent();
@@ -127,44 +137,18 @@ class KomitentController extends Controller
         $cName = $this->csrf->getTokenName();
         $cValue = $this->csrf->getTokenValue();
 
-        //Zli enum
-        $kategorijaA = (object)[];
-        $kategorijaA->vrednost = "Muzika";
-        $kategorijaA->naziv = "Muzika";
+        $enum = array("Muzika", "Fotograf", "Dekoracija", "Torta", "Kokteli", "Slatki sto", "Voćni sto", "Trubači", "Animator");
 
-        $kategorijaB = (object)[];
-        $kategorijaB->vrednost = "Fotograf";
-        $kategorijaB->naziv = "Fotograf";
+        $duzina = count($enum);
+        $kategorije = array();
 
-        $kategorijaC = (object)[];
-        $kategorijaC->vrednost = "Torta";
-        $kategorijaC->naziv = "Torta";
+        for ($i = 0; $i < $duzina; $i++) {
+            $objekat = new Stavka();
+            $objekat->vrednost = $enum[$i];
+            $objekat->naziv = $enum[$i];
 
-        $kategorijaD = (object)[];
-        $kategorijaD->vrednost = "Dekoracija";
-        $kategorijaD->naziv = "Dekoracija";
-
-        $kategorijaE = (object)[];
-        $kategorijaE->vrednost = "Kokteli";
-        $kategorijaE->naziv = "Kokteli";
-
-        $kategorijaF = (object)[];
-        $kategorijaF->vrednost = "Slatki sto";
-        $kategorijaF->naziv = "Slatki sto";
-
-        $kategorijaG = (object)[];
-        $kategorijaG->vrednost = "Voćni sto";
-        $kategorijaG->naziv = "Voćni sto";
-
-        $kategorijaH = (object)[];
-        $kategorijaH->vrednost = "Trubači";
-        $kategorijaH->naziv = "Trubači";
-
-        $kategorijaI = (object)[];
-        $kategorijaI->vrednost = "Animator";
-        $kategorijaI->naziv = "Animator";
-
-        $kategorije = [$kategorijaA, $kategorijaB, $kategorijaC, $kategorijaD, $kategorijaE, $kategorijaF, $kategorijaG, $kategorijaH, $kategorijaI];
+            array_push($kategorije, $objekat);
+        }
 
         $id = $data['id'];
         $modelKomitent = new Komitent();
