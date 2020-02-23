@@ -138,7 +138,7 @@ class MeniController extends Controller
             'naziv' => [
                 'required' => true,
                 'maxlen' => 50,
-                'unique' => 's_meniji.naziv'
+                'unique' => 'meniji.naziv'
             ],
             'cena' => [
                 'required' => true,
@@ -171,14 +171,14 @@ class MeniController extends Controller
 
     public function postMeniBrisanje($request, $response)
     {
-        $id = (int)$request->getParam('idBrisanje');
+        $id = $this->dataId('idBrisanje');
         $modelMenija = new Meni();
         $meni = $modelMenija->find($id);
         $success = $modelMenija->deleteOne($id);
 
         if ($success) {
             $this->flash->addMessage('success', "Meni je uspešno obrisan.");
-            $this->log(Logger::BRISANJE, $meni, 'naziv', $meni);
+            $this->log($this::BRISANJE, $meni, 'naziv', $meni);
             return $response->withRedirect($this->router->pathFor('meni'));
         } else {
             $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja menija.");
@@ -188,67 +188,74 @@ class MeniController extends Controller
 
     public function getMeniDetalj($request, $response, $args)
     {
-        $id = (int)$args['id'];
+        $id = (int) $args['id'];
         $modelMeni = new Meni();
         $meni = $modelMeni->find($id);
+        $modelStavke = new StavkaMenija();
+        $kategorije = $modelStavke->enumOrSetList('kategorija');
 
-        $this->render($response, 'meni_pregled.twig', compact('meni'));
+        $this->render($response, 'meni/detalj.twig', compact('meni', 'kategorije'));
     }
 
     public function getMeniIzmena($request, $response, $args)
     {
-        $id = (int)$args['id'];
+        $id = (int) $args['id'];
         $modelMeni = new Meni();
         $meni = $modelMeni->find($id);
+        $model = new StavkaMenija();
+        $stavke = $model->all()[0];
+        $odabrano = explode(',', $meni->stavke);
+        $kategorije = $model->enumOrSetList('kategorija');
 
-        $this->render($response, 'meni_izmena.twig', compact('meni'));
+        $this->render($response, 'meni/izmena.twig', compact('meni', 'kategorije', 'stavke', 'odabrano'));
+
     }
 
     public function postMeniIzmena($request, $response)
     {
-        // $data = $request->getParams();
-        $data = $this->data();
-        $id = $data['id'];
-        unset($data['id']);
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
+        $data = $this->data('id');
+        $id = $this->dataId();
 
         $validation_rules = [
             'naziv' => [
                 'required' => true,
                 'maxlen' => 50,
-                'unique' => 's_meniji.naziv#id:' . $id,
+                'unique' => 'meniji.naziv#id:'.$id,
             ],
             'cena' => [
-                'required' => true
-            ]
+                'required' => true,
+                'min' => 0,
+            ],
+            'odabrane_stavke' => [
+                'required' => true,
+            ],
         ];
+
+        $data['stavke'] = implode(',', $data['odabrane_stavke']);
+        unset($data['odabrane_stavke']);
 
         $this->validator->validate($data, $validation_rules);
 
         if ($this->validator->hasErrors()) {
-            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka menija.');
-            return $response->withRedirect($this->router->pathFor('meni.izmena', ['id' => $id]));
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene menija.');
+            return $response->withRedirect($this->router->pathFor('meni.izmena.get', ['id' => $id]));
         } else {
-            $this->flash->addMessage('success', 'Podaci menija su uspešno izmenjeni.');
+            $this->flash->addMessage('success', 'Meni je uspešno izmenjen.');
             $model = new Meni();
             $stari = $model->find($id);
             $model->update($data, $id);
             $meni = $model->find($id);
-            $this->log(Logger::IZMENA, $meni, 'naziv', $stari);
+            $this->log($this::IZMENA, $meni, 'naziv', $stari);
             return $response->withRedirect($this->router->pathFor('meni'));
         }
     }
 
     public function ajaxMeni($request, $response)
     {
-        // $data = $request->getParams();
         $data = $this->data();
         $naziv = $data['nazivMenija'];
         $cena = $data['cenaMenija'];
         $napomena = $data['napomenaMenija'];
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
         unset($data['nazivMenija']);
         unset($data['cenaMenija']);
         unset($data['napomenaMenija']);
@@ -260,7 +267,8 @@ class MeniController extends Controller
                 'unique' => 's_meniji.naziv'
             ],
             'cena' => [
-                'required' => true
+                'required' => true,
+                'min' => 0,
             ],
         ];
 

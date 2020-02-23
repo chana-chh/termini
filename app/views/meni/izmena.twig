@@ -24,15 +24,15 @@
 <div class="row mt-md-2">
   <div class="col d-none d-sm-flex">
     <h1>
-      <i class="fas fa-drumstick-bite text-secondary"></i> Dodavanje menija
+      <i class="fas fa-drumstick-bite text-secondary"></i> Izmena menija
     </h1>
   </div>
   <div class="col d-sm-none">
     <h4>
-      <i class="fas fa-drumstick-bite text-secondary"></i> Dodavanje menija
+      <i class="fas fa-drumstick-bite text-secondary"></i> Izmena menija
     </h4>
   </div>
-  <div class="col justify-content-end mt-2 text-right">
+  <div class="col mt-2 text-right">
     <div class="btn-group btn-group">
       <a href="{{ path_for('meni') }}" class="btn btn-secondary btn-sm" title="Povratak na tabelarni prikaz menija">
         <i class="fas fa-drumstick-bite"></i> Svi meniji
@@ -40,14 +40,15 @@
     </div>
   </div>
 </div>
-<hr />
-<form action="{{ path_for('meni.dodavanje.post') }}" method="POST" class="needs-validation" novalidate>
+<hr>
+<form action="{{ path_for('meni.izmena.post') }}" method="POST" class="needs-validation" novalidate>
   {{ csrf | raw }}
   <div class="form-row">
+    <input type="hidden" name="id" value="{{ meni.id }}">
     <div class="form-group col-md-3">
       <label for="naziv">Naziv</label>
-      <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}"
-        name="naziv" id="naziv" aria-describedby="Naziv sale" autocomplete="off" required>
+      <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}"
+        value="{{ old.naziv ? : meni.naziv }}" name="naziv" id="naziv" autocomplete="off" required>
       <div class="valid-feedback">Odgovarajući podatak</div>
       <div class="invalid-feedback">
         {{ errors.naziv[0] ? : 'Obavezno polje' }}
@@ -57,7 +58,7 @@
       <label for="cena">Cena</label>
       <div class="input-group">
         <input type="number" class="form-control{{ errors.cena[0] ? ' is-invalid' : '' }}" name="cena" id="cena"
-          value="{{ old.cena ? : 0 }}" min="0" step="0.01" autocomplete="off" required>
+          value="{{ old.cena ? : meni.cena }}" min="0" step="0.01" autocomplete="off" required>
         <div class="input-group-append">
           <button class="btn btn-success" type="button" id="izracunaj-cenu">Saberi stavke</button>
         </div>
@@ -69,7 +70,8 @@
     </div>
     <div class="form-group col-md-6">
       <label for="napomena">Napomena</label>
-      <textarea class="form-control" name="napomena" id="napomena" rows="3">{{ old.napomena ? : meni.napomena }}</textarea>
+      <textarea class="form-control" name="napomena" id="napomena"
+        rows="3">{{ old.napomena ? : meni.napomena }}</textarea>
     </div>
   </div>
   <hr>
@@ -82,7 +84,7 @@
         <li>
           <div class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input" id="cc{{stavka.id}}" value="{{ stavka.id }}"
-              data-cena="{{ stavka.cena }}" name="odabrane_stavke[]" {{ stavka.id in standard ? ' checked' : '' }}>
+              data-cena="{{ stavka.cena }}" name="odabrane_stavke[]" {{ stavka.id in odabrano ? ' checked' : '' }}>
             <label class="custom-control-label" for="cc{{stavka.id}}">
               <span class="text-uppercase">{{ stavka.naziv }}</span>
               <small><em class="text-danger">({{ stavka.cena|number_format() }})</em></small>
@@ -96,8 +98,8 @@
   </div>
   <div class="form-row">
     <div class="col text-right">
-      <button type="submit" class="btn btn-primary" title="Dodaj novi meni">
-        <i class="fas fa-plus-square"></i> Dodaj
+      <button type="submit" class="btn btn-primary" title="Snimi izmenjen meni">
+        <i class="fas fa-save"></i> Snimi
       </button>
       <a href="{{ path_for('meni') }}" class="btn btn-secondary"><i class="fas fa-ban"></i> Otkaži</a>
     </div>

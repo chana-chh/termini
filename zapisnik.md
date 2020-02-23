@@ -11,7 +11,6 @@
 
 	Treba napraviti listu termina (da ne bude samo kalendar).
 	Proveriti sva brisanja (negde, mislim da je meni, se ne proverava da li je za nesto vezano)
-	Super admin ne vidi sebe u listi korisnika (id=0)
 !!!
 
 - Zakljucavanje/otkljucavanje logovanje!!!
@@ -28,6 +27,9 @@
 
 
 # TODO
+
+- Dodati matematiku za cenu menija
+
 
 - Dugme nazad ukloniti (vraca na dodavanje, izmenu) i dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
 - Filter po salama
