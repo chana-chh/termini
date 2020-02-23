@@ -55,6 +55,15 @@ $app->group('', function () {
     $this->get('/admin/logovi', '\App\Controllers\LogController:getLog')->setName('logovi');
     $this->get('/admin/logovi/pretraga', '\App\Controllers\LogController:getLogPretraga')->setName('logovi.pretraga');
     $this->post('/admin/logovi/pretraga', '\App\Controllers\LogController:postLogPretraga');
+    // Stavke menija
+    $this->get('/admin/stavka-menija', '\App\Controllers\StavkaMenijaController:getStavkaMenija')->setName('stavke_menija');
+    $this->get('/admin/stavka-menija/pretraga', '\App\Controllers\StavkaMenijaController:getStavkaMenijaPretraga')->setName('stavke_menija.pretraga');
+    $this->post('/admin/stavka-menija/pretraga', '\App\Controllers\StavkaMenijaController:postStavkaMenijaPretraga');
+    $this->post('/admin/stavka-menija/dodavanje', '\App\Controllers\StavkaMenijaController:postStavkaMenijaDodavanje')->setName('stavke_menija.dodavanje');
+    $this->post('/admin/stavka-menija/brisanje', '\App\Controllers\StavkaMenijaController:postStavkaMenijaBrisanje')->setName('stavke_menija.brisanje');
+    $this->post('/admin/stavka-menija/detalj', '\App\Controllers\StavkaMenijaController:postStavkaMenijaDetalj')->setName('stavke_menija.detalj');
+    $this->post('/admin/stavka-menija/izmena', '\App\Controllers\StavkaMenijaController:postStavkaMenijaIzmena')->setName('stavke_menija.izmena');
+
 })->add(new UserLevelMiddleware($container, [0]));
 
 // VLASNIK

@@ -18,17 +18,11 @@ class Meni extends Model
         return $this->belongsTo('App\Models\Korisnik', 'korisnik_id');
     }
 
-    public function __toString()
+    public function stavke()
     {
-        return 'Podaci iz modela: naziv:' . $this->naziv .
-        		', hladno_predjelo:' . $this->hladno_predjelo .
-        		', sirevi:' . $this->sirevi .
-        		', corba:' . $this->corba .
-        		', glavno_jelo:' . $this->glavno_jelo .
-        		', meso:' . $this->meso .
-        		', hleb:' . $this->hleb .
-        		', karta_pica:' . $this->karta_pica .
-        		', cena:' . $this->cena .
-        		', napomena:' . $this->napomena;
+        $in = "({$this->stavke})";
+        $sql = "SELECT * FROM stavke_menija WHERE id IN {$in}";
+        $rez = $this->fetch($sql,null, 'App\Models\StavkaMenija');
+        return $rez;
     }
 }

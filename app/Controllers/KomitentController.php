@@ -152,6 +152,7 @@ class KomitentController extends Controller
 
         $id = $data['id'];
         $modelKomitent = new Komitent();
+        // $kategorije = $modelKomitent->enumOrSetList('kategorija');
         $komitent = $modelKomitent->find($id);
         $ar = ["cname" => $cName, "cvalue"=>$cValue, "komitent"=>$komitent, "kategorije"=>$kategorije];
 
