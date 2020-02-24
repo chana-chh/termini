@@ -41,7 +41,7 @@ class DokumentController extends Controller
             $opis = str_replace(" ", "_", $data['opis']);
             $name = "{$data['ugovor_id']}_{$opis}_{$unique}";
             $filename = "{$name}.{$extension}";
-            $veza = URL . "/doc/{$filename}";
+            $veza = URL . "doc/{$filename}";
             $data['link'] = $veza;
             $data['korisnik_id'] = $this->auth->user()->id;
             $dokument->moveTo('doc/' . $filename);

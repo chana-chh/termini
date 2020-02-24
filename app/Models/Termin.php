@@ -110,6 +110,23 @@ class Termin extends Model
         return null;
     }
 
+    public function statusBoja()
+    {
+        if ($this->status() == 0) {
+            return '#F8D7DA';
+        }
+
+        if ($this->status() == 1) {
+            return '#D4EDDA';
+        }
+
+        if ($this->status() == 2) {
+            return '#CCE5FF';
+        }
+        
+        return null;
+    }
+
     public function __toString()
     {
         return 'Podaci iz modela: sala_id:' . $this->sala_id .

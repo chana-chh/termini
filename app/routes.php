@@ -12,6 +12,8 @@ $app->group('', function () {
 $app->group('', function () {
     $this->get('/', '\App\Controllers\HomeController:getHome')->setName('pocetna');
     $this->get('/kalendar[/{datum}]', '\App\Controllers\HomeController:getKalendar')->setName('kalendar');
+    $this->get('/kalendar/filter/pretraga', '\App\Controllers\HomeController:getKalendarPretraga')->setName('kalendar.pretraga');
+    $this->post('/kalendar/filter/pretraga', '\App\Controllers\HomeController:postKalendarPretraga');
 
     $this->get('/odjava', '\App\Controllers\AuthController:getOdjava')->setName('odjava');
     // Promena lozinke
