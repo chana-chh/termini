@@ -147,7 +147,8 @@ class KomitentController extends Controller
 
         $datam = [
             "naziv" => $data['nazivModal'],
-            "kategorija" => $data['kategorijaModal']
+            "kategorija" => $data['kategorijaModal'],
+            "napomena" => $data['napomenaModal']
         ];
 
         $validation_rules = [

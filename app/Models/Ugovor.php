@@ -150,11 +150,21 @@ class Ugovor extends Model
 
     public function sobeSuma()
     {
+        $rezultat = 0.00;
         $sql = "SELECT ugovor_soba.*,sobe.cena,sum(ugovor_soba.komada * (sobe.cena - ugovor_soba.popust)) AS rezultat
                 FROM ugovor_soba JOIN sobe
                 on ugovor_soba.soba_id = sobe.id
                 WHERE ugovor_soba.ugovor_id = {$this->id}
                 GROUP BY ugovor_soba.ugovor_id;";
-        return (float) $this->fetch($sql)[0]->rezultat;
+        $promenjiva = $this->fetch($sql);
+        if ($promenjiva != null) {
+            return (float) $this->fetch($sql)[0]->rezultat;
+        }
+            return 0;
+    }
+
+    public function sobaUgovor()
+    {
+        return $this->hasMany('App\Models\SobaUgovor', 'ugovor_id');
     }
 }

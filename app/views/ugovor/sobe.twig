@@ -51,20 +51,20 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% for soba in ugovor.sobe() %}
+					{% for sobaU in ugovor.sobaUgovor() %}
 					<tr>
-						<th class="text-danger"><small>{{ soba.id }}</small></th>
-						<td>{{ soba.naziv }}</td>
-						<td>{{ soba.popust|number_format }}</td>
+						<th class="text-danger"><small>{{ sobaU.soba.id }}</small></th>
+						<td>{{ sobaU.soba.naziv }}</td>
+						<td>{{ sobaU.popust}}</td>
 						<td>
-							<strong>{{ soba.komada }}</strong>
+							<strong>{{ sobaU.komada }}</strong>
 						</td>
-						<td class="font-italic"><small>{{ soba.opis|length > 70 ? soba.opis|slice(0, 70) ~ ' ...' : soba.opis  }}</small></td>
-						<td class="text-right">{{ soba.cena|number_format }}</td>
+						<td class="font-italic"><small>{{ sobaU.opis  }}</small></td>
+						<td class="text-right">{{ sobaU.soba.cena|number_format }}</td>
 						<td class="text-right">
 							<div class="btn-group btn-group-sm">
 								<button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal"
-									data-target="#brisanjeModal" data-id="{{ soba.id }}" title="Brisanje odabranih soba">
+									data-target="#brisanjeModal" data-id="{{ sobaU.id }}" title="Brisanje odabranih soba">
 									<i class="fas fa-trash-alt"></i>
 								</button>
 							</div>
@@ -122,7 +122,7 @@
 		<strong>Dodavanje/planiranje soba</strong>
 	</div>
 	<div class="card-body text-dark">
-		<form id="uplata-forma" action="{{ path_for('termin.ugovor.uplata') }}" method="POST" class="needs-validation"
+		<form id="uplata-forma" action="{{ path_for('ugovor.sobe.dodavanje') }}" method="POST" class="needs-validation"
 			novalidate>
 			{{ csrf|raw }}
 			<input type="hidden" id="ugovor_id" name="ugovor_id" value="{{ ugovor.id }}">
@@ -155,7 +155,7 @@
 				<div class="col form-group">
 					<label for="komada">Koliko soba ovog tipa se planira</label>
 					<input type="number" class="form-control{{ errors.komada[0] ? ' is-invalid' : '' }}" name="komada"
-						id="komada" min="1" step="0.01" value="{{ old.komada ? : 1 }}">
+						id="komada" min="1" step="1" value="{{ old.komada ? : 1 }}">
 					<div class="valid-feedback">Odgovarajući podatak</div>
 					<div class="invalid-feedback">{{ errors.komada[0] ? : 'Polje mora biti broj veći od jedan!' }}</div>
 				</div>

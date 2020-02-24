@@ -111,6 +111,7 @@ $app->group('', function () {
     $this->get('/termin/ugovori/detalj/{id}', '\App\Controllers\UgovorController:getUgovorDetalj')->setName('termin.ugovor.detalj.get');
     $this->get('/termin/ugovori/uplate/{id}', '\App\Controllers\UgovorController:getUgovorUplateDetalj')->setName('ugovor.uplate.lista');
     $this->get('/termin/ugovori/sobe/{id}', '\App\Controllers\UgovorController:getUgovorSobe')->setName('ugovor.sobe.lista');
+    $this->post('/termin/ugovori/sobe/dodavanje', '\App\Controllers\UgovorController:postSobaUgovorDodavanje')->setName('ugovor.sobe.dodavanje');
     // Stampa ugovora
     $this->get('/ugovori/stampa/fizicka/single/{id}', '\App\Controllers\StampaController:getUgovorStampaFizickaSingle')->setName('ugovori.stampa.fizicka.single');
     $this->get('/ugovori/stampa/pravna/single/{id}', '\App\Controllers\StampaController:getUgovorStampaPravnaSingle')->setName('ugovori.stampa.pravna.single');

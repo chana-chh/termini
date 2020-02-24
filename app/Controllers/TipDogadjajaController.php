@@ -28,7 +28,7 @@ class TipDogadjajaController extends Controller
                 'required' => true,
                 'minlen' => 5,
                 'maxlen' => 50,
-                'unique' => 's_tip_dogadjaja.tip'
+                'unique' => 'tip_dogadjaja.tip'
             ],
         ];
 
@@ -101,7 +101,7 @@ class TipDogadjajaController extends Controller
                 'minlen' => 5,
                 'maxlen' => 50,
                 'alnum' => true,
-                'unique' => 's_tip_dogadjaja.tip#id:' . $id,
+                'unique' => 'tip_dogadjaja.tip#id:' . $id,
             ],
             'multi_ugovori' => [
                 'required' => true,

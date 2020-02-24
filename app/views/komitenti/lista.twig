@@ -72,15 +72,9 @@
         <label for="kategorijaf">Kategorija</label>
         <select class="custom-select" id="kategorijaf" name="kategorijaf">
           <option value=""></option>
-          <option value="Muzika">Muzika</option>
-          <option value="Fotograf">Fotograf</option>
-          <option value="Torta">Torta</option>
-          <option value="Dekoracija">Dekoracija</option>
-          <option value="Kokteli">Kokteli</option>
-          <option value="Slatki sto">Slatki sto</option>
-          <option value="Voćni sto">Voćni sto</option>
-          <option value="Trubači">Trubači</option>
-          <option value="Animator">Animator</option>
+          {% for kat in kategorije %}
+              <option value="{{ kat }}" {{ old.kat == kat ? ' selected' : '' }}>{{ kat }}</option>
+          {% endfor %}
         </select>
         </div>
         <div class="col-md-8 text-right mt-4">
@@ -102,9 +96,10 @@
     <thead class="thead-dark">
       <tr>
         <th class="w-5" scope="col">ID</th>
-        <th class="w-70" scope="col">Naziv</th>
+        <th class="w-40" scope="col">Naziv</th>
         <th class="w-15" scope="col">Kategorija</th>
-        <th class="w-10" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
+        <th class="w-30" scope="col">Napomena</th>
+        <th class="w-10 text-right" scope="col"><i class="fas fa-cogs text-warning"></i></th>
       </tr>
     </thead>
     <tbody>
@@ -113,6 +108,7 @@
         <th scope="row" class="text-danger">{{ komitent.id }}</th>
         <td><strong>{{ komitent.naziv }}</strong></td>
         <td>{{ komitent.kategorija }}</td>
+        <td><em>{{ komitent.napomena }}</em></td>
         <td style="text-align:right;">
           <div class="btn-group btn-group-sm">
             <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
@@ -213,6 +209,10 @@
               {{ errors.kategorijaModal[0] ? : 'Obavezno polje' }}
             </div>
           </div>
+          <div class="form-group">
+          <label for="napomenaModal">Napomena</label>
+          <textarea class="form-control" name="napomenaModal" id="napomenaModal" rows="3">{{ old.napomenaModal ?  : '' }}</textarea>
+          </div>
             <hr style="margin-top: 30px;">
             <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
               <div class="form-group">
@@ -259,6 +259,10 @@
           {{ errors.kategorija[0] ? : 'Obavezno polje' }}
         </div>
       </div>
+      <div class="form-group">
+          <label for="napomena">Napomena</label>
+          <textarea class="form-control" name="napomena" id="napomena" rows="3">{{ old.napomena ?  : '' }}</textarea>
+        </div>
          <div class="row justify-content-end text-right">
             <div class="col">
               <button type="submit" class="btn btn-primary text-right"><i class="fas fa-plus-square" title="Dodavanje komitenta"></i> &emsp;Dodaj</button>
@@ -331,6 +335,7 @@
             $(".csrf_value").val(data.cvalue);
             $("#idIzmena").val(data.komitent.id);
             $("#nazivModal").val(data.komitent.naziv);
+            $("#napomenaModal").val(data.komitent.napomena);
             
             $.each(data.kategorije, function (index, lokObjekat) {
             $("#kategorijaModal").append(

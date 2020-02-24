@@ -7,6 +7,7 @@ use App\Models\Termin;
 use App\Models\Meni;
 use App\Models\Uplata;
 use App\Models\Soba;
+use App\Models\SobaUgovor;
 use App\Classes\Logger;
 
 class UgovorController extends Controller
@@ -414,6 +415,8 @@ class UgovorController extends Controller
         $this->render($response, 'ugovor/uplate.twig', compact('ugovor'));
     }
 
+
+    //Sobe privremeno!!!
     public function getUgovorSobe($request, $response, $args)
     {
         $id = (int) $args['id'];
@@ -424,5 +427,44 @@ class UgovorController extends Controller
         $sobe = $model_sobe->all();
 
         $this->render($response, 'ugovor/sobe.twig', compact('ugovor', 'sobe'));
+    }
+
+    public function postSobaUgovorDodavanje($request, $response)
+    {
+
+        $data = $this->data();
+
+        $id_ugovora = $data['ugovor_id'];
+
+        $validation_rules = [
+            'ugovor_id' => [
+                'required' => true,
+            ],
+            'soba_id' => [
+                'required' => true
+            ],
+            'komada' => [
+                'required' => true
+            ],
+            'popust' => [
+                'required' => true,
+            ]
+        ];
+
+        $this->validator->validate($data, $validation_rules);
+
+        if ($this->validator->hasErrors()) {
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom vezivanja sobe za ugovor.');
+            return $response->withRedirect($this->router->pathFor('sale'));
+        } else {
+            $this->flash->addMessage('success', 'Soba je uspešno vezana za ugovor.');
+            $model = new SobaUgovor();
+            $model->insert($data);
+
+            $id_sale = $model->lastId();
+            $sala = $model->find($id_sale);
+            $this->log($this::DODAVANJE, $sala, 'opis');
+            return $response->withRedirect($this->router->pathFor('ugovor.sobe.lista', ['id' => $$id_ugovora]));
+        }
     }
 }
