@@ -9,10 +9,6 @@ class LogController extends Controller
 {
     public function getLog($request, $response)
     {
-        // $query = [];
-        // parse_str($request->getUri()->getQuery(), $query);
-        // $page = isset($query['page']) ? (int)$query['page'] : 1;
-
         $model = new Log();
         $sql="SELECT * FROM logovi WHERE korisnik_id > 0 ORDER BY datum DESC;";
         if ($this->auth->user()->id === 0) {
@@ -20,14 +16,16 @@ class LogController extends Controller
         }
 
         $logovi = $model->paginate($this->page(), 'page', $sql);
-
         $this->unserializeLogs($logovi);
 
         $model_korisnici = new Korisnik();
         $sqlk = "SELECT * FROM korisnici WHERE id > 0;";
+        if ($this->auth->user()->id === 0) {
+            $sqlk = "SELECT * FROM korisnici;";
+        }
         $korisnici = $model_korisnici->fetch($sqlk);
 
-        $this->render($response, 'logovi.twig', compact('logovi', 'korisnici'));
+        $this->render($response, 'log/lista.twig', compact('logovi', 'korisnici'));
     }
 
     public function postLogPretraga($request, $response)
@@ -39,23 +37,24 @@ class LogController extends Controller
 
     public function getLogPretraga($request, $response)
     {
+        // TODO: izdvojiti u metodu koja pravi where
         $data = $_SESSION['DATA_LOGOVI_PRETRAGA'];
         array_shift($data);
         array_shift($data);
 
-        if (empty($data['opis']) && empty($data['tip']) && empty($data['datum_1']) && empty($data['datum_2']) && empty($data['korisnik_id'])) {
-            $this->getLog($request, $response);
+        $korisnik = $data['korisnik_id'] === '' ? false : true;
+
+        if (empty($data['opis']) &&
+            empty($data['izmene']) &&
+            empty($data['tip']) &&
+            empty($data['datum_1']) &&
+            empty($data['datum_2']) &&
+            $korisnik === false) {
+            return $response->withRedirect($this->router->pathFor('logovi'));
         }
 
-        $data['opis'] = str_replace('%', '', $data['opis']);
-        $data['tip'] = str_replace('%', '', $data['tip']);
-
         $opis = '%' . filter_var($data['opis'], FILTER_SANITIZE_STRING) . '%';
-        $tip = '%' . filter_var($data['tip'], FILTER_SANITIZE_STRING) . '%';
-
-        $query = [];
-        parse_str($request->getUri()->getQuery(), $query);
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
+        $izmene = '%' . filter_var($data['izmene'], FILTER_SANITIZE_STRING) . '%';
 
         $where = " WHERE ";
         $params = [];
@@ -65,12 +64,20 @@ class LogController extends Controller
             $params[':opis'] = $opis;
         }
 
+        if (!empty($data['izmene'])) {
+            if ($where !== " WHERE ") {
+                $where .= " AND ";
+            }
+            $where .= "izmene LIKE :izmene";
+            $params[':izmene'] = $izmene;
+        }
+
         if (!empty($data['tip'])) {
             if ($where !== " WHERE ") {
                 $where .= " AND ";
             }
-            $where .= "tip LIKE :tip";
-            $params[':tip'] = $tip;
+            $where .= "tip = :tip";
+            $params[':tip'] = $data['tip'];
         }
 
         if (!empty($data['datum_1']) && empty($data['datum_2'])) {
@@ -90,19 +97,20 @@ class LogController extends Controller
             $params[':datum_2'] = $data['datum_2'];
         }
 
-        if (!empty($data['korisnik_id'])) {
+        if ($korisnik) {
             if ($where !== " WHERE ") {
                 $where .= " AND ";
             }
             $where .= "korisnik_id = :korisnik_id";
-            $params[':korisnik_id'] = $data['korisnik_id'];
+            $params[':korisnik_id'] = (int) $data['korisnik_id'];
         }
 
         $where = $where === " WHERE " ? "" : $where;
         $model = new Log();
         $sql = "SELECT * FROM {$model->getTable()}{$where} ORDER BY datum DESC;";
-        $logovi = $model->paginate($page, 'page', $sql, $params);
+        $logovi = $model->paginate($this->page(), 'page', $sql, $params);
+        $this->unserializeLogs($logovi);
 
-        $this->render($response, 'logovi.twig', compact('logovi', 'data'));
+        $this->render($response, 'log/lista.twig', compact('logovi', 'data'));
     }
 }

@@ -31,14 +31,30 @@ $app->group('', function () {
     $this->get('/admin/korisnik-lista', '\App\Controllers\KorisnikController:getKorisnikLista')->setName('admin.korisnik.lista');
     $this->post('/admin/korisnik-brisanje', '\App\Controllers\KorisnikController:postKorisnikBrisanje')->setName('admin.korisnik.brisanje');
     $this->post('/admin/korisnik-dodavanje', '\App\Controllers\KorisnikController:postKorisnikDodavanje')->setName('admin.korisnik.dodavanje');
-    $this->post('/admin/korisnik-izmena', '\App\Controllers\KorisnikController:postKorisnikIzmena')->setName('admin.korisnik.izmena');
-    $this->post('/admin/korisnik-detalj', '\App\Controllers\KorisnikController:postKorisnikDetalj')->setName('admin.korisnik.detalj');
+    $this->get('/admin/korisnik-izmena/{id}', '\App\Controllers\KorisnikController:getKorisnikIzmena')->setName('admin.korisnik.izmena.get');
+    $this->post('/admin/korisnik-izmena', '\App\Controllers\KorisnikController:postKorisnikIzmena')->setName('admin.korisnik.izmena.post');
     //Sale
     $this->get('/admin/sale', '\App\Controllers\SalaController:getSale')->setName('sale');
     $this->post('/admin/sale/dodavanje', '\App\Controllers\SalaController:postSalaDodavanje')->setName('sale.dodavanje');
     $this->post('/admin/sale/brisanje', '\App\Controllers\SalaController:postSalaBrisanje')->setName('sale.brisanje');
     $this->post('/admin/sale/detalj', '\App\Controllers\SalaController:postSalaDetalj')->setName('sale.detalj');
     $this->post('/admin/sale/izmena', '\App\Controllers\SalaController:postSalaIzmena')->setName('sale.izmena');
+    //Komitenti
+    $this->get('/admin/komitent', '\App\Controllers\KomitentController:getKomitenti')->setName('komitenti');
+    $this->get('/admin/komitent/pretraga', '\App\Controllers\KomitentController:getKomitentiPretraga')->setName('komitenti.pretraga');
+    $this->post('/admin/komitent/pretraga', '\App\Controllers\KomitentController:postKomitentiPretraga');
+    $this->post('/admin/komitent/dodavanje', '\App\Controllers\KomitentController:postKomitentiDodavanje')->setName('komitenti.dodavanje');
+    $this->post('/admin/komitent/brisanje', '\App\Controllers\KomitentController:postKomitentiBrisanje')->setName('komitenti.brisanje');
+    $this->post('/admin/komitent/detalj', '\App\Controllers\KomitentController:postKomitentiDetalj')->setName('komitenti.detalj');
+    $this->post('/admin/komitent/izmena', '\App\Controllers\KomitentController:postKomitentiIzmena')->setName('komitenti.izmena');
+    //Sobe
+    $this->get('/admin/sobe', '\App\Controllers\SobaController:getSobe')->setName('sobe');
+    $this->get('/admin/sobe/pretraga', '\App\Controllers\SobaController:getSobePretraga')->setName('sobe.pretraga');
+    $this->post('/admin/sobe/pretraga', '\App\Controllers\SobaController:postSobePretraga');
+    $this->post('/admin/sobe/dodavanje', '\App\Controllers\SobaController:postSobeDodavanje')->setName('sobe.dodavanje');
+    $this->post('/admin/sobe/brisanje', '\App\Controllers\SobaController:postSobeBrisanje')->setName('sobe.brisanje');
+    $this->post('/admin/sobe/detalj', '\App\Controllers\SobaController:postSobeDetalj')->setName('sobe.detalj');
+    $this->post('/admin/sobe/izmena', '\App\Controllers\SobaController:postSobeIzmena')->setName('sobe.izmena');
     //Tipovi događaja
     $this->get('/admin/tip', '\App\Controllers\TipDogadjajaController:getTipove')->setName('tip_dogadjaja');
     $this->post('/admin/tip/dodavanje', '\App\Controllers\TipDogadjajaController:postTipDodavanje')->setName('tip_dogadjaja.dodavanje');
@@ -49,6 +65,15 @@ $app->group('', function () {
     $this->get('/admin/logovi', '\App\Controllers\LogController:getLog')->setName('logovi');
     $this->get('/admin/logovi/pretraga', '\App\Controllers\LogController:getLogPretraga')->setName('logovi.pretraga');
     $this->post('/admin/logovi/pretraga', '\App\Controllers\LogController:postLogPretraga');
+    // Stavke menija
+    $this->get('/admin/stavka-menija', '\App\Controllers\StavkaMenijaController:getStavkaMenija')->setName('stavke_menija');
+    $this->get('/admin/stavka-menija/pretraga', '\App\Controllers\StavkaMenijaController:getStavkaMenijaPretraga')->setName('stavke_menija.pretraga');
+    $this->post('/admin/stavka-menija/pretraga', '\App\Controllers\StavkaMenijaController:postStavkaMenijaPretraga');
+    $this->post('/admin/stavka-menija/dodavanje', '\App\Controllers\StavkaMenijaController:postStavkaMenijaDodavanje')->setName('stavke_menija.dodavanje');
+    $this->post('/admin/stavka-menija/brisanje', '\App\Controllers\StavkaMenijaController:postStavkaMenijaBrisanje')->setName('stavke_menija.brisanje');
+    $this->get('/admin/stavka-menija/izmena/{id}', '\App\Controllers\StavkaMenijaController:getStavkaMenijaIzmena')->setName('stavke_menija.izmena.get');
+    $this->post('/admin/stavka-menija/izmena', '\App\Controllers\StavkaMenijaController:postStavkaMenijaIzmena')->setName('stavke_menija.izmena.post');
+
 })->add(new UserLevelMiddleware($container, [0]));
 
 // VLASNIK
@@ -61,8 +86,8 @@ $app->group('', function () {
     $this->get('/vlasnik/ugovori/pretraga', '\App\Controllers\VlasnikController:getUgovorPretragaVlasnik')->setName('vlasnik.ugovori.pretraga');
     $this->post('/vlasnik/ugovori/pretraga', '\App\Controllers\VlasnikController:postUgovorPretragaVlasnik');
     // izvestaji
-    $this->get('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:getPoSalama')->setName('izvestaji.sale');
-    $this->post('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:postPoSalama')->setName('izvestaji.sale.post');
+    $this->get('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:getPoSalama')->setName('izvestaji.Komitenti');
+    $this->post('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:postPoSalama')->setName('izvestaji.Komitenti.post');
     $this->get('/izvestaji/po-salama-lista', '\App\Controllers\IzvestajiController:getPoSalamaLista')->setName('izvestaji.sale.lista');
     $this->get('/izvestaji/po-tipovima', '\App\Controllers\IzvestajiController:getPoTipovima')->setName('izvestaji.tipovi');
     $this->post('/izvestaji/po-tipovima', '\App\Controllers\IzvestajiController:postPoTipovima')->setName('izvestaji.tipovi.post');
@@ -85,6 +110,7 @@ $app->group('', function () {
     $this->post('/termin/ugovori/brisanje', '\App\Controllers\UgovorController:postUgovorBrisanje')->setName('termin.ugovor.brisanje');
     $this->get('/termin/ugovori/detalj/{id}', '\App\Controllers\UgovorController:getUgovorDetalj')->setName('termin.ugovor.detalj.get');
     $this->get('/termin/ugovori/uplate/{id}', '\App\Controllers\UgovorController:getUgovorUplateDetalj')->setName('ugovor.uplate.lista');
+    $this->get('/termin/ugovori/sobe/{id}', '\App\Controllers\UgovorController:getUgovorSobe')->setName('ugovor.sobe.lista');
     // Stampa ugovora
     $this->get('/ugovori/stampa/fizicka/single/{id}', '\App\Controllers\StampaController:getUgovorStampaFizickaSingle')->setName('ugovori.stampa.fizicka.single');
     $this->get('/ugovori/stampa/pravna/single/{id}', '\App\Controllers\StampaController:getUgovorStampaPravnaSingle')->setName('ugovori.stampa.pravna.single');

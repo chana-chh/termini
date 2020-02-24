@@ -8,6 +8,12 @@ $container['db'] = function ($container) {
     $conf = $container['settings']['chasha_app_settings']['db'];
     $db = new \App\Classes\Db($conf['dsn'], $conf['username'], $conf['password'], $conf['options']);
     return $db;
+}
+;
+$container['mailer'] = function ($container) {
+    $conf = $container['settings']['chasha_app_settings']['mail'];
+    $mailer = new \App\Classes\Mailer(new \PHPMailer\PHPMailer\PHPMailer(true), $conf);
+    return $mailer;
 };
 
 $container['auth'] = function ($container) {

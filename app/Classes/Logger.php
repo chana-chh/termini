@@ -3,7 +3,6 @@
 namespace App\Classes;
 
 use App\Models\Log;
-use App\Models\Korisnik;
 
 class Logger
 {
@@ -53,7 +52,7 @@ class Logger
         $data = [
             'opis' => "{$model->id}, {$model->table()} - {$tekst}",
             'tip' => $tip,
-            'stari' => $stari,
+            'izmene' => $stari,
             'korisnik_id' => $this->korisnik->id,
         ];
 

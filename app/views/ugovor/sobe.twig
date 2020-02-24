@@ -1,0 +1,209 @@
+{% extends "templates/app.twig" %}
+{% block naslov %}
+<div class="row">
+	<div class="col-md-10">
+		<h3>
+			<i class="fas fa-bed text-secondary"></i>
+			Pregled smeštaja koji je potrebno obezbediti po ugovoru broj -
+			<strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
+		</h3>
+	</div>
+	<div class="col-md-2 text-right pt-3">
+		<div class="btn-group btn-group-sm">
+			<button type="button" class="btn btn-secondary" onclick="window.history.back();"
+				title="Povratak na prethodnu stranu">
+				<i class="fas fa-chevron-circle-left"></i>
+				Nazad
+			</button>
+			<a href="{{ path_for('termin.ugovor.detalj.get', { id: ugovor.id }) }}" class="btn btn-secondary">
+				<i class="fas fa-arrow-alt-circle-left"></i>
+				Ugovor
+			</a>
+		</div>
+	</div>
+</div>
+<hr />
+{% endblock naslov %}
+{% block sadrzaj %}
+<h4 class="text-primary">
+	Termin:
+	{{ugovor.termin().datum|date()}}
+	od
+	{{ ugovor.termin.pocetak|date("H:i") }}
+	do
+	{{ ugovor.termin.kraj|date("H:i") }}
+</h4>
+<div class="row mt-5">
+	<div class="col-lg-12">
+		<div class="table-responsive">
+			<table class="table table-sm table-striped">
+				<thead class="thead-dark">
+					<tr>
+						<th class="w-5">ID</th>
+						<th class="w-20">Tip smestaja</th>
+						<th class="w-10">Popust</th>
+						<th class="w-5">Broj</th>
+						<th class="w-40">Opis</th>
+						<th class="w-10 text-right">Cena</th>
+						<th class="w-10 text-right text-warning">
+							<i class="fas fa-cogs"></i>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for soba in ugovor.sobe() %}
+					<tr>
+						<th class="text-danger"><small>{{ soba.id }}</small></th>
+						<td>{{ soba.naziv }}</td>
+						<td>{{ soba.popust|number_format }}</td>
+						<td>
+							<strong>{{ soba.komada }}</strong>
+						</td>
+						<td class="font-italic"><small>{{ soba.opis|length > 70 ? soba.opis|slice(0, 70) ~ ' ...' : soba.opis  }}</small></td>
+						<td class="text-right">{{ soba.cena|number_format }}</td>
+						<td class="text-right">
+							<div class="btn-group btn-group-sm">
+								<button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal"
+									data-target="#brisanjeModal" data-id="{{ soba.id }}" title="Brisanje odabranih soba">
+									<i class="fas fa-trash-alt"></i>
+								</button>
+							</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{# Modal za brisanje #}
+<div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title text-danger">Upozorenje!</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h4>Da li želite trajno da obrišete sobu?</h4>
+				<p class="text-danger">* Ova akcija je nepovratna!</p>
+				<form id="brisanje-forma" action="{{ path_for('ugovor.brisanje.uplata') }}" method="POST">
+					{{ csrf|raw }}
+					<input type="hidden" id="idBrisanje" name="idBrisanje">
+					<hr style="margin-top: 30px;">
+
+					<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+						<div class="form-group">
+							<button id="btn-brisanje-obrisi" type="submit" class="btn btn-danger">
+								<i class="fas fa-trash-alt"></i>&emsp;Obriši
+							</button>
+							<a class="btn btn-secondary" data-dismiss="modal">
+								<i class="fas fa-ban"></i>&emsp;Otkaži
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{# Kraj modala za brisanje #}
+{% endblock sadrzaj %}
+{% block traka %}
+<div class="row">
+	<div class="col">
+		<h3>Trenutno zaduženje za smeštaj: <span class="badge badge-warning">{{ ugovor.sobeSuma() | number_format(2, '.', ',') }} din</span></h3>
+	</div>
+</div>
+<div class="card border-dark mb-3">
+	<div class="card-header text-primary">
+		<strong>Dodavanje/planiranje soba</strong>
+	</div>
+	<div class="card-body text-dark">
+		<form id="uplata-forma" action="{{ path_for('termin.ugovor.uplata') }}" method="POST" class="needs-validation"
+			novalidate>
+			{{ csrf|raw }}
+			<input type="hidden" id="ugovor_id" name="ugovor_id" value="{{ ugovor.id }}">
+			<div class="form-row">
+				<div class="col form-group">
+					<label for="opis">Opis (detalji kao što su broj sobe, sprat ...)</label>
+					<input type="text" class="form-control{{ errors.opis[0] ? ' is-invalid' : '' }}" name="opis"
+						id="opis" value="{{ old.opis ? : '' }}" required>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.opis[0] ? : 'Obavezno polje' }}</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col form-group">
+					<label for="soba_id">Tip smeštaja:</label>
+					<select class="custom-select mb-2 {{ errors.soba_id[0] ? ' is-invalid' : '' }}"
+						name="soba_id" id="soba_id" required>
+						<option value=""></option>
+						{% for soba in sobe %}
+			              <option value="{{ soba.id }}" {{ old.soba_id == soba.id ? ' selected' : '' }}>
+			                {{ soba.naziv }} - ({{ soba.cena|number_format() }})
+			              </option>
+			             {% endfor %}
+					</select>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.soba_id[0] ? : 'Obavezno polje' }}</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col form-group">
+					<label for="komada">Koliko soba ovog tipa se planira</label>
+					<input type="number" class="form-control{{ errors.komada[0] ? ' is-invalid' : '' }}" name="komada"
+						id="komada" min="1" step="0.01" value="{{ old.komada ? : 1 }}">
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.komada[0] ? : 'Polje mora biti broj veći od jedan!' }}</div>
+				</div>
+				<div class="col form-group">
+					<label for="popust">Popust (u dinarima)</label>
+					<input type="number" class="form-control{{ errors.popust[0] ? ' is-invalid' : '' }}" name="popust"
+						id="popust" min="0" step="0.01" value="{{ old.popust ? : 0 }}">
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.popust[0] ? : 'Polje može biti nula ili bilo koji pozitivan broj' }}</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col form-group text-right mb-0">
+					<button type="submit" class="btn btn-primary">
+						<i class="fas fa-plus-square"></i>
+						Dodaj smeštaj
+					</button>
+					<button type="reset" class="btn btn-secondary" id="otkazi-validation">
+						<i class="fas fa-ban"></i>
+						Otkaži
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock traka %}
+{% block skripta %}
+<script>
+	$(document).ready(function () {
+
+		$(document).on('click', '.otvori-brisanje', function () {
+			var id = $(this).data("id");
+			$('#idBrisanje').val(id);
+		});
+
+		window.addEventListener("load", function () {
+			var forms = document.getElementsByClassName("needs-validation");
+			var validation = Array.prototype.filter.call(forms, function (form) {
+				form.addEventListener("submit", function (event) {
+					if (form.checkValidity() === false || !provera) {
+						event.preventDefault();
+						event.stopPropagation();
+					}
+					form.classList.add("was-validated");
+				}, false);
+			});
+		}, false);
+	});
+</script>
+{% endblock skripta %}

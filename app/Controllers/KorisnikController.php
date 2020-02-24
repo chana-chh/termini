@@ -9,36 +9,39 @@ class KorisnikController extends Controller
 {
     public function getKorisnikLista($request, $response)
     {
-        // $query = [];
-        // parse_str($request->getUri()->getQuery(), $query);
-        // $page = isset($query['page']) ? (int)$query['page'] : 1;
-
         $model = new Korisnik();
-        $data = $model->paginate($this->page(), 'page', "SELECT * FROM korisnici WHERE id > 0;");
+        if ($this->auth->user()->nivo === 1000) {
+            $data = $model->paginate($this->page());
+        } else {
+            $data = $model->paginate($this->page(), 'page', "SELECT * FROM korisnici WHERE nivo != 1000;");
+        }
 
         $this->render($response, 'korisnik/lista.twig', compact('data'));
     }
 
     public function postKorisnikDodavanje($request, $response)
     {
-        // $data = $request->getParams();
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
-
         $data = $this->data();
 
         $validation_rules = [
             'ime' => [
                 'required' => true,
-                'minlen' => 6,
+                'alnum' => true,
+            ],
+            'prezime' => [
+                'required' => true,
                 'alnum' => true,
             ],
             'korisnicko_ime' => [
                 'required' => true,
-                'minlen' => 3,
+                'minlen' => 5,
                 'maxlen' => 50,
                 'alnum' => true,
                 'unique' => 'korisnici.korisnicko_ime', // tabela.kolona
+            ],
+            'email' => [
+                'required' => true,
+                'unique' => 'korisnici.email', // tabela.kolona
             ],
             'lozinka' => [
                 'required' => true,
@@ -69,122 +72,77 @@ class KorisnikController extends Controller
             $data['lozinka'] = password_hash($data['lozinka'], PASSWORD_DEFAULT);
             $modelKorisnik->insert($data);
             $korisnik = $modelKorisnik->find($modelKorisnik->lastId());
-            $this->log(Logger::DODAVANJE, $korisnik, 'ime');
+            $this->log($this::DODAVANJE, $korisnik, ['ime','prezime']);
             return $response->withRedirect($this->router->pathFor('admin.korisnik.lista'));
         }
     }
 
     public function postKorisnikBrisanje($request, $response)
     {
-        $id = (int)$request->getParam('idBrisanje');
+        $id = $this->dataId('idBrisanje');
         $model = new Korisnik();
         $korisnik = $model->find($id);
         $success = $model->deleteOne($id);
         if ($success) {
-            $this->log(Logger::BRISANJE, $korisnik, 'ime', $korisnik);
+            $this->log($this::BRISANJE, $korisnik, ['ime','prezime'], $korisnik);
             $this->flash->addMessage('success', "Korisnik je uspešno obrisan.");
-            return $response->withRedirect($this->router->pathFor('admin.korisnik.lista'));
         } else {
             $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja korisnika.");
-            return $response->withRedirect($this->router->pathFor('admin.korisnik.lista'));
         }
+        return $response->withRedirect($this->router->pathFor('admin.korisnik.lista'));
     }
 
-    public function postKorisnikDetalj($request, $response)
+    public function getKorisnikIzmena($request, $response, $args)
     {
-        $nivoA = (object)[];
-        $nivoA->vrednost = 0;
-        $nivoA->naziv = "Admin";
-
-        $nivoZ = (object)[];
-        $nivoZ->vrednost = 200;
-        $nivoZ->naziv = "Zakazivač";
-
-        $nivoO = (object)[];
-        $nivoO->vrednost = 300;
-        $nivoO->naziv = "Osoblje";
-
-        $nivoi = [$nivoA, $nivoZ, $nivoO];
-
-        $data = $request->getParams();
-        $cName = $this->csrf->getTokenName();
-        $cValue = $this->csrf->getTokenValue();
-        $id = $data['id'];
+        $id = (int)$args['id'];
         $model = new Korisnik();
         $korisnik = $model->find($id);
 
-        $ar = ["cname" => $cName, "cvalue"=>$cValue, "korisnik"=>$korisnik, "nivoi"=>$nivoi];
-
-        return $response->withJson($ar);
+        $this->render($response, 'korisnik/izmena.twig', compact('korisnik'));
     }
 
     public function postKorisnikIzmena($request, $response)
     {
-        $data = $this->data();
-        // $data = $request->getParams();
-        $id = $data['idIzmena'];
-        unset($data['idIzmena']);
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
-
-        $datam = [
-            "ime" => $data['imeM'],
-            "korisnicko_ime" => $data['korisnicko_imeM'],
-            "lozinka" => $data['lozinkaM'],
-            "lozinka_potvrda" => $data['lozinka_potvrdaM'],
-            "nivo" => $data['nivoM']
-        ];
+        $data = $this->data('id');
+        $id = $this->dataId();
 
         $validation_rules = [
             'ime' => [
                 'required' => true,
-                'minlen' => 5,
+                'alnum' => true,
+            ],
+            'prezime' => [
+                'required' => true,
                 'alnum' => true,
             ],
             'korisnicko_ime' => [
                 'required' => true,
-                'minlen' => 3,
+                'minlen' => 5,
                 'maxlen' => 50,
                 'alnum' => true,
-                'unique' => 'korisnici.korisnicko_ime#id:' . $id,
+                'unique' => 'korisnici.korisnicko_ime#id:'.$id, // tabela.kolona#id_kol:id_val
+            ],
+            'email' => [
+                'required' => true,
+                'unique' => 'korisnici.email#id:'.$id, // tabela.kolona#id_kol:id_val
             ],
             'nivo' => [
                 'required' => true
-            ],
-        ];
-
-        $validation_pass = [
-            'lozinka' => [
-                'required' => true,
-                'minlen' => 6,
-            ],
-            'lozinka_potvrda' => [
-                'match_field' => 'lozinka',
             ]
         ];
 
-        if (!empty($datam['lozinka'])) {
-            array_push($validation_rules, $validation_pass);
-        }
-
-        $this->validator->validate($datam, $validation_rules);
+        $this->validator->validate($data, $validation_rules);
 
         if ($this->validator->hasErrors()) {
-            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka korisnika.');
-            return $response->withRedirect($this->router->pathFor('korisnici.izmena', ['id' => $id]));
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka o korisniku.');
+            return $response->withRedirect($this->router->pathFor('admin.korisnik.izmena.get', ['id' => $id]));
         } else {
             $this->flash->addMessage('success', 'Podaci o korisniku su uspešno izmenjeni.');
             $modelKorisnik = new Korisnik();
             $stari = $modelKorisnik->find($id);
-            unset($datam['lozinka_potvrda']);
-            if (!empty($datam['lozinka'])) {
-                $datam['lozinka'] = password_hash($datam['lozinka'], PASSWORD_DEFAULT);
-            } else {
-                unset($datam['lozinka']);
-            }
-            $modelKorisnik->update($datam, $id);
+            $modelKorisnik->update($data, $id);
             $korisnik = $modelKorisnik->find($id);
-            $this->log(Logger::IZMENA, $korisnik, 'ime', $stari);
+            $this->log($this::IZMENA, $korisnik, ['ime','prezime'], $stari);
             return $response->withRedirect($this->router->pathFor('admin.korisnik.lista'));
         }
     }

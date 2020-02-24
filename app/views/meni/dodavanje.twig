@@ -1,0 +1,146 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+<style>
+  .btn-sm {
+    margin-top: .25rem;
+  }
+
+  @media (max-width: 575.98px) {
+    .mobilni {
+      font-size: 0.75rem !important;
+    }
+
+    .btn,
+    .btn-sm {
+      padding: .25rem .4rem;
+      font-size: .875rem;
+      line-height: .5;
+      border-radius: .2rem;
+    }
+  }
+</style>
+{% endblock stil %}
+{% block naslov %}
+<div class="row mt-md-2">
+  <div class="col d-none d-sm-flex">
+    <h1>
+      <i class="fas fa-drumstick-bite text-secondary"></i> Dodavanje menija
+    </h1>
+  </div>
+  <div class="col d-sm-none">
+    <h4>
+      <i class="fas fa-drumstick-bite text-secondary"></i> Dodavanje menija
+    </h4>
+  </div>
+  <div class="col justify-content-end mt-2 text-right">
+    <div class="btn-group btn-group">
+      <a href="{{ path_for('meni') }}" class="btn btn-secondary btn-sm" title="Povratak na tabelarni prikaz menija">
+        <i class="fas fa-drumstick-bite"></i> Svi meniji
+      </a>
+    </div>
+  </div>
+</div>
+<hr />
+<form action="{{ path_for('meni.dodavanje.post') }}" method="POST" class="needs-validation" novalidate>
+  {{ csrf | raw }}
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="naziv">Naziv</label>
+      <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}"
+        name="naziv" id="naziv" aria-describedby="Naziv sale" autocomplete="off" required>
+      <div class="valid-feedback">Odgovarajući podatak</div>
+      <div class="invalid-feedback">
+        {{ errors.naziv[0] ? : 'Obavezno polje' }}
+      </div>
+    </div>
+    <div class="form-group col-md-3">
+      <label for="cena">Cena</label>
+      <div class="input-group">
+        <input type="number" class="form-control{{ errors.cena[0] ? ' is-invalid' : '' }}" name="cena" id="cena"
+          value="{{ old.cena ? : 0 }}" min="0" step="0.01" autocomplete="off" required>
+        <div class="input-group-append">
+          <button class="btn btn-success" type="button" id="izracunaj-cenu">Saberi stavke</button>
+        </div>
+      </div>
+      <div class="valid-feedback">Odgovarajući podatak</div>
+      <div class="invalid-feedback">
+        {{ errors.cena[0] ? : 'Obavezno polje' }}
+      </div>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="napomena">Napomena</label>
+      <textarea class="form-control" name="napomena" id="napomena" rows="3">{{ old.napomena ? : meni.napomena }}</textarea>
+    </div>
+  </div>
+  <hr>
+  <div class="form-row">
+    {% for kat in kategorije %}
+    <div class="col-md-3">
+      <h3 class="text-secondary">{{ kat }}</h3>
+      <ul class="list-unstyled">
+        {% for stavka in stavke.stavkeZaKategoriju(kat) %}
+        <li>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="cc{{stavka.id}}" value="{{ stavka.id }}"
+              data-cena="{{ stavka.cena }}" name="odabrane_stavke[]" {{ stavka.id in standard ? ' checked' : '' }}>
+            <label class="custom-control-label" for="cc{{stavka.id}}">
+              <span class="text-uppercase">{{ stavka.naziv }}</span>
+              <small><em class="text-danger">({{ stavka.cena|number_format() }})</em></small>
+            </label>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="form-row">
+    <div class="col text-right">
+      <button type="submit" class="btn btn-primary" title="Dodaj novi meni">
+        <i class="fas fa-plus-square"></i> Dodaj
+      </button>
+      <a href="{{ path_for('meni') }}" class="btn btn-secondary"><i class="fas fa-ban"></i> Otkaži</a>
+    </div>
+  </div>
+</form>
+{% endblock naslov %}
+{% block skripta %}
+<script type="text/javascript">
+  $(document).ready(function () {
+    (function () {
+      "use strict";
+      window.addEventListener(
+        "load",
+        function () {
+          var forms = document.getElementsByClassName("needs-validation");
+          var validation = Array.prototype.filter.call(forms, function (form) {
+            form.addEventListener(
+              "submit",
+              function (event) {
+                if (form.checkValidity() === false) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                form.classList.add("was-validated");
+              },
+              false
+            );
+          });
+        },
+        false
+      );
+    })();
+
+    var izracunajCenu = function () {
+      let cena = 0;
+      $("input:checkbox:checked").each((index, elem) => {
+        cena += Number($(elem).data("cena"));
+      });
+      $("#cena").val(cena);
+    };
+
+    $("#izracunaj-cenu").on("click", izracunajCenu);
+
+  });
+</script>
+{% endblock skripta %}

@@ -1,0 +1,117 @@
+{% extends "templates/app.twig" %}
+{% block stil %}
+{% endblock stil %}
+{% block naslov %}
+
+<div class="row">
+	<div class="col-md-3"></div>
+	<div class="col-md-6">
+		<div class="row mt-5">
+			<div class="col">
+				<h1><i class="fas fa-user text-secondary"></i> Izmena stavke menija</h1>
+			</div>
+		</div>
+		<hr />
+		<form id="izmena-forma" action="{{ path_for('stavke_menija.izmena.post') }}" method="POST"
+			class="needs-validation" novalidate>
+			{{ csrf | raw }}
+			<input type="hidden" id="id" name="id" value="{{ stavka.id }}" />
+			<div class="form-row">
+				<div class="form-group col-4">
+					<label for="naziv">Naziv</label>
+					<input class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" type="text" name="naziv" id="naziv"
+						value="{{ old.naziv ? : stavka.naziv  }}" autocomplete="off" required />
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.naziv[0] ? : 'Obavezno polje.' }}
+					</div>
+				</div>
+				<div class="form-group col-4">
+					<label for="cena">Cena</label>
+					<input class="form-control{{ errors.cena[0] ? ' is-invalid' : '' }}" type="text" name="cena"
+						id="cena" value="{{ old.cena ? : stavka.cena  }}" autocomplete="off" required />
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.cena[0] ? : 'Obavezno polje.' }}
+					</div>
+				</div>
+				<div class="form-group col-md-4">
+					<label for="kategorija">Kategorija</label>
+					<select class="custom-select{{ errors.kategorija[0] ? ' is-invalid' : '' }}" id="kategorija" name="kategorija" required>
+						{% for kat in kategorije %}
+						<option value="{{ kat }}"{{kat == stavka.kat ? ' selected' : ''}}>{{ kat }}</option>
+						{% endfor %}
+					</select>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.kategorija[0] ? : 'Obavezno polje' }}
+					</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-4">
+					<label for="vreme_pripreme">Vreme pripreme (min)</label>
+					<input class="form-control{{ errors.vreme_pripreme[0] ? ' is-invalid' : '' }}" type="text" name="vreme_pripreme" id="vreme_pripreme"
+						value="{{ old.vreme_pripreme ? : stavka.vreme_pripreme  }}" autocomplete="off" />
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.vreme_pripreme[0] ? : 'Obavezno polje.' }}
+					</div>
+				</div>
+				<div class="form-group col-4">
+					<label for="kolicina">Količina (g)</label>
+					<input class="form-control{{ errors.kolicina[0] ? ' is-invalid' : '' }}" type="text" name="kolicina" id="kolicina"
+						value="{{ old.kolicina ? : stavka.kolicina  }}" autocomplete="off" />
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">
+						{{ errors.kolicina[0] ? : 'Obavezno polje.' }}
+					</div>
+				</div>
+			</div>
+			<div class="row text-right">
+				<div class="col">
+					<button type="submit" class="btn btn-primary text-right">
+						<i class="fas fa-save" title="Dodavanje novog korisnika"></i> Snimi
+					</button>
+					<a href="{{ path_for('stavke_menija') }}" class="btn btn-secondary">
+						<i class="fas fa-ban"></i> Otkaži
+					</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="col-md-3"></div>
+</div>
+
+{% endblock naslov %}
+{% block sadrzaj %}
+{% endblock sadrzaj %}
+{% block traka %}
+{% endblock traka %}
+{% block skripta %}
+<script>
+	(function () {
+		"use strict";
+		window.addEventListener(
+			"load",
+			function () {
+				var forms = document.getElementsByClassName("needs-validation");
+				var validation = Array.prototype.filter.call(forms, function (form) {
+					form.addEventListener(
+						"submit",
+						function (event) {
+							if (form.checkValidity() === false) {
+								event.preventDefault();
+								event.stopPropagation();
+							}
+							form.classList.add("was-validated");
+						},
+						false
+					);
+				});
+			},
+			false
+		);
+	})();
+</script>
+{% endblock skripta %}

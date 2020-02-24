@@ -52,33 +52,31 @@ class Controller
         return $page;
     }
 
-    protected function data($unsetId = false)
+    protected function data($unsetId = '')
     {
         $data = $this->request->getParams();
         unset($data['csrf_name']);
         unset($data['csrf_value']);
-        if ($unsetId) {
-            unset($data[$id]);
+        if ($unsetId !== '') {
+            unset($data[$unsetId]);
         }
         return $data;
     }
 
     protected function dataId($id = 'id')
     {
-        $data = $this->request->getParams();
-        $id = $data[$id];
-        return $id;
+        return (int) $this->request->getParam($id);
     }
 
     protected function unserializeLogs(&$logs)
     {
         if (isset($logs['data'])) {
             foreach ($logs['data'] as $log) {
-                $log->stari = unserialize($log->stari);
+                $log->izmene = unserialize($log->izmene);
             }
         } else {
             foreach ($logs as $log) {
-                $log->stari = unserialize($log->stari);
+                $log->izmene = unserialize($log->izmene);
             }
         }
     }

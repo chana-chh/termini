@@ -3,51 +3,61 @@
 <style>
   @media (max-width: 575.98px) {
     .mobilni {
-      font-size: 0.75rem !important;
+      font-size: 0.875rem !important;
     }
   }
 </style>
 {% endblock stil %}
 {% block naslov %}
 <div class="row mt-md-4 d-none d-sm-flex">
-  <div class="col">
+  <div class="col-md-8">
     <h1>
-      <i class="fas fa-history text-secondary"></i> Pregled logova
+      <i class="fas fa-history text-secondary"></i>
+      Pregled logova
+      {% if data %}
+      <small><em class="text-warning">[filtrirano]</em></small>
+      {% else %}
+      <small><em class="text-success">[svi logovi]</em></small>
+      {% endif %}
     </h1>
-    {% if data %}
-    <small><em class="text-warning">[filtrirano]</em></small>
-    {% else %}
-    <small><em class="text-success">[svi logovi]</em></small>
-    {% endif %}
   </div>
-  <div class="col justify-content-end text-right">
+  <div class="col-md-4 text-right">
     <div class="btn-group btn-group mt-3">
-      <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
-        <i class="fas fa-filter"></i> Filter</button>
-      <a href="{{ path_for('logovi') }}" class="btn btn-secondary btn-sm pretraga_div"><i class="fas fa-history"></i>
-        Svi logovi</a>
+      {% if data is null %}
+      <button type="button" class="btn btn-success btn-sm" id="filter-toggle" title="Prikaži formu za filtriranje">
+        <i class="fas fa-filter"></i> Filter
+      </button>
+      {% endif %}
+      <a href="{{ path_for('logovi') }}" class="btn btn-secondary btn-sm">
+        <i class="fas fa-history"></i> Svi logovi
+      </a>
     </div>
   </div>
 </div>
 <div class="row mt-2 d-sm-none">
   <div class="col">
     <h4>
-      <i class="fas fa-history text-secondary"></i> Pregled logova
+      <i class="fas fa-history text-secondary"></i>
+      Pregled logova
+      {% if data %}
+      <small><em class="text-warning">[filtrirano]</em></small>
+      {% else %}
+      <small><em class="text-success">[svi logovi]</em></small>
+      {% endif %}
     </h4>
-    {% if data %}
-    <small><em class="text-warning">[filtrirano]</em></small>
-    {% else %}
-    <small><em class="text-success">[svi logovi]</em></small>
-    {% endif %}
   </div>
 </div>
 <div class="row mt-2 d-sm-none">
-  <div class="col justify-content-end text-right">
+  <div class="col text-right">
     <div class="btn-group btn-group">
-      <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
-        <i class="fas fa-filter"></i> Filter</button>
-      <a href="{{ path_for('logovi') }}" class="btn btn-secondary btn-sm pretraga_div"><i class="fas fa-history"></i>
-        Svi logovi</a>
+      {% if data is null %}
+      <button type="button" class="btn btn-success btn-sm" id="filter-toggle" title="Prikaži formu za filtriranje">
+        <i class="fas fa-filter"></i> Filter
+      </button>
+      {% endif %}
+      <a href="{{ path_for('logovi') }}" class="btn btn-secondary btn-sm">
+        <i class="fas fa-history"></i> Svi logovi
+      </a>
     </div>
   </div>
 </div>
@@ -59,17 +69,19 @@
       {{ csrf|raw }}
       <div class="form-row">
         <div class="form-group col-md-2">
-          <label for="opis">Opis loga: </label>
-          <input type="text" name="opis" id="opis" class="form-control" value="{{ data.opis }}" autocomplete="off"
-            placeholder="Opis">
+          <label for="opis">Opis:</label>
+          <input type="text" name="opis" id="opis" class="form-control" autocomplete="off">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="izmene">Izmene:</label>
+          <input type="text" name="izmene" id="izmene" class="form-control" autocomplete="off">
         </div>
         <div class="form-group col-md-2">
           <label for="korisnik_id">Korisnik</label>
-          <select class="custom-select mb-2" name="korisnik_id" id="korisnik_id" class="form-control">
+          <select class="custom-select mb-2" name="korisnik_id" id="korisnik_id">
             <option value=""></option>
-            {% for korinik in korisnici %}
-            <option value="{{ korinik.id }}" {{ data.korisnik_id == korinik.id ? ' selected' : '' }}>{{ korinik.ime }}
-            </option>
+            {% for korisnik in korisnici %}
+            <option value="{{ korisnik.id }}">{{ korisnik.prezimeIme }}</option>
             {% endfor %}
           </select>
         </div>
@@ -84,29 +96,25 @@
           </select>
         </div>
         <div class="form-group col-md-2">
-          <label for="tip">Datum (od): </label>
+          <label for="datum_1">Datum (od): </label>
           <input type="date" name="datum_1" id="datum_1" class="form-control">
         </div>
         <div class="form-group col-md-2">
-          <label for="tip">Datum (do): </label>
+          <label for="tdatum_2ip">Datum (do): </label>
           <input type="date" name="datum_2" id="datum_2" class="form-control">
         </div>
-        <div class="col-md-2 text-right mt-4">
+      </div>
+      <div class="form-row">
+        <div class="col-md-8 text-info">
+          * Ako se unese samo prvi datum pretraga će se vršiti za ugovore sa tim datumom. Ako se unesu oba datuma
+          pretraga će se vršiti za ugovore između ta dva datuma.
+        </div>
+        <div class="col-md-4 text-right">
           <div class="btn-group">
             <button type="submit" class="btn btn-success btn-sm">
               <i class="fas fa-filter"></i> Filtriraj
             </button>
-            <a href="{{ path_for('logovi') }}" class="btn btn-secondary btn-sm"><i class="fas fa-history"></i> Svi
-              logovi</a>
           </div>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="col-md-4 offset-md-6">
-          <small class="text-warning">
-            * Ako se unese samo prvi datum pretraga će se vršiti za ugovore sa tim datumom. Ako se unesu oba datuma
-            pretraga će se vršiti za ugovore između ta dva datuma.
-          </small>
         </div>
       </div>
     </form>
@@ -116,34 +124,35 @@
   <table class="table mobilni">
     <thead class="thead-dark">
       <tr>
-        <th class="w-5" scope="col">ID</th>
-        <th class="w-35" scope="col">Opis</th>
-        <th class="w-20" scope="col">Tip</th>
-        <th class="w-20" scope="col">Korisnik</th>
-        <th class="w-20" scope="col">Datum i vreme</th>
+        <th class="w-5">ID</th>
+        <th class="w-30">Opis</th>
+        <th class="w-35">Izmene</th>
+        <th class="w-10">Tip</th>
+        <th class="w-10">Korisnik</th>
+        <th class="w-10">Datum i vreme</th>
       </tr>
     </thead>
     <tbody>
       {% for log in logovi.data %}
       <tr>
-        <th scope="row" class="text-danger">{{ log.id }}</th>
+        <th class="text-danger">{{ log.id }}</th>
+        <td>{{ log.opis }}</td>
         <td>
-          {# ovde inace ide opis ovo je samo privremeno prikaz starog #}
           <ul class="list-unstyled">
             {% if log.tip == 'izmena' %}
-            {% for k,v in log.stari %}
+            {% for k,v in log.izmene %}
             <li>{{ k }} [ {{ v.stara_vrednost }} => {{ v.nova_vrednost }} ]</li>
             {% endfor %}
             {% else %}
-            {% for k,v in log.stari %}
+            {% for k,v in log.izmene %}
             <li>{{ k }} [ {{ v }} ]</li>
             {% endfor %}
             {% endif %}
           </ul>
         </td>
         <td>{{ log.tip }}</td>
-        <td>{{ log.korisnik.ime }}</td>
-        <td>{{ log.datum|date('d.m.Y H:i') }}</td>
+        <td>{{ log.korisnik.prezimeIme }}</td>
+        <td>{{ log.datum|date('d.m.Y H:i:s') }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -172,7 +181,7 @@
 <script>
   $(document).ready(function () {
 
-    $('.prikazi').click(function () {
+    $('#filter-toggle').click(function () {
       $('.pretraga_div').toggle();
     });
 

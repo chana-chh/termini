@@ -8,78 +8,56 @@ use PHPMailer\PHPMailer\Exception;
 
 class Mailer
 {
-    private static $instance = null;
+    private $mail = null;
+    private $config = [];
 
-    public static function instance()
+    public function __construct($mail, $config)
     {
-        if (!isset(static::$instance)) {
-            static::$instance = new static();
-        }
-        return static::$instance;
+        $this->mail = $mail;
+        $this->config = $config;
     }
 
-    private function __construct()
+    public function sendMail(array $to, $subject, $body, $html = true, $from = null, $from_name = null)
     {
-        static::$config = Config::get('mail');
-    }
-
-    private function __clone()
-    {
-    }
-
-    private function __sleep()
-    {
-    }
-
-    private function __wakeup()
-    {
-    }
-
-    public static function sendMail(array $to, $subject, $body, $html = true, $from = null, $from_name = null)
-    {
-        $mail = new PHPMailer(true);
-
-        $config = Config::get('mail');
-
         try {
-            $mail->isSMTP();
-            $mail->Host = $config['host'];
-            $mail->SMTPAuth = true;
-            $mail->Username = $config['username'];
-            $mail->Password = $config['password'];
-            $mail->Port = $config['port'];
-            if ($config['port'] === 465) {
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            } elseif ($config['port'] === 587) {
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $this->mail->isSMTP();
+            $this->mail->Host = $this->config['host'];
+            $this->mail->SMTPAuth = true;
+            $this->mail->Username = $this->config['username'];
+            $this->mail->Password = $this->config['password'];
+            $this->mail->Port = $this->config['port'];
+            if ($this->config['port'] === 465) {
+                $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            } elseif ($this->config['port'] === 587) {
+                $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             }
 
-            $from = $from !== null ? : $config['from'];
-            $from_name = $from_name !== null ? : $config['from_name'];
+            $from = $from !== null ? : $this->config['from'];
+            $from_name = $from_name !== null ? : $this->config['from_name'];
 
-            $mail->setFrom($from, $from_name);
+            $this->mail->setFrom($from, $from_name);
 
-            // $mail->SMTPKeepAlive = true; // SMTP connection will not close after each email sent, reduces SMTP overhead
+            // $this->mail->SMTPKeepAlive = true; // SMTP connection will not close after each email sent, reduces SMTP overhead
 
             // brisanje adresa to, cc, bcc ...
-            $mail->clearAllRecipients();
+            $this->mail->clearAllRecipients();
 
             foreach ($to as $t) {
-                $mail->addAddress($t['email'], $t['name']);
+                $this->mail->addAddress($t['email'], $t['name']);
             }
 
-            $mail->Subject = $subject;
+            $this->mail->Subject = $subject;
 
             if ($html) {
-                $mail->isHTML(true);
-                $mail->Body = $body;
-                $mail->AltBody = "Molimo vas da koristite mail klijent koji podržava HTML";
+                $this->mail->isHTML(true);
+                $this->mail->Body = $body;
+                $this->mail->AltBody = "Molimo vas da koristite mail klijent koji podržava HTML";
             } else {
-                $mail->isHTML(false);
-                $mail->Body = $body;
+                $this->mail->isHTML(false);
+                $this->mail->Body = $body;
             }
 
-            $mail->send();
+            $this->mail->send();
             return true;
         } catch (Exception $e) {
             return false;

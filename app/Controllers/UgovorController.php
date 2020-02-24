@@ -6,6 +6,7 @@ use App\Models\Ugovor;
 use App\Models\Termin;
 use App\Models\Meni;
 use App\Models\Uplata;
+use App\Models\Soba;
 use App\Classes\Logger;
 
 class UgovorController extends Controller
@@ -411,5 +412,17 @@ class UgovorController extends Controller
         $ugovor = $model_ugovor->find($id);
 
         $this->render($response, 'ugovor/uplate.twig', compact('ugovor'));
+    }
+
+    public function getUgovorSobe($request, $response, $args)
+    {
+        $id = (int) $args['id'];
+        $model_ugovor = new Ugovor();
+        $ugovor = $model_ugovor->find($id);
+
+        $model_sobe = new Soba();
+        $sobe = $model_sobe->all();
+
+        $this->render($response, 'ugovor/sobe.twig', compact('ugovor', 'sobe'));
     }
 }
