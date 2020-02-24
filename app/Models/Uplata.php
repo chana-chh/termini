@@ -17,13 +17,4 @@ class Uplata extends Model
     {
         return $this->belongsTo('App\Models\Korisnik', 'korisnik_id');
     }
-
-    public function __toString()
-    {
-        return 'Podaci iz modela: ugovor_id:' . $this->ugovor_id . 
-                ', datum:' . $this->datum .
-                ', iznos:' . $this->iznos .
-                ', nacin_placanja:' . $this->nacin_placanja .
-                ', opis:' . $this->opis;
-    }
 }

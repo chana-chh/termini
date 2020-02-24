@@ -200,7 +200,7 @@ class TerminController extends Controller
         $termin1 = $model->find($termin_id);
         $data['ikonica'] = $termin1->statusIkonica();
         $data['status'] = $termin1->status();
-        $this->log(Logger::IZMENA, $termin1, 'opis', $termin);
+        $this->log($this::IZMENA, $termin1, 'opis', $termin);
 
         return json_encode($data);
     }

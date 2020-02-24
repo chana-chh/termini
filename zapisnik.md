@@ -13,6 +13,7 @@
 	Proveriti sva brisanja (negde, mislim da je meni, se ne proverava da li je za nesto vezano)
 !!!
 
+Prosecna starost je nekako vise za napomene, ja bi izbrisao
 
 # TODO
 

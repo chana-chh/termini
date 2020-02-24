@@ -1,29 +1,30 @@
-{% extends "templates/app.twig" %} {% block stil %}
+{% extends "templates/app.twig" %}
+{% block stil %}
 <link href="{{ base_url() }}/css/fullcalendar.css" rel="stylesheet" />
-<link
-  href="{{ base_url() }}/css/fullcalendar.print.css"
-  rel="stylesheet"
-  media="print"
-/>
+<link href="{{ base_url() }}/css/fullcalendar.print.css" rel="stylesheet" media="print" />
 <style>
   @media (max-width: 575.98px) {
-  .mobilni{
-    font-size: 0.75rem !important;
+    .mobilni {
+      font-size: 0.75rem !important;
+    }
+
+    h2 {
+      font-size: 1.25rem !important;
+    }
+
+    .btn-primary {
+      padding: .25rem .4rem !important;
+      font-size: .875rem !important;
+      line-height: .5 !important;
+      border-radius: .2rem !important;
+    }
   }
-  h2{
-    font-size: 1.25rem !important;
-  }
-  .btn-primary{
-    padding: .25rem .4rem !important;
-    font-size: .875rem !important;
-    line-height: .5 !important;
-    border-radius: .2rem !important;
-  }
-  }
+
   .fc-day-grid-event:hover {
     background-color: #ffc107 !important;
     cursor: pointer;
   }
+
   a.fc-day-number {
     margin: 0.2rem;
     border-radius: 50%;
@@ -35,10 +36,12 @@
     background-color: #6c757d;
     color: #ffffff;
   }
+
   a.fc-day-number:hover {
     background-color: #ffc107;
   }
-    .kalendar{
+
+  .kalendar {
     min-width: 576px;
   }
 </style>
@@ -52,12 +55,12 @@
 </div>
 <div class="row d-none d-sm-flex">
   <div class="col-lg-2">
-    <input name="datum" type="date" id="datum" class="form-control"/>
+    <input name="datum" type="date" id="datum" class="form-control" />
   </div>
   <div class="col-lg-2">
     <button class="btn btn-primary btn-sm" id="idi" title="Prelazak na datum">
-            <i class="fas fa-rocket"></i>&emsp;Idi na datum
-          </button>
+      <i class="fas fa-rocket"></i>&emsp;Idi na datum
+    </button>
   </div>
   <div class="col-lg-8 text-right">
     <ul class="list-unstyled">
@@ -80,12 +83,12 @@
 </div>
 <div class="row d-sm-none" style="font-size: 0.75rem;">
   <div class="col-lg-2">
-    <input name="datum" type="date" id="datumb" class="form-control"/>
+    <input name="datum" type="date" id="datumb" class="form-control" />
   </div>
   <div class="col-lg-2">
     <button class="btn btn-primary btn-sm" id="idib" title="Prelazak na datum">
-            <i class="fas fa-rocket"></i>&emsp;Idi na datum
-          </button>
+      <i class="fas fa-rocket"></i>&emsp;Idi na datum
+    </button>
   </div>
   <div class="col-lg-8 text-left">
     <ul class="list-unstyled">
@@ -110,31 +113,31 @@
 <script src="{{ base_url() }}/js/fullcalendar.min.js"></script>
 <script src="{{ base_url() }}/js/sr.js"></script>
 <script>
-  $(document).ready(function() {
-    $('#idi').click(function() {
-        if($('#datum').val()){
+  $(document).ready(function () {
+    $('#idi').click(function () {
+      if ($('#datum').val()) {
         $("#kalendar").fullCalendar('gotoDate', $('#datum').val());
         $("#kalendar").fullCalendar('select', $('#datum').val());
-        }
-        else{
-          alert('Odaberite željeni datum!')
-        }
-      });
-      $('#idib').click(function() {
-        if($('#datumb').val()){
+      }
+      else {
+        alert('Odaberite željeni datum!')
+      }
+    });
+    $('#idib').click(function () {
+      if ($('#datumb').val()) {
         $("#kalendar").fullCalendar('gotoDate', $('#datumb').val());
         $("#kalendar").fullCalendar('select', $('#datumb').val());
-        }
-        else{
-          alert('Odaberite željeni datum!')
-        }
-      });
+      }
+      else {
+        alert('Odaberite željeni datum!')
+      }
+    });
     $("#kalendar").fullCalendar({
       themeSystem: "bootstrap4",
       customButtons: {
         buttonStampa: {
           text: "Štampaj",
-          click: function() {
+          click: function () {
             window.print();
           }
         }
@@ -197,16 +200,16 @@
       eventBackgroundColor: "#f8f9fa",
       eventBorderColor: "#000000",
       eventTextColor: "#000000",
-      eventClick: function(event, jsEvent, view) {
+      eventClick: function (event, jsEvent, view) {
         const loc = "{{ path_for('termin.detalj.get') }}" + "/" + event.id;
         window.location = loc;
       },
-      eventRender: function(event, element, view) {
+      eventRender: function (event, element, view) {
         element.tooltip({
-            title: event.advancedTitle,
-            html: true,
-            container: "body"
-            });
+          title: event.advancedTitle,
+          html: true,
+          container: "body"
+        });
         let title = element.find(".fc-title");
         const html = `
         <div class="clearfix">
@@ -238,11 +241,11 @@
         start: "00:00",
         end: "24:00"
       },
-      dayClick: function(date, jsEvent, view) {
+      dayClick: function (date, jsEvent, view) {
         $("#kalendar").select(date);
       },
       navLinks: true,
-      navLinkDayClick: function(date, jsEvent) {
+      navLinkDayClick: function (date, jsEvent) {
         let loc = `{{ url_termin_dodavanje }}/${date.format()}`;
         window.location = loc;
       },

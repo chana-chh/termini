@@ -8,16 +8,12 @@ use App\Models\Meni;
 use App\Models\Uplata;
 use App\Models\Soba;
 use App\Models\SobaUgovor;
-use App\Classes\Logger;
+use App\Models\Komitent;
 
 class UgovorController extends Controller
 {
     public function getUgovor($request, $response)
     {
-        // $query = [];
-        // parse_str($request->getUri()->getQuery(), $query);
-        // $page = isset($query['page']) ? (int)$query['page'] : 1;
-
         $model = new Ugovor();
         $ugovori = $model->paginate($this->page(), 'page', "SELECT * FROM ugovori ORDER BY datum DESC;");
 
@@ -168,15 +164,16 @@ class UgovorController extends Controller
         $model_termin = new Termin();
         $termin = $model_termin->find($termin_id);
 
-        $model_meni = new Meni();
-        $meniji = $model_meni->all();
+        // $model_meni = new Meni();
+        // $meniji = $model_meni->all();
+        $komitenti = new Komitent();
 
         if (!$termin->multiUgovori() && !empty($termin->ugovori())) {
             $this->flash->addMessage('warning', "Nije dozvoljeno dodavanje više od jednog ugovora.");
             return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
         }
 
-        $this->render($response, 'ugovor/dodavanje.twig', compact('termin', 'meniji'));
+        $this->render($response, 'ugovor/dodavanje.twig', compact('termin', 'komitenti'));
     }
 
     public function postUgovorDodavanje($request, $response)
@@ -325,7 +322,7 @@ class UgovorController extends Controller
             'vocni_sto_iznos' => ['required' => true,],
             'posebni_zahtevi_iznos' => ['required' => true,]
         ];
-        
+
         // provera broja ugovora unique
         $model_ugovor = new Ugovor();
         if (trim($data['broj_ugovora']) != "") {
@@ -431,7 +428,6 @@ class UgovorController extends Controller
 
     public function postSobaUgovorDodavanje($request, $response)
     {
-
         $data = $this->data();
 
         $id_ugovora = $data['ugovor_id'];

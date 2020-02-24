@@ -54,7 +54,7 @@ class Ugovor extends Model
 
     public function uplateDug()
     {
-        return $this->iznos - $this->uplateSuma();
+        return $this->ukupanIznos() - $this->uplateSuma();
     }
 
     public function dokumenti()
@@ -102,50 +102,8 @@ class Ugovor extends Model
             $this->slatki_sto_iznos +
             $this->vocni_sto_iznos +
             $this->posebni_zahtevi_iznos;
-            
-        return $cena;
-    }
 
-    public function __toString()
-    {
-        return 'Podaci iz modela: termin_id:' . $this->termin_id .
-                ', broj_ugovora:' . $this->broj_ugovora .
-                ', datum:' . $this->datum .
-                ', meni_id:' . $this->meni_id .
-                ', broj_mesta:' . $this->broj_mesta .
-                ', broj_stolova:' . $this->broj_stolova .
-                ', broj_mesta_po_stolu:' . $this->broj_mesta_po_stolu .
-                ', prezime:' . $this->prezime .
-                ', ime:' . $this->ime .
-                ', telefon:' . $this->telefon .
-                ', email:' . $this->email .
-                ', prosek_godina:' . $this->prosek_godina .
-                ', muzika_chk:' . $this->muzika_chk .
-                ', muzika_opis:' . $this->muzika_opis .
-                ', muzika_ugovor:' . $this->muzika_ugovor .
-                ', iznos:' . $this->iznos .
-                ', muzika_iznos:' . $this->muzika_iznos .
-                ', fotograf_chk:' . $this->fotograf_chk .
-                ', fotograf_opis:' . $this->fotograf_opis .
-                ', fotograf_iznos:' . $this->fotograf_iznos .
-                ', torta_chk:' . $this->torta_chk .
-                ', torta_opis:' . $this->torta_opis .
-                ', torta_iznos:' . $this->torta_iznos .
-                ', dekoracija_chk:' . $this->dekoracija_chk .
-                ', dekoracija_opis:' . $this->dekoracija_opis .
-                ', dekoracija_iznos:' . $this->dekoracija_iznos .
-                ', kokteli_chk:' . $this->kokteli_chk .
-                ', kokteli_opis:' . $this->kokteli_opis .
-                ', kokteli_iznos:' . $this->kokteli_iznos .
-                ', slatki_sto_chk:' . $this->slatki_sto_chk .
-                ', slatki_sto_opis:' . $this->slatki_sto_opis .
-                ', slatki_sto_iznos:' . $this->slatki_sto_iznos .
-                ', vocni_sto_chk:' . $this->vocni_sto_chk .
-                ', vocni_sto_opis:' . $this->vocni_sto_opis .
-                ', vocni_sto_iznos:' . $this->vocni_sto_iznos .
-                ', posebni_zahtevi:' . $this->posebni_zahtevi .
-                ', posebni_zahtevi_iznos:' . $this->posebni_zahtevi_iznos .
-                ', napomena:' . $this->napomena;
+        return $cena;
     }
 
     public function sobeSuma()
@@ -166,5 +124,10 @@ class Ugovor extends Model
     public function sobaUgovor()
     {
         return $this->hasMany('App\Models\SobaUgovor', 'ugovor_id');
+    }
+
+    public function ukupanIznos()
+    {
+        return (float) $this->iznos_meni + $this->iznos_sobe + $this->iznos_dodatno;
     }
 }

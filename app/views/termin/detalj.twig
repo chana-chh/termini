@@ -1,21 +1,24 @@
-{% extends "templates/app.twig" %} {% block stil %} {% endblock stil %} 
+{% extends "templates/app.twig" %}
+{% block stil %}
+{% endblock stil %}
 {% block naslov %}
+
 {% if termin.vaznost %}
 {% if termin.vaznost|date() <  'now'|date() %}
 <div class="row mx-2 my-2">
-<div class="col">
-<div class="alert alert-danger text-center" role="alert">
-  Ponuda za ovaj termin je istekla {{ termin.vaznost|date() }}!
-</div>
-</div>
+  <div class="col">
+    <div class="alert alert-danger text-center" role="alert">
+      Ponuda za ovaj termin je istekla {{ termin.vaznost|date() }}!
+    </div>
+  </div>
 </div>
 {% else %}
 <div class="row mx-2 my-2">
-<div class="col">
-<div class="alert alert-warning text-center" role="alert">
-  Ponuda za ovaj termin ističe {{ termin.vaznost|date() }}!
-</div>
-</div>
+  <div class="col">
+    <div class="alert alert-warning text-center" role="alert">
+      Ponuda za ovaj termin ističe {{ termin.vaznost|date() }}!
+    </div>
+  </div>
 </div>
 {% endif %}
 {% endif %}
@@ -24,45 +27,30 @@
     <h1>
       <i class="fas fa-calendar-check text-secondary"></i>
       Pregled termina -
-      <small
-        >[
+      <small>[
         <i class="{{ termin.statusIkonica() }}"></i>
-
         <span>
           {% if termin.status() == 0 %} Termin u pripremi {% endif %} {% if
           termin.status() == 1 %} Zaključen termin {% endif %} {% if
           termin.status() == 2 %} Informacija o terminu {% endif %}
         </span>
-
-        ]</small
-      >
+        ]</small>
     </h1>
   </div>
   <div class="col text-right">
     <div class="btn-group btn-group-sm mt-3">
-      <a href="#" class="btn btn-secondary" onclick="window.history.back();"
-        ><i class="fas fa-chevron-circle-left"></i> Nazad</a
-      >
-      <a
-        href="{{ path_for('termin.pregled.get', { datum: termin.datum }) }}"
-        class="btn btn-secondary"
-        ><i class="fas fa-arrow-alt-circle-left"></i> Termini</a
-      >
+      <a href="{{ path_for('termin.pregled.get', { datum: termin.datum }) }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-alt-circle-left"></i> Termini
+      </a>
       <a href="" class="btn btn-primary" id="zakljuci-termin">
         <i class="fas fa-check"></i> Zaključaj/otključaj termin
       </a>
-      <a
-        href="{{ path_for('termin.izmena.get', { id: termin.id }) }}"
-        class="btn btn-warning"
-        ><i class="fas fa-edit"></i> Izmeni</a
-      >
-      <a
-        href=""
-        class="btn btn-danger otvori-brisanje"
-        data-toggle="modal"
-        data-target="#brisanjeModal"
-        ><i class="fas fa-trash"></i> Obriši</a
-      >
+      <a href="{{ path_for('termin.izmena.get', { id: termin.id }) }}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Izmeni
+      </a>
+      <a href="" class="btn btn-danger otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal">
+        <i class="fas fa-trash"></i> Obriši
+      </a>
     </div>
   </div>
 </div>
@@ -93,11 +81,8 @@
         <td>
           <div class="custom-control custom-checkbox">
             <input class="custom-control-input" type="checkbox" id="zauzet"
-            {{ termin.zauzet == 1 ? ' checked="checked"' : "" }}
-            disabled>
-            <label class="custom-control-label" for="zauzet"
-              ><strong></strong
-            ></label>
+              {{ termin.zauzet == 1 ? ' checked="checked"' : "" }} disabled>
+            <label class="custom-control-label" for="zauzet"><strong></strong></label>
           </div>
         </td>
       </tr>
@@ -118,29 +103,16 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title text-danger">Upozorenje!</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <h6>Da li želite trajno da obrišete termin?</h6>
         <p class="text-danger">* Ova akcija je nepovratna!</p>
-        <form
-          action="{{ path_for('termin.brisanje.post') }}"
-          method="POST"
-          id="modal-forma-brisanje-termina"
-        >
+        <form action="{{ path_for('termin.brisanje.post') }}" method="POST" id="modal-forma-brisanje-termina">
           {{ csrf | raw }}
-          <input
-            type="hidden"
-            name="modal_termin_brisanje_id"
-            id="modal-termin-brisanje-id"
-          />
+          <input type="hidden" name="modal_termin_brisanje_id" id="modal-termin-brisanje-id" />
         </form>
       </div>
       <div class="modal-footer">
@@ -162,10 +134,7 @@
     </h2>
   </div>
   <div class="col-lg-4 text-right pt-1">
-    <a
-      href="{{ path_for('termin.dodavanje.ugovor', { termin_id: termin.id }) }}"
-      class="btn btn-primary btn-sm"
-    >
+    <a href="{{ path_for('termin.dodavanje.ugovor', { termin_id: termin.id }) }}" class="btn btn-primary btn-sm">
       <i class="fas fa-plus-square"></i> Dodavanje ugovora
     </a>
   </div>
@@ -176,13 +145,13 @@
       <tr>
         <th class="w-5">ID</th>
         <th class="w-10">Broj ugovora</th>
+        <th class="w-10">Datum ugovora</th>
         <th class="w-10 text-right">Iznos</th>
         <th class="w-10 text-right">Dug</th>
         <th class="w-15">Ime</th>
         <th class="w-10">Telefon</th>
         <th class="w-10">Email</th>
         <th class="w-10">Br mesta</th>
-        <th class="w-10">Datum</th>
         <th class="w-10 text-right">
           <i class="fas fa-cogs text-warning"></i>
         </th>
@@ -193,15 +162,12 @@
       <tr>
         <th>{{ ugovor.id }}</th>
         <td>{{ ugovor.broj_ugovora }}</td>
+        <td>{{ ugovor.datum|date() }}</td>
         <td class="text-info text-right">
-          <strong>{{ ugovor.iznos | number_format }}</strong>
+          <strong>{{ ugovor.ukupanIznos()|number_format }}</strong>
         </td>
-        <td
-          class="{{
-            ugovor.uplateDug() > 0 ? 'text-danger' : 'text-success'
-          }} text-right"
-        >
-          <strong>{{ ugovor.uplateDug() | number_format }}</strong>
+        <td class="{{ ugovor.uplateDug() > 0 ? 'text-danger' : 'text-success' }} text-right">
+          <strong>{{ ugovor.uplateDug()|number_format }}</strong>
         </td>
         <td>{{ ugovor.punoIme() }}</td>
         <td>{{ ugovor.telefon }}</td>
@@ -209,55 +175,30 @@
           <a href="mailto:{{ ugovor.email }}">{{ ugovor.email }}</a>
         </td>
         <td>
-          {{ ugovor.broj_mesta }} ({{ ugovor.broj_stolova }}/{{
-            ugovor.broj_mesta_po_stolu
-          }})
+          {{ ugovor.broj_mesta }} ({{ ugovor.broj_stolova }}/{{ ugovor.broj_mesta_po_stolu }})
         </td>
-        <td>{{ ugovor.datum|date() }}</td>
         <td class="text-right">
           <div class="btn-group btn-group-sm">
-            <a
-              class="btn btn-success"
-              href="{{
-                path_for('termin.ugovor.detalj.get', { id: ugovor.id })
-              }}"
-              title="Detaljni pregled odabranog ugovora"
-            >
+            <a class="btn btn-success" href="{{ path_for('termin.ugovor.detalj.get', { id: ugovor.id }) }}"
+              title="Detaljni pregled odabranog ugovora">
               <i class="fas fa-eye"></i>
             </a>
-            <a
-              class="btn btn-primary"
-              href="{{
-                path_for('ugovor.sobe.lista', { id: ugovor.id })
-              }}"
-              title="Pregled planiranih soba"
-            >
+            <a class="btn btn-primary" href="{{ path_for('ugovor.sobe.lista', { id: ugovor.id }) }}"
+              title="Pregled planiranih soba">
               <i class="fas fa-bed"></i>
             </a>
-            <a
-              class="btn btn-warning"
-              href="{{
-                path_for('termin.ugovor.izmena.get', { id: ugovor.id })
-              }}"
-              title="Izmena odabranog ugovora"
-            >
+            <a class="btn btn-warning" href="{{ path_for('termin.ugovor.izmena.get', { id: ugovor.id }) }}"
+              title="Izmena odabranog ugovora">
               <i class="fas fa-edit"></i>
             </a>
-            <button
-              class="btn btn-danger otvori-brisanje-ugovora"
-              data-toggle="modal"
-              data-target="#brisanje-ugovora-modal"
-              data-id="{{ ugovor.id }}"
-              title="Brisanje odabranog ugovora"
-            >
+            <button class="btn btn-danger otvori-brisanje-ugovora" data-toggle="modal"
+              data-target="#brisanje-ugovora-modal" data-id="{{ ugovor.id }}" title="Brisanje odabranog ugovora">
               <i class="fas fa-trash-alt"></i>
             </button>
-            <a
-              class="btn btn-info btn-sm"
-              href="{{ path_for('ugovor.uplate.lista', { id: ugovor.id }) }}"
-              class="btn btn-success"
-              ><i class="fas fa-money-bill"></i
-            ></a>
+            <a class="btn btn-info btn-sm" href="{{ path_for('ugovor.uplate.lista', { id: ugovor.id }) }}"
+              class="btn btn-success">
+              <i class="fas fa-money-bill"></i>
+            </a>
           </div>
         </td>
       </tr>
@@ -271,23 +212,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title text-danger">Upozorenje!</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <h6>Da li želite trajno da obrišete ugovor?</h6>
         <p class="text-danger">* Ova akcija je nepovratna!</p>
-        <form
-          action="{{ path_for('termin.ugovor.brisanje') }}"
-          method="POST"
-          id="modal-forma-brisanje-ugovora"
-        >
+        <form action="{{ path_for('termin.ugovor.brisanje') }}" method="POST" id="modal-forma-brisanje-ugovora">
           {{ csrf | raw }}
           <input type="hidden" id="idBrisanje" name="idBrisanje" />
         </form>
@@ -303,28 +235,30 @@
     </div>
   </div>
 </div>
-{# Kraj modala za brisanje ugovora #} {% endblock naslov %} {% block skripta %}
+{# Kraj modala za brisanje ugovora #}
+{% endblock naslov %}
+{% block skripta %}
 <script>
-  $(document).ready(function() {
-    $(".otvori-brisanje").on("click", function() {
+  $(document).ready(function () {
+    $(".otvori-brisanje").on("click", function () {
       var id = "{{ termin.id }}";
       $("#modal-termin-brisanje-id").val(id);
     });
 
-    $(".otvori-brisanje-ugovora").on("click", function() {
+    $(".otvori-brisanje-ugovora").on("click", function () {
       var id = $(this).data("id");
       $("#idBrisanje").val(id);
     });
 
-    $("#modal-obrisi-termin").on("click", function() {
+    $("#modal-obrisi-termin").on("click", function () {
       $("#modal-forma-brisanje-termina").submit();
     });
 
-    $("#modal-obrisi-ugovor").on("click", function() {
+    $("#modal-obrisi-ugovor").on("click", function () {
       $("#modal-forma-brisanje-ugovora").submit();
     });
 
-    $("#zakljuci-termin").on("click", function(e) {
+    $("#zakljuci-termin").on("click", function (e) {
       e.preventDefault();
       $.post(
         "{{ path_for('termin.zakljucivanje.post') }}",
@@ -333,11 +267,10 @@
           csrf_name: document.querySelector(".csrf_name").value,
           csrf_value: document.querySelector(".csrf_value").value
         },
-        function(data) {
+        function (data) {
           data = JSON.parse(data);
           document.querySelector(".csrf_name").value = data.csrf_name;
           document.querySelector(".csrf_value").value = data.csrf_value;
-          // promeniti ikonicu i text statusa u h1
 
           let tekst = "";
           if (data.status === 0) {
