@@ -54,19 +54,35 @@
   </div>
 </div>
 <hr class="mb-5">
-<div class="form-row">
+<div class="row justify-content-center mobilni">
+  <div class="col-md-5 bg-light text-dark">
   {% for kat in kategorije %}
-  <div class="col-md-3">
-    <h4 class="text-info">{{ kat }}</h4>
-    <ul class="list-unstyled">
+  {% if loop.index is odd %}
+    <h3 class="font-italic">{{ kat }}</h3>
+    <hr style="border-top: 1px dotted #8c8b8b">
+    <ul>
       {% for stavka in meni.stavke(kat) %}
       <li>{{ stavka.naziv }}</li>
       {% endfor %}
     </ul>
-  </div>
+  {% endif %}
   {% endfor %}
+  </div>
+    <div class="col-md-5 bg-light text-dark">
+  {% for kat in kategorije %}
+  {% if loop.index is even %}
+    <h3 class="font-italic">{{ kat }}</h3>
+    <hr style="border-top: 1px dotted #8c8b8b">
+    <ul>
+      {% for stavka in meni.stavke(kat) %}
+      <li>{{ stavka.naziv }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% endfor %}
+  </div>
 </div>
-<div class="row mt-5 mobilni ne_stampaj">
+<div class="row mt-5 justify-content-center mobilni ne_stampaj">
   <div class="col-md-6">
     <div class="card border-primary">
       <div class="card-header">Napomena:</div>
