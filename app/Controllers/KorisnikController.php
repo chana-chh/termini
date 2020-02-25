@@ -131,6 +131,20 @@ class KorisnikController extends Controller
             ]
         ];
 
+        $validation_pass = [
+            'lozinka' => [
+                'required' => true,
+                'minlen' => 6,
+            ],
+            'lozinka_potvrda' => [
+                'match_field' => 'lozinka',
+            ]
+        ];
+
+        if (!empty($data['lozinka'])) {
+            array_push($validation_rules, $validation_pass);
+        }
+
         $this->validator->validate($data, $validation_rules);
 
         if ($this->validator->hasErrors()) {
@@ -140,6 +154,12 @@ class KorisnikController extends Controller
             $this->flash->addMessage('success', 'Podaci o korisniku su uspešno izmenjeni.');
             $modelKorisnik = new Korisnik();
             $stari = $modelKorisnik->find($id);
+            unset($data['lozinka_potvrda']);
+            if (!empty($data['lozinka'])) {
+                $data['lozinka'] = password_hash($data['lozinka'], PASSWORD_DEFAULT);
+            } else {
+                unset($data['lozinka']);
+            }
             $modelKorisnik->update($data, $id);
             $korisnik = $modelKorisnik->find($id);
             $this->log($this::IZMENA, $korisnik, ['ime','prezime'], $stari);
