@@ -194,8 +194,16 @@
         </div>
         <div class="form-group col-md-3">
           <label for="broj_stolova">Broj stolova</label>
-          <input type="number" class="form-control{{ errors.broj_stolova[0] ? ' is-invalid' : '' }}" name="broj_stolova"
-            id="broj_stolova" value="{{ old.broj_stolova ? : 0 }}" min="1" step="1" autocomplete="off" required>
+          <div class="input-group">
+            <input type="number" class="form-control{{ errors.broj_stolova[0] ? ' is-invalid' : '' }}"
+              name="broj_stolova" id="broj_stolova" value="{{ old.broj_stolova ? : 0 }}" min="1" step="1"
+              autocomplete="off" required>
+            <div class="input-group-append">
+              <button class="btn btn-success" title="Proračun broja stolova" id="proracun-stolova">
+                <i class="fas fa-calculator"></i>
+              </button>
+            </div>
+          </div>
           <div class="valid-feedback">Odgovarajući podatak</div>
           <div class="invalid-feedback">{{ errors.broj_stolova[0] ? : 'Obavezno polje' }}</div>
         </div>
@@ -228,7 +236,7 @@
           <label for="muzika_kom">Muzika komitent</label>
           <select name="muzika_kom" id="muzika_kom"
             class="custom-select{{ errors.muzika_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Muzika') %}
             <option value="{{ kom.id }}" {{old.muzika_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -266,7 +274,7 @@
           <label for="fotograf_kom">Fotograf komitent</label>
           <select name="fotograf_kom" id="fotograf_kom"
             class="custom-select{{ errors.fotograf_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Fotograf') %}
             <option value="{{ kom.id }}" {{old.fotograf_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -303,7 +311,7 @@
         <div class="form-group col-md-3">
           <label for="torta_kom">Torta komitent</label>
           <select name="torta_kom" id="torta_kom" class="custom-select{{ errors.torta_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Torta') %}
             <option value="{{ kom.id }}" {{old.torta_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -314,17 +322,17 @@
           </div>
         </div>
         <div class="form-group col-md-2">
-          <label for="fotograf_iznos">Torta iznos</label>
-          <input type="number" class="form-control{{ errors.fotograf_iznos[0] ? ' is-invalid' : '' }} dodatna"
-            name="fotograf_iznos" id="fotograf_iznos" value="{{ old.fotograf_iznos ? : 0 }}" min="0" step="0.01"
+          <label for="torta_iznos">Torta iznos</label>
+          <input type="number" class="form-control{{ errors.torta_iznos[0] ? ' is-invalid' : '' }} dodatna"
+            name="torta_iznos" id="torta_iznos" value="{{ old.torta_iznos ? : 0 }}" min="0" step="0.01"
             autocomplete="off" required>
           <div class="valid-feedback">Odgovarajući podatak</div>
-          <div class="invalid-feedback">{{ errors.fotograf_iznos[0] ? : 'Obavezno polje' }}</div>
+          <div class="invalid-feedback">{{ errors.torta_iznos[0] ? : 'Obavezno polje' }}</div>
         </div>
         <div class="form-group col-md-6">
-          <label for="fotograf_opis">Torta opis</label>
-          <input type="text" class="form-control" name="fotograf_opis" id="fotograf_opis"
-            value="{{ old.fotograf_opis ? : '' }}" autocomplete="off">
+          <label for="torta_opis">Torta opis</label>
+          <input type="text" class="form-control" name="torta_opis" id="torta_opis" value="{{ old.torta_opis ? : '' }}"
+            autocomplete="off">
         </div>
       </div>
 
@@ -341,7 +349,7 @@
           <label for="dekoracija_kom">Dekoracija komitent</label>
           <select name="dekoracija_kom" id="dekoracija_kom"
             class="custom-select{{ errors.dekoracija_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Dekoracija') %}
             <option value="{{ kom.id }}" {{old.dekoracija_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -379,7 +387,7 @@
           <label for="kokteli_kom">Kokteli komitent</label>
           <select name="kokteli_kom" id="kokteli_kom"
             class="custom-select{{ errors.kokteli_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Kokteli') %}
             <option value="{{ kom.id }}" {{old.kokteli_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -417,7 +425,7 @@
           <label for="slatki_sto_kom">Slatki sto komitent</label>
           <select name="slatki_sto_kom" id="slatki_sto_kom"
             class="custom-select{{ errors.slatki_sto_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Slatki sto') %}
             <option value="{{ kom.id }}" {{old.slatki_sto_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -455,7 +463,7 @@
           <label for="vocni_sto_kom">Voćni sto komitent</label>
           <select name="vocni_sto_kom" id="vocni_sto_kom"
             class="custom-select{{ errors.vocni_sto_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Voćni sto') %}
             <option value="{{ kom.id }}" {{old.vocni_sto_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -493,7 +501,7 @@
           <label for="animator_kom">Animator komitent</label>
           <select name="animator_kom" id="animator_kom"
             class="custom-select{{ errors.animator_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Animator') %}
             <option value="{{ kom.id }}" {{old.animator_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -531,7 +539,7 @@
           <label for="trubaci_kom">Trubači komitent</label>
           <select name="trubaci_kom" id="trubaci_kom"
             class="custom-select{{ errors.trubaci_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Trubači') %}
             <option value="{{ kom.id }}" {{old.trubaci_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -569,7 +577,7 @@
           <label for="posebni_zahtevi_kom">Posebni zahtevi komitent</label>
           <select name="posebni_zahtevi_kom" id="posebni_zahtevi_kom"
             class="custom-select{{ errors.posebni_zahtevi_kom[0] ? ' is-invalid' : '' }}">
-            <option value=""></option>
+            <option value="5">Bez komitenta</option>
             {% for kom in komitenti.stavkeZaKategoriju('Posebni zahtevi') %}
             <option value="{{ kom.id }}" {{old.posebni_zahtevi_kom == kom.id ? ' selected' : ''}}>
               {{ kom.naziv }}
@@ -596,6 +604,23 @@
         </div>
       </div>
 
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="iznos_dodatno" class="text-success">Ukupan iznos dodatnih usluga</label>
+          <div class="input-group">
+            <input type="number" class="form-control{{ errors.iznos_dodatno[0] ? ' is-invalid' : '' }} dodatna"
+              name="iznos_dodatno" id="iznos_dodatno" value="{{ old.iznos_dodatno ? : 0 }}" min="0" step="0.01"
+              autocomplete="off" required>
+            <div class="input-group-append">
+              <button class="btn btn-success" type="button" id="izracunaj-dodatno"
+                title="Izračunavanje ukupnog iznosa dodatnih usluga">+=</button>
+            </div>
+          </div>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.iznos_dodatno[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
+
       <hr>
       <div class="form-row justify-content-between mt-2">
         <div class="col-12 text-right align-self-end">
@@ -608,7 +633,7 @@
     </form>
   </div>
 </div>
-{# Modal za dodavanje menija #}
+{# Modal za dodavanje menija
 <div id="meniModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -661,15 +686,17 @@
     </div>
   </div>
 </div>
-{# Kraj modala za dodavanje menija #}
+Kraj modala za dodavanje menija #}
 {% endblock sadrzaj %}
 {% block traka %}
 <div class="card border-dark">
-  <div class="card-header">Kalkulacije/preporuke</div>
+  <div class="card-header">
+    <h5 class="text-primary">Kapacitet i kalkulacije</h5>
+  </div>
   <div class="card-body text-dark">
     <div class="row">
       <div class="col">
-        <h5 class="text-primary">Kapacitet</h5>
+        <h5 class="text-primary">Kapacitet sale (mesta i stolovi)</h5>
       </div>
     </div>
     <div class="row">
@@ -689,7 +716,7 @@
       </div>
     </div>
     <hr>
-    <div class="row mb-2">
+    {# <div class="row mb-2">
       <div class="col-lg-6">
         <h5 class="text-primary">Preporučena cena (iznos)</h5>
       </div>
@@ -732,12 +759,12 @@
           autocomplete="off" readonly>
       </div>
     </div>
-    <hr>
+    <hr> #}
     <div class="row mb-2">
-      <div class="col-lg-6">
-        <h5 class="text-primary">Predlog raspodele stolica</h5>
+      <div class="col">
+        <h5 class="text-primary">Predlog broja stolova</h5>
       </div>
-      <div class="col-lg-6 text-right">
+      {# <div class="col-lg-6 text-right">
         <div class="btn-group">
           <button class="btn btn-sm btn-primary" id="dugme-prebaci-raspored">
             <i class="fas fa-angle-left"></i>
@@ -747,7 +774,7 @@
             <i class="fas fa-calculator"></i>
           </button>
         </div>
-      </div>
+      </div> #}
     </div>
     <div class="row">
       <div class="form-group col-lg-6">
@@ -773,7 +800,8 @@
     </div>
     <div class="row">
       <div class="form-group col">
-        <textarea class="form-control text-danger" name="greska" id="greske" rows="5" readonly></textarea>
+        <label for="greske" class="text-danger">Greške u proračunu broja mesta i stolova</label>
+        <textarea class="form-control text-danger" name="greske" id="greske" rows="5" readonly></textarea>
       </div>
     </div>
   </div>
@@ -796,7 +824,38 @@
     const slobodniStolovi = parseInt("{{ termin.slobodniStolovi() }}") + pocetniStolovi;
 
     var provera = true;
+    var izvrsiProracun = true;
 
+
+    // NOVO
+    $("#izracunaj-dodatno").click(() => {
+      let ukupno = Number($("#muzika_iznos").val()) +
+        Number($("#fotograf_iznos").val()) +
+        Number($("#torta_iznos").val()) +
+        Number($("#dekoracija_iznos").val()) +
+        Number($("#kokteli_iznos").val()) +
+        Number($("#slatki_sto_iznos").val()) +
+        Number($("#vocni_sto_iznos").val()) +
+        Number($("#animator_iznos").val()) +
+        Number($("#trubaci_iznos").val()) +
+        Number($("#posebni_zahtevi_iznos").val());
+
+      $("#iznos_dodatno").val(ukupno);
+    });
+
+    $("#proracun-stolova").click((event) => {
+      event.preventDefault();
+      proveriMatematiku();
+      izracunajRaspodelu();
+      if (izvrsiProracun) {
+        $("#broj_mesta_po_stolu").val($("#stolice").val());
+        $("#broj_stolova").val($("#ukupno_stolova").val());
+        proveriMatematiku();
+      }
+    });
+    // NOVO
+
+    /*
     $('#meni_id').change(function (event) {
       $('#detalj_meni').show();
       $('#hladno_predjelo').text($(this).find(':selected').data('hladno'));
@@ -807,7 +866,7 @@
       $('#hleb').text($(this).find(':selected').data('hleb'));
       $('#karta_pica').text($(this).find(':selected').data('pice'));
     });
-
+    */
     $('#cekiraj_sve').click(function () {
       $(':checkbox.cekiraj').not(this).prop('checked', this.checked);
     });
@@ -815,18 +874,18 @@
     $('#fizicko_pravno').click(function () {
       $('.fizicko_pravno').toggle(this.checked);
     });
+    /*
+      $("#dugme-izracunaj-iznos").click(function (event) {
+        izracunajCenuMenija();
+        izracunajCenuUsluga();
+        const m = parseFloat($('#cena_menija').val());
+        const u = parseFloat($('#cena_usluga').val());
+        $('#cena_ukupna').val((m + u).toFixed(2));
+      });
 
-    $("#dugme-izracunaj-iznos").click(function (event) {
-      izracunajCenuMenija();
-      izracunajCenuUsluga();
-      const m = parseFloat($('#cena_menija').val());
-      const u = parseFloat($('#cena_usluga').val());
-      $('#cena_ukupna').val((m + u).toFixed(2));
-    });
-
-    $("#dugme-prebaci-iznos").click(function (event) {
-      $("#iznos").val($('#cena_ukupna').val());
-    });
+      $("#dugme-prebaci-iznos").click(function (event) {
+        $("#iznos").val($('#cena_ukupna').val());
+      });
 
     $("#dugme-izracunaj-raspored").click(function (event) {
       proveriMatematiku();
@@ -839,65 +898,65 @@
       proveriMatematiku();
     });
 
-    $('#broj_mesta').change(function (event) {
-      proveriMatematiku();
-    });
+      $('#broj_mesta').change(function (event) {
+        proveriMatematiku();
+      });
 
-    $('#broj_mesta_po_stolu').change(function (event) {
-      proveriMatematiku();
-    });
+      $('#broj_mesta_po_stolu').change(function (event) {
+        proveriMatematiku();
+      });
 
-    $('#broj_stolova').change(function (event) {
-      proveriMatematiku();
-    });
+      $('#broj_stolova').change(function (event) {
+        proveriMatematiku();
+      });
 
-    function izracunajCenuMenija() {
-      const cm = $('#meni_id').children('option:selected').data('cenamenija');
-      const br = $('#broj_mesta').val();
-      let cena = (cm === undefined) ? 0 : parseFloat(cm);
-      let broj = (cm === "") ? 0 : parseInt(br);
+      function izracunajCenuMenija() {
+        const cm = $('#meni_id').children('option:selected').data('cenamenija');
+        const br = $('#broj_mesta').val();
+        let cena = (cm === undefined) ? 0 : parseFloat(cm);
+        let broj = (cm === "") ? 0 : parseInt(br);
 
-      $('#cena_menija').val((cena * broj).toFixed(2));
-    }
-
-    function izracunajCenuUsluga() {
-      let cenaUsluga = 0;
-
-      if ($("#muzika_chk").prop("checked") == true) {
-        cenaUsluga += parseFloat($("#muzika_iznos").val());
+        $('#cena_menija').val((cena * broj).toFixed(2));
       }
 
-      if ($("#fotograf_chk").prop("checked") == true) {
-        cenaUsluga += parseFloat($("#fotograf_iznos").val());
+      function izracunajCenuUsluga() {
+        let cenaUsluga = 0;
+
+        if ($("#muzika_chk").prop("checked") == true) {
+          cenaUsluga += parseFloat($("#muzika_iznos").val());
+        }
+
+        if ($("#fotograf_chk").prop("checked") == true) {
+          cenaUsluga += parseFloat($("#fotograf_iznos").val());
+        }
+
+        if ($("#dekoracija_chk").prop("checked") == true) {
+          cenaUsluga += parseFloat($("#dekoracija_iznos").val());
+        }
+
+        if ($("#torta_chk").prop("checked") == true) {
+          cenaUsluga += parseFloat($("#torta_iznos").val());
+        }
+
+        if ($("#kokteli_chk").prop("checked") == true) {
+          cenaUsluga += parseFloat($("#kokteli_iznos").val());
+        }
+
+        if ($("#slatki_sto_chk").prop("checked") == true) {
+          cenaUsluga += parseFloat($("#slatki_sto_iznos").val());
+        }
+
+        if ($("#vocni_sto_chk").prop("checked") == true) {
+          cenaUsluga += parseFloat($("#vocni_sto_iznos").val());
+        }
+
+        if ($("#posebni_zahtevi_iznos").val() !== "" && $("#posebni_zahtevi").val() !== "") {
+          cenaUsluga += parseFloat($("#posebni_zahtevi_iznos").val());
+        }
+
+        $('#cena_usluga').val(cenaUsluga.toFixed(2));
       }
-
-      if ($("#dekoracija_chk").prop("checked") == true) {
-        cenaUsluga += parseFloat($("#dekoracija_iznos").val());
-      }
-
-      if ($("#torta_chk").prop("checked") == true) {
-        cenaUsluga += parseFloat($("#torta_iznos").val());
-      }
-
-      if ($("#kokteli_chk").prop("checked") == true) {
-        cenaUsluga += parseFloat($("#kokteli_iznos").val());
-      }
-
-      if ($("#slatki_sto_chk").prop("checked") == true) {
-        cenaUsluga += parseFloat($("#slatki_sto_iznos").val());
-      }
-
-      if ($("#vocni_sto_chk").prop("checked") == true) {
-        cenaUsluga += parseFloat($("#vocni_sto_iznos").val());
-      }
-
-      if ($("#posebni_zahtevi_iznos").val() !== "" && $("#posebni_zahtevi").val() !== "") {
-        cenaUsluga += parseFloat($("#posebni_zahtevi_iznos").val());
-      }
-
-      $('#cena_usluga').val(cenaUsluga.toFixed(2));
-    }
-
+      */
     function proveriMatematiku() {
       const bm = $('#broj_mesta').val();
       const bss = $('#broj_mesta_po_stolu').val();
@@ -907,28 +966,36 @@
       let brojStolica = (bss === "") ? 0 : parseInt(bss);
       let brojStolova = (bs === "") ? 0 : parseInt(bs);
 
-      const razlika = (brojStolica * brojStolova) - brojMesta;
       provera = true;
       let proveraTekst = "";
 
-      if (brojMesta > slobodnaMesta) {
+      if (brojMesta === 0 || brojStolica === 0) {
         provera = false;
-        proveraTekst += "Broj zvanica je veci od broja slobodnih mesta!\n";
-      }
+        izvrsiProracun = false;
+        proveraTekst = "Morate uneti broj mesta(zvanica) i broj stolica po stolu da bi se izračunao broj stolova!";
+      } else {
+        izvrsiProracun = true;
+        const razlika = (brojStolica * brojStolova) - brojMesta;
 
-      if (brojStolova > slobodniStolovi) {
-        provera = false;
-        proveraTekst += "Broj stolova je veci od broja slobodnih stolova!\n";
-      }
+        if (brojMesta > slobodnaMesta) {
+          provera = false;
+          proveraTekst += "Broj zvanica je veci od broja slobodnih mesta!\n";
+        }
 
-      if (razlika < 0) {
-        provera = false;
-        proveraTekst += `Broj zvanica je (za ${razlika * -1}) veci od broja mesta za stolovima!\n`;
-      }
+        if (brojStolova > slobodniStolovi) {
+          provera = false;
+          proveraTekst += "Broj stolova je veci od broja slobodnih stolova!\n";
+        }
 
-      if (razlika >= brojStolica) {
-        provera = false;
-        proveraTekst += "Broj stolova je veci od potrebnog za uneti broj zvanica!\n";
+        if (razlika < 0) {
+          provera = false;
+          proveraTekst += `Broj zvanica je (za ${razlika * -1}) veci od broja mesta za stolovima!\n`;
+        }
+
+        if (razlika >= brojStolica) {
+          provera = false;
+          proveraTekst += "Broj stolova je veci od potrebnog za uneti broj zvanica!\n";
+        }
       }
 
       if (!provera) {
@@ -939,6 +1006,9 @@
     }
 
     function izracunajRaspodelu() {
+      if (!izvrsiProracun) {
+        return false;
+      }
       const minStolicaSingle = 8; // min stolica po stolu za single ugovor
       const minStolicaMulti = 10; // min stolica po stolu za multi ugovor
       const optStolica = 12; // optimalno stolica po stolu
@@ -951,17 +1021,17 @@
 
       let brojMesta = (bm === "") ? 0 : parseInt(bm);
       let brojStolica = (bss === "") ? 0 : parseInt(bss);
+      /*
+            if (brojMesta === 0) {
+              $("#greske").text("Nije unet broj mesta (zvanica)!\n");
+              return false;
+            }
 
-      if (brojMesta === 0) {
-        $("#greske").text("Nije unet broj mesta (zvanica)!\n");
-        return false;
-      }
-
-      if (brojStolica === 0) {
-        $("#greske").text("Nije unet broj stolica za stolom!\n");
-        return false;
-      }
-
+            if (brojStolica === 0) {
+              $("#greske").text("Nije unet broj stolica za stolom!\n");
+              return false;
+            }
+      */
       let predlogStolica = 0;
       let predlogStolova = 0;
       let stolovi = 0;
@@ -997,7 +1067,7 @@
       $("#ekstra_stolice").val(ostatak);
       $("#ukupno_stolova").val(stolovi + stoPlus);
     }
-
+    /*
     $('#meniModal').on('hide.bs.modal', function (e) {
       $('#meni-forma').removeClass("was-validated");
       $("#nazivMenija").removeClass("is-invalid");
@@ -1048,7 +1118,7 @@
         }
       });
     });
-
+    */
     window.addEventListener(
       "load",
       function () {

@@ -69,18 +69,18 @@ class Ugovor extends Model
         if (!empty($this->uplate())) {
             $zakljucati = true;
         }
-
-        if (
-            $this->muzika_chk === 1 &&
-            $this->fotograf_chk === 1 &&
-            $this->torta_chk === 1 &&
-            $this->dekoracija_chk === 1 &&
-            $this->kokteli_chk === 1 &&
-            $this->slatki_sto_chk === 1 &&
-            $this->vocni_sto_chk === 1
-        ) {
-            $zakljucati = true;
-        }
+        // Ovaj uslov bih izbacio ili eventualno da se doda da li ima vezanih menija
+        // if (
+        //     $this->muzika_chk === 1 &&
+        //     $this->fotograf_chk === 1 &&
+        //     $this->torta_chk === 1 &&
+        //     $this->dekoracija_chk === 1 &&
+        //     $this->kokteli_chk === 1 &&
+        //     $this->slatki_sto_chk === 1 &&
+        //     $this->vocni_sto_chk === 1
+        // ) {
+        //     $zakljucati = true;
+        // }
 
         return $zakljucati;
     }

@@ -139,23 +139,21 @@ class TerminController extends Controller
             $data['vaznost'] = empty($vaznost) ? null : date('Y-m-d', strtotime("+".(int)$vaznost." days"));
             $model_termin->insert($data);
             $termin = $model_termin->find($model_termin->lastId());
-            $link = $this->router->fullUrlFor($this->request->getUri(),'termin.detalj.get', ["id"=>$termin->id]);
-			$d = date('d.m.Y', strtotime($termin->datum));
-			$p = date('H:i', strtotime($termin->pocetak));
-            $k = date('H:i', strtotime($termin->kraj));
+            $link = $this->router->fullUrlFor($this->request->getUri(), 'termin.detalj.get', ["id"=>$termin->id]);
+            // $d = date('d.m.Y', strtotime($termin->datum));
+            // $p = date('H:i', strtotime($termin->pocetak));
+            // $k = date('H:i', strtotime($termin->kraj));
 
-            // ovde treba napraviti mails/zakazano.twig proslediti mu podatke
-            // $termin, $link
-            // $telo = $this->renderPartial('mail/zakazano.twig', compact('termin', 'link'));
             $telo = $this->renderPartial('mail/zakazan_termin.twig', compact('termin', 'link'));
 
             $this->log($this::DODAVANJE, $termin, 'opis');
 
-            $this->mailer->sendMail(
-                [['email' => 'stashakg@gmail.com', 'name' => 'Stanislav']],
-                "Zakazan je novi termin u sali {$termin->sala()->naziv} za {$d}. godine",
-                $telo
-            );
+            // Ovo je iskljuceno da ne bi stalno slali mail kad se zakaze termin :)
+            // $this->mailer->sendMail(
+            //     [['email' => 'stashakg@gmail.com', 'name' => 'Stanislav']],
+            //     "Zakazan je novi termin u sali {$termin->sala()->naziv} za {$d}. godine",
+            //     $telo
+            // );
 
             $this->flash->addMessage('success', 'Termin je uspešno dodat.');
             return $response->withRedirect($this->router->pathFor('termin.pregled.get', ['datum' => $data['datum']]));

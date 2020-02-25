@@ -164,8 +164,6 @@ class UgovorController extends Controller
         $model_termin = new Termin();
         $termin = $model_termin->find($termin_id);
 
-        // $model_meni = new Meni();
-        // $meniji = $model_meni->all();
         $komitenti = new Komitent();
 
         if (!$termin->multiUgovori() && !empty($termin->ugovori())) {
@@ -178,10 +176,7 @@ class UgovorController extends Controller
 
     public function postUgovorDodavanje($request, $response)
     {
-        // $data = $request->getParams();
         $data = $this->data();
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
         unset($data['cekiraj_sve']);
 
         $data['fizicko_pravno'] = isset($data['fizicko_pravno']) ? 1 : 0;
@@ -192,25 +187,29 @@ class UgovorController extends Controller
         $data['kokteli_chk'] = isset($data['kokteli_chk']) ? 1 : 0;
         $data['slatki_sto_chk'] = isset($data['slatki_sto_chk']) ? 1 : 0;
         $data['vocni_sto_chk'] = isset($data['vocni_sto_chk']) ? 1 : 0;
+        $data['animator_chk'] = isset($data['animator_chk']) ? 1 : 0;
+        $data['trubaci_chk'] = isset($data['trubaci_chk']) ? 1 : 0;
+        $data['posebni_zahtevi_chk'] = isset($data['posebni_zahtevi_chk']) ? 1 : 0;
 
         $validation_rules = [
             'termin_id' => ['required' => true,],
-            'meni_id' => ['required' => true,],
             'prezime' => ['required' => true,],
             'ime' => ['required' => true,],
             'broj_mesta' => ['required' => true,],
             'broj_stolova' => ['required' => true,],
             'broj_mesta_po_stolu' => ['required' => true,],
-            'iznos' => ['required' => true,],
-            'prosek_godina' => ['required' => true,],
-            'muzika_chk' => ['required' => true,],
+            'iznos_dodatno' => ['required' => true,],
             'fizicko_pravno' => ['required' => true,],
+            'muzika_chk' => ['required' => true,],
             'fotograf_chk' => ['required' => true,],
             'torta_chk' => ['required' => true,],
             'dekoracija_chk' => ['required' => true,],
             'kokteli_chk' => ['required' => true,],
             'slatki_sto_chk' => ['required' => true,],
             'vocni_sto_chk' => ['required' => true,],
+            'animator_chk' => ['required' => true,],
+            'trubaci_chk' => ['required' => true,],
+            'posebni_zahtevi_chk' => ['required' => true,],
             'muzika_iznos' => ['required' => true,],
             'fotograf_iznos' => ['required' => true,],
             'torta_iznos' => ['required' => true,],
@@ -218,6 +217,8 @@ class UgovorController extends Controller
             'kokteli_iznos' => ['required' => true,],
             'slatki_sto_iznos' => ['required' => true,],
             'vocni_sto_iznos' => ['required' => true,],
+            'animator_iznos' => ['required' => true,],
+            'trubaci_iznos' => ['required' => true,],
             'posebni_zahtevi_iznos' => ['required' => true,]
         ];
 
@@ -240,7 +241,7 @@ class UgovorController extends Controller
             $data['korisnik_id'] = $this->auth->user()->id;
             $model_ugovor->insert($data);
             $ugovor = $model_ugovor->find($model_ugovor->lastId());
-            $this->log(Logger::DODAVANJE, $ugovor, 'broj_ugovora');
+            $this->log($this::DODAVANJE, $ugovor, 'broj_ugovora');
 
             $model_termin = new Termin();
             $termin = $model_termin->find($ugovor->termin_id);
@@ -251,7 +252,7 @@ class UgovorController extends Controller
             }
 
             $this->flash->addMessage('success', 'Novi ugovor je uspešno dodat.');
-            return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => (int) $data['termin_id']]));
+            return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => (int) $ugovor->id]));
         }
     }
 
