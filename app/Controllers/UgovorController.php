@@ -263,49 +263,38 @@ class UgovorController extends Controller
         $ugovor = $model_ugovor->find($id);
         $model_termin = new Termin();
         $termin = $model_termin->find($ugovor->termin_id);
+        $komitenti = new Komitent();
 
-        $model_meni = new Meni();
-        $meniji = $model_meni->all();
-
-        $this->render($response, 'ugovor/izmena.twig', compact('ugovor', 'meniji', 'termin'));
+        $this->render($response, 'ugovor/izmena.twig', compact('ugovor', 'termin', 'komitenti'));
     }
 
     public function postUgovorIzmena($request, $response)
     {
-        // $data = $request->getParams();
-        $data = $this->data();
-        $id = (int) $data['id'];
-        unset($data['id']);
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
+        $data = $this->data('id');
+        $id = $this->dataId();
 
-        $fizicko_pravno = isset($data['fizicko_pravno']) ? 1 : 0;
-        $data['fizicko_pravno'] = $fizicko_pravno;
-        $muzika_chk = isset($data['muzika_chk']) ? 1 : 0;
-        $data['muzika_chk'] = $muzika_chk;
-        $fotograf_chk = isset($data['fotograf_chk']) ? 1 : 0;
-        $data['fotograf_chk'] = $fotograf_chk;
-        $torta_chk = isset($data['torta_chk']) ? 1 : 0;
-        $data['torta_chk'] = $torta_chk;
-        $dekoracija_chk = isset($data['dekoracija_chk']) ? 1 : 0;
-        $data['dekoracija_chk'] = $dekoracija_chk;
-        $kokteli_chk = isset($data['kokteli_chk']) ? 1 : 0;
-        $data['kokteli_chk'] = $kokteli_chk;
-        $slatki_sto_chk = isset($data['slatki_sto_chk']) ? 1 : 0;
-        $data['slatki_sto_chk'] = $slatki_sto_chk;
-        $vocni_sto_chk = isset($data['vocni_sto_chk']) ? 1 : 0;
-        $data['vocni_sto_chk'] = $vocni_sto_chk;
+        unset($data['cekiraj_sve']);
+
+        $data['fizicko_pravno'] = isset($data['fizicko_pravno']) ? 1 : 0;
+        $data['muzika_chk'] = isset($data['muzika_chk']) ? 1 : 0;
+        $data['fotograf_chk'] = isset($data['fotograf_chk']) ? 1 : 0;
+        $data['torta_chk'] = isset($data['torta_chk']) ? 1 : 0;
+        $data['dekoracija_chk'] = isset($data['dekoracija_chk']) ? 1 : 0;
+        $data['kokteli_chk'] = isset($data['kokteli_chk']) ? 1 : 0;
+        $data['slatki_sto_chk'] = isset($data['slatki_sto_chk']) ? 1 : 0;
+        $data['vocni_sto_chk'] = isset($data['vocni_sto_chk']) ? 1 : 0;
+        $data['animator_chk'] = isset($data['animator_chk']) ? 1 : 0;
+        $data['trubaci_chk'] = isset($data['trubaci_chk']) ? 1 : 0;
+        $data['posebni_zahtevi_chk'] = isset($data['posebni_zahtevi_chk']) ? 1 : 0;
 
         $validation_rules = [
             'termin_id' => ['required' => true,],
-            'meni_id' => ['required' => true,],
             'prezime' => ['required' => true,],
             'ime' => ['required' => true,],
             'broj_mesta' => ['required' => true,],
             'broj_stolova' => ['required' => true,],
             'broj_mesta_po_stolu' => ['required' => true,],
-            'iznos' => ['required' => true,],
-            'prosek_godina' => ['required' => true,],
+            'iznos_dodatno' => ['required' => true,],
             'fizicko_pravno' => ['required' => true,],
             'muzika_chk' => ['required' => true,],
             'fotograf_chk' => ['required' => true,],
@@ -314,6 +303,9 @@ class UgovorController extends Controller
             'kokteli_chk' => ['required' => true,],
             'slatki_sto_chk' => ['required' => true,],
             'vocni_sto_chk' => ['required' => true,],
+            'animator_chk' => ['required' => true,],
+            'trubaci_chk' => ['required' => true,],
+            'posebni_zahtevi_chk' => ['required' => true,],
             'muzika_iznos' => ['required' => true,],
             'fotograf_iznos' => ['required' => true,],
             'torta_iznos' => ['required' => true,],
@@ -321,6 +313,8 @@ class UgovorController extends Controller
             'kokteli_iznos' => ['required' => true,],
             'slatki_sto_iznos' => ['required' => true,],
             'vocni_sto_iznos' => ['required' => true,],
+            'animator_iznos' => ['required' => true,],
+            'trubaci_iznos' => ['required' => true,],
             'posebni_zahtevi_iznos' => ['required' => true,]
         ];
 
@@ -352,7 +346,7 @@ class UgovorController extends Controller
             } else {
                 $model_termin->update(['zauzet' => 0], $termin->id);
             }
-            $this->log(Logger::IZMENA, $ugovor1, 'broj_ugovora', $ugovor);
+            $this->log($this::IZMENA, $ugovor1, 'broj_ugovora', $ugovor);
             $this->flash->addMessage('success', 'Ugovor je uspešno izmenjen.');
             return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => (int) $data['termin_id']]));
         }
@@ -367,6 +361,7 @@ class UgovorController extends Controller
         $termin = $model_termin->find($ugovor->termin_id);
 
         // provera uplata i dokumenata
+        // TODO: provera menija, soba i pdsetnika
         if (count($ugovor->uplate()) > 0) {
             $this->flash->addMessage('danger', "Postoje uplate vezane za ovaj ugovor. Da bi se obrisao ugovor nephodno je prethodno obrisati sve uplate vezane za njega.");
             return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
@@ -386,7 +381,7 @@ class UgovorController extends Controller
         $success = $model->deleteOne($id);
 
         if ($success) {
-            $this->log(Logger::BRISANJE, $ugovor, 'broj_ugovora', $ugovor);
+            $this->log($this::BRISANJE, $ugovor, 'broj_ugovora', $ugovor);
             $this->flash->addMessage('success', "Ugovor je uspešno obrisan.");
             return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
         } else {

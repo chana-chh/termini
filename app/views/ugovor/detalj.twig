@@ -7,13 +7,11 @@
 			<i class="fas fa-file-signature text-secondary"></i>
 			Pregled ugovora
 			<strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
-			&emsp;<small class="font-italic">(od {{ugovor.datum|date()}})</small>
+			<small class="font-italic">(od {{ ugovor.datum|date() }})</small>
 		</h1>
 	</div>
 	<div class="col-lg-4 text-right pt-3">
 		<div class="btn-group btn-group-sm">
-			<button type="button" class="btn btn-secondary" onclick="window.history.back();"
-				title="Povratak na prethodnu stranu"><i class="fas fa-chevron-circle-left"></i> Nazad</button>
 			<a href="{{ path_for('termin.detalj.get', { id: ugovor.termin_id }) }}" class="btn btn-secondary"><i
 					class="fas fa-arrow-alt-circle-left"></i> Termin</a>
 			<a class="btn btn-warning btn-sm" href="{{ path_for('termin.ugovor.izmena.get', { id: ugovor.id }) }}"
@@ -40,98 +38,75 @@
 {% endblock naslov %}
 {% block sadrzaj %}
 <h4 class="text-primary">
-	Termin: {{ugovor.termin().datum|date()}} od {{ ugovor.termin.pocetak|date("H:i") }} do
+	Termin: {{ ugovor.termin().datum|date() }} od {{ ugovor.termin.pocetak|date("H:i") }} do
 	{{ ugovor.termin.kraj|date("H:i") }}
 </h4>
-<table class="table mb-0">
+<table class="table table-sm table-hover mb-0">
 	<tr>
-		<th class="w-20">Meni</th>
-		<td class="w-70">{{ ugovor.meni.naziv }}</td>
-		<td class="w-10 text-right">
-			<a class="btn btn-info btn-sm" href="{{ path_for('meni.detalj', { id: ugovor.meni.id }) }}"
-				title="Detaljni pregled odabranog menija">
-				<i class="fas fa-eye"></i>
-			</a </td> </tr> <tr>
-		<th><strong>Ime i prezime</strong></th>
-		<td>{{ ugovor.punoIme() }}</td>
-		<td></td>
+		<th class="w-20"><strong>Lični podaci</strong></th>
+		<td class="w-30">{{ ugovor.punoIme() }}</td>
+		<td class="w-25">{{ ugovor.telefon }}</td>
+		<td class="w-25"><a href="mailto:{{ ugovor.email }}">{{ ugovor.email }}</td>
 	</tr>
 	<tr>
-		<th><strong>Telefon</strong></th>
-		<td>{{ ugovor.telefon }}</td>
-		<td></td>
-	</tr>
-	<tr>
-		<th><strong>E-mail</strong></th>
-		<td>
-			<a href="mailto:{{ ugovor.email }}">
-				{{ ugovor.email }}</td>
-		</a>
+		<th><strong>Adresa</strong></th>
+		<td>{{ ugovor.adresa_firme }}</td>
+		<td>{{ ugovor.mesto_firme }}</td>
 		<td></td>
 	</tr>
 	{% if ugovor.fizicko_pravno == 1 %}
 	<tr>
-		<th><strong>Naziv firme</strong></th>
+		<th><strong>Podaci o firmi</strong></th>
 		<td>{{ ugovor.naziv_firme }}</td>
-		<td></td>
-	</tr>
-	<tr>
-		<th><strong>PIB</strong></th>
-		<td>{{ ugovor.pib_firme }}</td>
-		<td></td>
-	</tr>
-	<tr>
-		<th><strong>Matični broj</strong></th>
-		<td>{{ ugovor.mb_firme }}</td>
-		<td></td>
-	</tr>
-	<tr>
-		<th><strong>Adresa i mesto firme</strong></th>
-		<td>{{ ugovor.adresa_firme }}, {{ ugovor.mesto_firme }}</td>
-		<td></td>
+		<td>PIB: {{ ugovor.pib_firme }}</td>
+		<td>MB: {{ ugovor.mb_firme }}</td>
 	</tr>
 	<tr>
 		<th><strong>Račun firme</strong></th>
-		<td>{{ ugovor.racun_firme }} kod {{ ugovor.banka_firme }}</td>
+		<td>{{ ugovor.banka_firme }}</td>
+		<td>{{ ugovor.racun_firme }}</td>
 		<td></td>
 	</tr>
 	{% endif %}
-	<tr class="bg-light">
-		<th><strong>Cena</strong></th>
-		<td>{{ ugovor.iznos|number_format }}</td>
-		<td></td>
+	<tr>
+		<th><strong>Iznos</strong></th>
+		<td>Meni</td>
+		<td>Dodatne usluge</td>
+		<td>Sobe</td>
 	</tr>
-	<tr class="bg-light">
-		<th><strong>Cena usluga</strong></th>
-		<td>{{ ugovor.cenaUsluga()|number_format }}</td>
-		<td></td>
+	<tr>
+		<th class="text-success">{{ ugovor.ukupanIznos()|number_format() }}</th>
+		<td>{{ ugovor.iznos_meni|number_format() }}</td>
+		<td>{{ ugovor.iznos_dodatno|number_format() }}</td>
+		<td>{{ ugovor.iznos_sobe|number_format() }}</td>
 	</tr>
 	<tr>
 		<th><strong>Posebni zahtevi</strong></th>
-		<td>{{ ugovor.posebni_zahtevi }}</td>
-		<td></td>
+		<td colspan="3">{{ ugovor.posebni_zahtevi_opis }}</td>
 	</tr>
 	<tr>
 		<th><strong>Napomena</strong></th>
-		<td>{{ ugovor.napomena }}</td>
-		<td></td>
+		<td colspan="3">{{ ugovor.napomena }}</td>
 	</tr>
 </table>
 <hr>
+
+{# DODATNE USLUGE #}
 <div class="card border-dark mb-2">
 	<div class="card-header">
-		Detalji vezani za organizaciju
+		<h5>Dodatne usluge</h5>
 	</div>
-	<div class="card-body text-dark">
+	<div class="card-body">
 		<div class="row">
 			<div class="col">
-				<table class="table table-sm table-striped mb-0" style="font-size: 0.875rem;">
+				<table class="table table-sm table-hover mb-0" style="font-size: 0.875rem;">
 					<thead>
 						<tr>
 							<th class="w-5">#</th>
 							<th class="w-20">Usluga</th>
+							<th class="w-20">Komitent</th>
 							<th class="w-15 text-center">Status</th>
-							<th class="w-45">Opis</th>
+							<th class="w-25">Opis</th>
 							<th class="w-15">Iznos</th>
 						</tr>
 					</thead>
@@ -139,74 +114,122 @@
 						<tr>
 							<th>1</th>
 							<td>Muzika</td>
+							<td>
+								{{ ugovor.komitent('muzika_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('muzika_kom').naziv }}
+							</td>
 							<td class="text-center">
 								{{ (ugovor.muzika_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
 							</td>
 							<td>{{ ugovor.muzika_opis }}</td>
-							<td class="text-success">{{ ugovor.muzika_iznos | number_format(2, '.', ',') }}</td>
+							<td class="text-success">{{ ugovor.muzika_iznos|number_format() }}</td>
 						</tr>
 						<tr>
 							<th>2</th>
 							<td>Fotograf</td>
+							<td>
+								{{ ugovor.komitent('fotograf_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('fotograf_kom').naziv }}
+							</td>
 							<td class="text-center">
 								{{ (ugovor.fotograf_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
 							</td>
 							<td>{{ ugovor.fotograf_opis }}</td>
-							<td class="text-success">{{ ugovor.fotograf_iznos | number_format(2, '.', ',') }}</td>
+							<td class="text-success">{{ ugovor.fotograf_iznos|number_format() }}</td>
 						</tr>
 						<tr>
 							<th>3</th>
 							<td>Torta</td>
+							<td>
+								{{ ugovor.komitent('torta_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('torta_kom').naziv }}
+							</td>
 							<td class="text-center">
 								{{ (ugovor.torta_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
 							</td>
 							<td>{{ ugovor.torta_opis }}</td>
-							<td class="text-success">{{ ugovor.torta_iznos | number_format(2, '.', ',') }}</td>
+							<td class="text-success">{{ ugovor.torta_iznos|number_format() }}</td>
 						</tr>
 						<tr>
 							<th>4</th>
 							<td>Dekoracija</td>
+							<td>
+								{{ ugovor.komitent('dekoracija_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('dekoracija_kom').naziv }}
+							</td>
 							<td class="text-center">
 								{{ (ugovor.dekoracija_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
 							</td>
 							<td>{{ ugovor.dekoracija_opis }}</td>
-							<td class="text-success">{{ ugovor.dekoracija_iznos | number_format(2, '.', ',') }}</td>
+							<td class="text-success">{{ ugovor.dekoracija_iznos|number_format() }}</td>
 						</tr>
 						<tr>
 							<th>5</th>
 							<td>Kokteli</td>
+							<td>
+								{{ ugovor.komitent('kokteli_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('kokteli_kom').naziv }}
+							</td>
 							<td class="text-center">
 								{{ (ugovor.kokteli_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
 							</td>
 							<td>{{ ugovor.kokteli_opis }}</td>
-							<td class="text-success">{{ ugovor.kokteli_iznos | number_format(2, '.', ',') }}</td>
+							<td class="text-success">{{ ugovor.kokteli_iznos|number_format() }}</td>
 						</tr>
 						<tr>
 							<th>6</th>
 							<td>Slatki sto</td>
+							<td>
+								{{ ugovor.komitent('slatki_sto_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('slatki_sto_kom').naziv }}
+							</td>
 							<td class="text-center">
 								{{ (ugovor.slatki_sto_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
 							</td>
 							<td>{{ ugovor.slatki_sto_opis }}</td>
-							<td class="text-success">{{ ugovor.slatki_sto_iznos | number_format(2, '.', ',') }}</td>
+							<td class="text-success">{{ ugovor.slatki_sto_iznos|number_format() }}</td>
 						</tr>
 						<tr>
 							<th>7</th>
 							<td>Voćni sto</td>
+							<td>
+								{{ ugovor.komitent('vocni_sto_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('vocni_sto_kom').naziv }}
+							</td>
 							<td class="text-center">
 								{{ (ugovor.vocni_sto_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
 							</td>
 							<td>{{ ugovor.vocni_sto_opis }}</td>
-							<td class="text-success">{{ ugovor.vocni_sto_iznos | number_format(2, '.', ',') }}</td>
+							<td class="text-success">{{ ugovor.vocni_sto_iznos|number_format() }}</td>
 						</tr>
 						<tr>
 							<th>8</th>
+							<td>Animator</td>
+							<td>
+								{{ ugovor.komitent('animator_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('animator_kom').naziv }}
+							</td>
+							<td class="text-center">
+								{{ (ugovor.animator_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+							</td>
+							<td>{{ ugovor.animator_opis }}</td>
+							<td class="text-success">{{ ugovor.animator_iznos|number_format() }}</td>
+						</tr>
+						<tr>
+							<th>9</th>
+							<td>Trubači</td>
+							<td>
+								{{ ugovor.komitent('trubaci_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('trubaci_kom').naziv }}
+							</td>
+							<td class="text-center">
+								{{ (ugovor.trubaci_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
+							</td>
+							<td>{{ ugovor.trubaci_opis }}</td>
+							<td class="text-success">{{ ugovor.trubaci_iznos|number_format() }}</td>
+						</tr>
+						<tr>
+							<th>10</th>
 							<td>Posebni zahtevi</td>
 							<td>
+								{{ ugovor.komitent('posebni_zahtevi_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('posebni_zahtevi_kom').naziv }}
 							</td>
-							<td>{{ ugovor.posebni_zahtevi }}</td>
-							<td class="text-success">{{ ugovor.posebni_zahtevi_iznos | number_format(2, '.', ',') }}
+							<td class="text-center">
+								{{ (ugovor.posebni_zahtevi_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
 							</td>
+							<td>{{ ugovor.posebni_zahtevi_opis }}</td>
+							<td class="text-success">{{ ugovor.posebni_zahtevi_iznos|number_format() }}</td>
 						</tr>
 					</tbody>
 				</table>

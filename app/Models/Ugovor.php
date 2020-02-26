@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Classes\Model;
+use App\Models\Komitent;
 
 class Ugovor extends Model
 {
@@ -90,22 +91,6 @@ class Ugovor extends Model
         return $this->termin()->multiUgovori();
     }
 
-    public function cenaUsluga()
-    {
-        $cena = 0.00;
-        $cena =
-            $this->muzika_iznos +
-            $this->fotograf_iznos +
-            $this->torta_iznos +
-            $this->dekoracija_iznos +
-            $this->kokteli_iznos +
-            $this->slatki_sto_iznos +
-            $this->vocni_sto_iznos +
-            $this->posebni_zahtevi_iznos;
-
-        return $cena;
-    }
-
     public function sobeSuma()
     {
         $rezultat = 0.00;
@@ -118,7 +103,7 @@ class Ugovor extends Model
         if ($promenjiva != null) {
             return (float) $this->fetch($sql)[0]->rezultat;
         }
-            return 0;
+        return 0;
     }
 
     public function sobaUgovor()
@@ -128,6 +113,12 @@ class Ugovor extends Model
 
     public function ukupanIznos()
     {
-        return (float) $this->iznos_meni + $this->iznos_sobe + $this->iznos_dodatno;
+        return (float) ($this->iznos_meni + $this->iznos_sobe + $this->iznos_dodatno);
+    }
+
+    public function komitent($naziv)
+    {
+        $kom = new Komitent();
+        return $kom->find($this->$naziv);
     }
 }
