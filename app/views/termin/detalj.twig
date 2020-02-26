@@ -4,7 +4,7 @@
 {% block naslov %}
 
 {% if termin.vaznost %}
-{% if termin.vaznost|date() <  'now'|date() %}
+{% if date(termin.vaznost) <  date() %}
 <div class="row mx-2 my-2">
   <div class="col">
     <div class="alert alert-danger text-center" role="alert">
