@@ -5,7 +5,7 @@
 	<div class="col-lg-8">
 		<h1>
 			<i class="fas fa-file-signature text-secondary"></i>
-			Pregled ugovora
+			Dopuna ugovora
 			<strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
 			<small class="font-italic">(od {{ ugovor.datum|date() }})</small>
 		</h1>
@@ -14,7 +14,7 @@
 		<div class="btn-group btn-group-sm">
 			<a href="{{ path_for('termin.detalj.get', { id: ugovor.termin_id }) }}" class="btn btn-secondary"><i
 					class="fas fa-arrow-alt-circle-left"></i> Termin</a>
-			<a class="btn btn-warning btn-sm" href="{{ path_for('termin.ugovor.izmena.get', { id: ugovor.id }) }}"
+			{# <a class="btn btn-warning btn-sm" href="{{ path_for('termin.ugovor.izmena.get', { id: ugovor.id }) }}"
 				title="Izmena odabranog ugovora"><i class="fas fa-edit"></i> Izmena</a>
 			<a href="{{ path_for('ugovor.uplate.lista', { id: ugovor.id }) }}" class="btn btn-success"><i
 					class="fas fa-money-bill"></i> Uplate</a>
@@ -30,7 +30,7 @@
 				<i class="fas fa-print"></i>
 				Štampa
 			</a>
-			{% endif %}
+			{% endif %} #}
 		</div>
 	</div>
 </div>
@@ -69,6 +69,12 @@
 	</tr>
 	{% endif %}
 	<tr>
+		<th><strong>Broj mesta</strong></th>
+		<td>{{ ugovor.broj_mesta }}</td>
+		<th><strong>Broj stolova</strong></th>
+		<td>{{ ugovor.broj_stolova }} / {{ ugovor.broj_mesta_po_stolu }}</td>
+	</tr>
+	<tr>
 		<th><strong>Iznos</strong></th>
 		<td><em>Meni</em></td>
 		<td><em>Dodatne usluge</em></td>
@@ -90,6 +96,194 @@
 	</tr>
 </table>
 <hr>
+
+
+
+
+
+
+
+
+
+{# DODAVANJE MENIJA #}
+<h3 class="text-info">Meni</h3>
+<form id="forma-meni" action="{{ path_for('ugovor.dopuna.meni') }}" method="POST" class="needs-validation" novalidate>
+	{{ csrf|raw }}
+	<input type="hidden" id="ugovor_id_meni" name="ugovor_id_meni" value="{{ ugovor.id }}">
+	<div class="form-row">
+
+		<div class="form-group col-md-3">
+			<select name="meni_id" id="meni_id" class="custom-select{{ errors.meni_id[0] ? ' is-invalid' : '' }}"
+				required>
+				<option value="" data-cena="0">Odaberite meni ...</option>
+				{% for meni in meniji %}
+				<option value="{{ meni.id }}" data-cena="{{ meni.cena }}"
+					{{ old.meni_id == meni.id ? ' selected' : '' }}>{{ meni.naziv }}</option>
+				{% endfor %}
+			</select>
+			<div class="valid-feedback">Odgovarajući podatak</div>
+			<div class="invalid-feedback">
+				{{ errors.meni_id[0] ? : 'Obavezno polje' }}
+			</div>
+		</div>
+		<div class="col-md-3 form-group">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text">Cena po komadu</span></div>
+				<input type="number" value="0" class="form-control" name="cena" id="meni_cena" readonly>
+			</div>
+		</div>
+
+		<div class="col-md-2 form-group">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text">Komada</span></div>
+				<input type="text" value="1" class="form-control" name="komada" id="meni_komada" min="1" step="1"
+					required>
+			</div>
+			<div class="valid-feedback">Odgovarajući podatak</div>
+			<div class="invalid-feedback">{{ errors.komada[0] ? : 'Obavezno polje' }}</div>
+		</div>
+
+		<div class="col-md-3 form-group">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text">Popust po komadu (iznos)</span></div>
+				<input type="text" value="0" class="form-control" name="popust" id="meni_popust" min="0" step="0.01"
+					required>
+			</div>
+			<div class="valid-feedback">Odgovarajući podatak</div>
+			<div class="invalid-feedback">{{ errors.popust[0] ? : 'Obavezno polje' }}</div>
+		</div>
+
+		<div class="col-md-1 text-right">
+			<button class="btn btn-info" type="submit" title="Dodaj meni">
+				<i class="fas fa-plus-square"></i> Dodaj
+			</button>
+		</div>
+	</div>
+</form>
+<div class="table-responsive">
+	<table class="table table-sm table-hover">
+		<thead class="thead-dark">
+			<tr>
+				<th class="w-20">Meni</th>
+				<th class="w-10 text-right">Komada</th>
+				<th class="w-15 text-right">Cena</th>
+				<th class="w-15 text-right">Popust</th>
+				<th class="w-15 text-right">Cena sa popustom</th>
+				<th class="w-15 text-right">Iznos</th>
+				<th class="w-10 text-right text-warning">
+					<i class="fas fa-cogs"></i>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for um in ugovor.meniUgovor() %}
+			<tr>
+				<td>{{ um.meni().naziv }}</td>
+				<td class="text-right">{{ um.komada|number_format(0) }}</td>
+				<td class="text-right">{{ um.meni().cena|number_format() }}</td>
+				<td class="text-right">{{ um.popust|number_format() }}</td>
+				<td class="text-right">{{ um.cena_sa_popustom|number_format() }}</td>
+				<td class="text-right">{{ um.iznos|number_format() }}</td>
+				<td class="text-right">
+
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+{# forma za ukupan iznos menija i upisivanje iznosa u ugovor #}
+{# DODAVANJE SOBA #}
+<h3 class="text-info">Sobe</h3>
+<form id="forma-sobe" action="{{ path_for('ugovor.dopuna.soba') }}" method="POST" class="needs-validation" novalidate>
+	{{ csrf|raw }}
+	<input type="hidden" id="ugovor_id_soba" name="ugovor_id_soba" value="{{ ugovor.id }}">
+	<div class="form-row">
+
+		<div class="form-group col-md-3">
+			<select name="soba_id" id="soba_id" class="custom-select{{ errors.soba_id[0] ? ' is-invalid' : '' }}"
+				required>
+				<option value="" data-cena="0">Odaberite sobu ...</option>
+				{% for soba in sobe %}
+				<option value="{{ soba.id }}" data-cena="{{ soba.cena }}"
+					{{ old.soba_id == soba.id ? ' selected' : '' }}>{{ soba.naziv }}</option>
+				{% endfor %}
+			</select>
+			<div class="valid-feedback">Odgovarajući podatak</div>
+			<div class="invalid-feedback">
+				{{ errors.soba_id[0] ? : 'Obavezno polje' }}
+			</div>
+		</div>
+		<div class="col-md-3 form-group">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text">Cena po komadu</span></div>
+				<input type="number" value="0" class="form-control" name="cena" id="soba_cena" readonly>
+			</div>
+		</div>
+
+		<div class="col-md-2 form-group">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text">Komada</span></div>
+				<input type="text" value="1" class="form-control" name="komada" id="soba_komada" min="1" step="1"
+					required>
+			</div>
+			<div class="valid-feedback">Odgovarajući podatak</div>
+			<div class="invalid-feedback">{{ errors.komada[0] ? : 'Obavezno polje' }}</div>
+		</div>
+
+		<div class="col-md-3 form-group">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text">Popust po komadu (iznos)</span></div>
+				<input type="text" value="0" class="form-control" name="popust" id="soba_popust" min="0" step="0.01"
+					required>
+			</div>
+			<div class="valid-feedback">Odgovarajući podatak</div>
+			<div class="invalid-feedback">{{ errors.popust[0] ? : 'Obavezno polje' }}</div>
+		</div>
+
+		<div class="col-md-1 text-right">
+			<button class="btn btn-info" type="submit" title="Dodaj meni">
+				<i class="fas fa-plus-square"></i> Dodaj
+			</button>
+		</div>
+	</div>
+</form>
+<div class="table-responsive">
+	<table class="table table-sm table-hover">
+		<thead class="thead-dark">
+			<tr>
+				<th class="w-20">Soba</th>
+				<th class="w-10 text-right">Komada</th>
+				<th class="w-15 text-right">Cena</th>
+				<th class="w-15 text-right">Popust</th>
+				<th class="w-15 text-right">Cena sa popustom</th>
+				<th class="w-15 text-right">Iznos</th>
+				<th class="w-10 text-right text-warning">
+					<i class="fas fa-cogs"></i>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for um in ugovor.sobaUgovor() %}
+			<tr>
+				<td>{{ um.soba().naziv }}</td>
+				<td class="text-right">{{ um.komada|number_format(0) }}</td>
+				<td class="text-right">{{ um.soba().cena|number_format() }}</td>
+				<td class="text-right">{{ um.popust|number_format() }}</td>
+				<td class="text-right">{{ um.cena_sa_popustom|number_format() }}</td>
+				<td class="text-right">{{ um.iznos|number_format() }}</td>
+				<td class="text-right">
+
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+
+
+
 
 {# DODATNE USLUGE #}
 <div class="card border-dark mb-2">
@@ -407,6 +601,16 @@
 {% block skripta %}
 <script>
 	$(document).ready(function () {
+
+		$("#meni_id").change(() => {
+			$("#meni_id").removeClass("is-invalid");
+			$("#meni_cena").val(Number($("#meni_id").find(':selected').data("cena")));
+		});
+
+		$("#soba_id").change(() => {
+			$("#soba_id").removeClass("is-invalid");
+			$("#soba_cena").val(Number($("#soba_id").find(':selected').data("cena")));
+		});
 
 		$(".otvori-brisanje-dokumenta").on("click", function () {
 			var id = $(this).data("id");

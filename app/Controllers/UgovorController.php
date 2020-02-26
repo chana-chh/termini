@@ -8,6 +8,7 @@ use App\Models\Meni;
 use App\Models\Uplata;
 use App\Models\Soba;
 use App\Models\SobaUgovor;
+use App\Models\MeniUgovor;
 use App\Models\Komitent;
 
 class UgovorController extends Controller
@@ -252,7 +253,7 @@ class UgovorController extends Controller
             }
 
             $this->flash->addMessage('success', 'Novi ugovor je uspešno dodat.');
-            return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => (int) $ugovor->id]));
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $ugovor->id]));
         }
     }
 
@@ -457,6 +458,102 @@ class UgovorController extends Controller
             $sala = $model->find($id_sale);
             $this->log($this::DODAVANJE, $sala, 'opis');
             return $response->withRedirect($this->router->pathFor('ugovor.sobe.lista', ['id' => $$id_ugovora]));
+        }
+    }
+
+    public function getUgovorDopuna($request, $response, $args)
+    {
+        $id = (int) $args['id'];
+        $model_ugovor = new Ugovor();
+        $ugovor = $model_ugovor->find($id);
+        $model_meni = new Meni();
+        $model_soba = new Soba();
+        $meniji = $model_meni->all();
+        $sobe = $model_soba->all();
+
+        $this->render($response, 'ugovor/dopuna.twig', compact('ugovor', 'meniji', 'sobe'));
+    }
+
+    public function postUgovorDopunaMeni($request, $response)
+    {
+        $data = $this->data();
+        $data['ugovor_id'] = $data['ugovor_id_meni'];
+        $data['cena_sa_popustom'] = (float) $data['cena'] - (float) $data['popust'];
+        $data['iznos'] = $data['cena_sa_popustom'] * (int) $data['komada'];
+        unset($data['ugovor_id_meni']);
+        unset($data['cena']);
+
+        $validation_rules = [
+            'ugovor_id' => ['required' => true,],
+            'meni_id' => ['required' => true,],
+            'komada' => ['required' => true,],
+            'popust' => ['required' => true,],
+            'cena_sa_popustom' => ['required' => true,],
+            'iznos' => ['required' => true,],
+        ];
+
+        $model = new MeniUgovor();
+
+        $sql = "SELECT COUNT(*) AS broj FROM ugovor_meni WHERE ugovor_id = :u_id AND meni_id = :m_id;";
+        $params = [':u_id' => $data['ugovor_id'], ':m_id' => $data['meni_id']];
+        $br = (int) $model->fetch($sql, $params)[0]->broj;
+        if ($br > 0) {
+            $this->validator->addError('meni_id', 'U ugovoru već postoji odabrani meni.');
+        }
+
+        $this->validator->validate($data, $validation_rules);
+
+        if ($this->validator->hasErrors()) {
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom dodavanja menija na ugovor.');
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
+        } else {
+            $model->insert($data);
+            $ugovor_meni = $model->find($model->lastId());
+            $this->log($this::DODAVANJE, $ugovor_meni, ['ugovor_id','meni_id']);
+
+            $this->flash->addMessage('success', 'Meni je uspešno dodat na ugovor.');
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
+        }
+    }
+    public function postUgovorDopunaSoba($request, $response)
+    {
+        $data = $this->data();
+        $data['ugovor_id'] = $data['ugovor_id_soba'];
+        $data['cena_sa_popustom'] = (float) $data['cena'] - (float) $data['popust'];
+        $data['iznos'] = $data['cena_sa_popustom'] * (int) $data['komada'];
+        unset($data['ugovor_id_soba']);
+        unset($data['cena']);
+
+        $validation_rules = [
+            'ugovor_id' => ['required' => true,],
+            'soba_id' => ['required' => true,],
+            'komada' => ['required' => true,],
+            'popust' => ['required' => true,],
+            'cena_sa_popustom' => ['required' => true,],
+            'iznos' => ['required' => true,],
+        ];
+
+        $model = new SobaUgovor();
+
+        $sql = "SELECT COUNT(*) AS broj FROM ugovor_soba WHERE ugovor_id = :u_id AND soba_id = :s_id;";
+        $params = [':u_id' => $data['ugovor_id'], ':s_id' => $data['soba_id']];
+        $br = (int) $model->fetch($sql, $params)[0]->broj;
+        if ($br > 0) {
+            $this->validator->addError('soba_id', 'U ugovoru već postoji odabrana vrsta sobe.');
+        }
+
+        $this->validator->validate($data, $validation_rules);
+
+        if ($this->validator->hasErrors()) {
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom dodavanja sobe na ugovor.');
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
+        } else {
+            $model->insert($data);
+            $ugovor_soba = $model->find($model->lastId());
+            $this->log($this::DODAVANJE, $ugovor_soba, ['ugovor_id','soba_id']);
+
+            $this->flash->addMessage('success', 'Soba je uspešno dodata na ugovor.');
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
         }
     }
 }

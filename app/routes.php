@@ -112,6 +112,9 @@ $app->group('', function () {
     $this->get('/termin/ugovori/uplate/{id}', '\App\Controllers\UgovorController:getUgovorUplateDetalj')->setName('ugovor.uplate.lista');
     $this->get('/termin/ugovori/sobe/{id}', '\App\Controllers\UgovorController:getUgovorSobe')->setName('ugovor.sobe.lista');
     $this->post('/termin/ugovori/sobe/dodavanje', '\App\Controllers\UgovorController:postSobaUgovorDodavanje')->setName('ugovor.sobe.dodavanje');
+    $this->get('/termin/ugovori/dopuna/{id}', '\App\Controllers\UgovorController:getUgovorDopuna')->setName('ugovor.dopuna.get');
+    $this->post('/termin/ugovori/dopuna/meni', '\App\Controllers\UgovorController:postUgovorDopunaMeni')->setName('ugovor.dopuna.meni');
+    $this->post('/termin/ugovori/dopuna/soba', '\App\Controllers\UgovorController:postUgovorDopunaSoba')->setName('ugovor.dopuna.soba');
     // Stampa ugovora
     $this->get('/ugovori/stampa/fizicka/single/{id}', '\App\Controllers\StampaController:getUgovorStampaFizickaSingle')->setName('ugovori.stampa.fizicka.single');
     $this->get('/ugovori/stampa/pravna/single/{id}', '\App\Controllers\StampaController:getUgovorStampaPravnaSingle')->setName('ugovori.stampa.pravna.single');

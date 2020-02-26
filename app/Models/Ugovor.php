@@ -111,6 +111,11 @@ class Ugovor extends Model
         return $this->hasMany('App\Models\SobaUgovor', 'ugovor_id');
     }
 
+    public function meniUgovor()
+    {
+        return $this->hasMany('App\Models\MeniUgovor', 'ugovor_id');
+    }
+
     public function ukupanIznos()
     {
         return (float) ($this->iznos_meni + $this->iznos_sobe + $this->iznos_dodatno);

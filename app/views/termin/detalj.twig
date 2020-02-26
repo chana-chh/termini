@@ -183,9 +183,9 @@
               title="Detaljni pregled odabranog ugovora">
               <i class="fas fa-eye"></i>
             </a>
-            <a class="btn btn-primary" href="{{ path_for('ugovor.sobe.lista', { id: ugovor.id }) }}"
-              title="Pregled planiranih soba">
-              <i class="fas fa-bed"></i>
+            <a class="btn btn-primary" href="{{ path_for('ugovor.dopuna.get', { id: ugovor.id }) }}"
+              title="Dopuna ugovora">
+              <i class="fas fa-plus"></i>
             </a>
             <a class="btn btn-warning" href="{{ path_for('termin.ugovor.izmena.get', { id: ugovor.id }) }}"
               title="Izmena odabranog ugovora">
