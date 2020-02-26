@@ -23,6 +23,10 @@ Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko
 
 Termin zakazan za 29.02.2020, rok isteka 7 dana, kad se udje u pregled termina pise da je ponuda istekla 03.03.2020 (trenutno je 25.02.2020).
 
+DOPUNA UGOVORA
+- treba u kontroleru proveriti da li ima vise menija nego zvanica
+- da li da se na pogledu izracunava ukupan iznos za sve manije ili da se u kontroleru automatski ovaj iznos upise u ugovor
+
 # TODO
 
 - Dugme nazad ukloniti (vraca na dodavanje, izmenu) i dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
