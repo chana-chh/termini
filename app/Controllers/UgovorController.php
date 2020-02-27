@@ -515,6 +515,25 @@ class UgovorController extends Controller
             return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
         }
     }
+
+    public function postDopunaMeniBrisanje($request, $response)
+    {
+        $id_meniugovor = (int)$request->getParam('idBrisanjeMenija');
+        $id_ugovor = (int)$request->getParam('ugovor_idmeni');
+        $model = new MeniUgovor();
+        $meni_ugovor = $model->find($id_meniugovor);
+        $success = $model->deleteOne($id_meniugovor);
+
+        if ($success) {
+            $this->flash->addMessage('success', "Meni je uspešno obrisan.");
+            $this->log($this::BRISANJE, $meni_ugovor, 'komada', $meni_ugovor);
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => $id_ugovor]));
+        } else {
+            $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja menija.");
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => $id_ugovor]));
+        }
+    }
+
     public function postUgovorDopunaSoba($request, $response)
     {
         $data = $this->data();
@@ -554,6 +573,24 @@ class UgovorController extends Controller
 
             $this->flash->addMessage('success', 'Soba je uspešno dodata na ugovor.');
             return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
+        }
+    }
+
+    public function postDopunaSobaBrisanje($request, $response)
+    {
+        $id_sobaugovor = (int)$request->getParam('idBrisanjeSobe');
+        $id_ugovor = (int)$request->getParam('ugovor_idmeni');
+        $model = new SobaUgovor();
+        $soba_ugovor = $model->find($id_sobaugovor);
+        $success = $model->deleteOne($id_sobaugovor);
+
+        if ($success) {
+            $this->flash->addMessage('success', "Soba je uspešno obrisana.");
+            $this->log($this::BRISANJE, $soba_ugovor, 'komada', $soba_ugovor);
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => $id_ugovor]));
+        } else {
+            $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja sobe.");
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => $id_ugovor]));
         }
     }
 }

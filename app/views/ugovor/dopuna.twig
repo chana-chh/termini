@@ -98,13 +98,6 @@
 <hr>
 
 
-
-
-
-
-
-
-
 {# DODAVANJE MENIJA #}
 <h3 class="text-info">Meni</h3>
 <form id="forma-meni" action="{{ path_for('ugovor.dopuna.meni') }}" method="POST" class="needs-validation" novalidate>
@@ -185,7 +178,10 @@
 				<td class="text-right">{{ um.cena_sa_popustom|number_format() }}</td>
 				<td class="text-right">{{ um.iznos|number_format() }}</td>
 				<td class="text-right">
-
+					<button class="btn btn-danger btn-sm otvori-brisanje-menija" data-toggle="modal" data-target="#brisanjeMenija"
+            			data-id="{{ um.id }}" title="Brisanje odabranog menija">
+            			<i class="fas fa-trash-alt"></i>
+            		</button>
 				</td>
 			</tr>
 			{% endfor %}
@@ -193,6 +189,45 @@
 	</table>
 </div>
 {# forma za ukupan iznos menija i upisivanje iznosa u ugovor #}
+
+
+{# Modal za brisanje menija #}
+  <div id="brisanjeMenija" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Upozorenje!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4>Da li želite trajno da obrišete meni?</h4>
+          <p class="text-danger">* Ova akcija je nepovratna!</p>
+          <form id="brisanje-menija" action="{{ path_for('meni.dopuna.brisanje') }}" method="POST">
+            {{ csrf|raw }}
+            <input type="hidden" id="idBrisanjeMenija" name="idBrisanjeMenija">
+			<input type="hidden" id="ugovor_idmeni" name="ugovor_idmeni" value="{{ ugovor.id }}">
+            <hr style="margin-top: 30px;">
+
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-menija" type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash-alt"></i>&emsp;Obriši
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{# Kraj modala za brisanje menija#}
+
+
 {# DODAVANJE SOBA #}
 <h3 class="text-info">Sobe</h3>
 <form id="forma-sobe" action="{{ path_for('ugovor.dopuna.soba') }}" method="POST" class="needs-validation" novalidate>
@@ -264,16 +299,19 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for um in ugovor.sobaUgovor() %}
+			{% for us in ugovor.sobaUgovor() %}
 			<tr>
-				<td>{{ um.soba().naziv }}</td>
-				<td class="text-right">{{ um.komada|number_format(0) }}</td>
-				<td class="text-right">{{ um.soba().cena|number_format() }}</td>
-				<td class="text-right">{{ um.popust|number_format() }}</td>
-				<td class="text-right">{{ um.cena_sa_popustom|number_format() }}</td>
-				<td class="text-right">{{ um.iznos|number_format() }}</td>
+				<td>{{ us.soba().naziv }}</td>
+				<td class="text-right">{{ us.komada|number_format(0) }}</td>
+				<td class="text-right">{{ us.soba().cena|number_format() }}</td>
+				<td class="text-right">{{ us.popust|number_format() }}</td>
+				<td class="text-right">{{ us.cena_sa_popustom|number_format() }}</td>
+				<td class="text-right">{{ us.iznos|number_format() }}</td>
 				<td class="text-right">
-
+					<button class="btn btn-danger btn-sm otvori-brisanje-sobe" data-toggle="modal" data-target="#brisanjeSobe"
+            			data-id="{{ us.id }}" title="Brisanje odabranog sobe">
+            			<i class="fas fa-trash-alt"></i>
+            		</button>
 				</td>
 			</tr>
 			{% endfor %}
@@ -282,7 +320,41 @@
 </div>
 
 
+{# Modal za brisanje sobe #}
+  <div id="brisanjeSobe" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Upozorenje!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h4>Da li želite trajno da obrišete sobu?</h4>
+          <p class="text-danger">* Ova akcija je nepovratna!</p>
+          <form id="brisanje-sobe" action="{{ path_for('soba.dopuna.brisanje') }}" method="POST">
+            {{ csrf|raw }}
+            <input type="hidden" id="idBrisanjeSobe" name="idBrisanjeSobe">
+			<input type="hidden" id="ugovor_idmeni" name="ugovor_idmeni" value="{{ ugovor.id }}">
+            <hr style="margin-top: 30px;">
 
+            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+              <div class="form-group">
+                <button id="btn-brisanje-sobe" type="submit" class="btn btn-danger">
+                  <i class="fas fa-trash-alt"></i>&emsp;Obriši
+                </button>
+                <a class="btn btn-secondary" data-dismiss="modal">
+                  <i class="fas fa-ban"></i>&emsp;Otkaži
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{# Kraj modala za brisanje sobe#}
 
 
 {# DODATNE USLUGE #}
@@ -615,6 +687,16 @@
 		$(".otvori-brisanje-dokumenta").on("click", function () {
 			var id = $(this).data("id");
 			$("#modal_dokument_id").val(id);
+		});
+
+		$(".otvori-brisanje-menija").on("click", function () {
+			var id = $(this).data("id");
+			$("#idBrisanjeMenija").val(id);
+		});
+
+		$(".otvori-brisanje-sobe").on("click", function () {
+			var id = $(this).data("id");
+			$("#idBrisanjeSobe").val(id);
 		});
 
 		$(document).on('click', '.otvori-uplatu', function () {
