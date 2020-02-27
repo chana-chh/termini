@@ -70,18 +70,6 @@ class Ugovor extends Model
         if (!empty($this->uplate())) {
             $zakljucati = true;
         }
-        // Ovaj uslov bih izbacio ili eventualno da se doda da li ima vezanih menija
-        // if (
-        //     $this->muzika_chk === 1 &&
-        //     $this->fotograf_chk === 1 &&
-        //     $this->torta_chk === 1 &&
-        //     $this->dekoracija_chk === 1 &&
-        //     $this->kokteli_chk === 1 &&
-        //     $this->slatki_sto_chk === 1 &&
-        //     $this->vocni_sto_chk === 1
-        // ) {
-        //     $zakljucati = true;
-        // }
 
         return $zakljucati;
     }
@@ -111,9 +99,45 @@ class Ugovor extends Model
         return $this->hasMany('App\Models\SobaUgovor', 'ugovor_id');
     }
 
+    public function ukupanIznosSoba()
+    {
+        $iznos = 0;
+        foreach ($this->sobaUgovor() as $soba) {
+            $iznos += $soba->iznos;
+        }
+        return $iznos;
+    }
+
     public function meniUgovor()
     {
         return $this->hasMany('App\Models\MeniUgovor', 'ugovor_id');
+    }
+
+    public function ukupanBrojMenija()
+    {
+        $broj = 0;
+        foreach ($this->meniUgovor() as $meni) {
+            $broj += $meni->komada;
+        }
+        return $broj;
+    }
+
+    public function ukupanIznosMenija()
+    {
+        $iznos = 0;
+        foreach ($this->meniUgovor() as $meni) {
+            $iznos += $meni->iznos;
+        }
+        return $iznos;
+    }
+
+    public function podsetnici($korisnik_id = null)
+    {
+        $sql = "SELECT * FROM podsetnici WHERE ugovor_id = {$this->id}";
+        if ($korisnik_id !== null) {
+            $sql = "SELECT * FROM podsetnici WHERE ugovor_id = {$this->id} AND korisnik_id = {$korisnik_id}";
+        }
+        return $this->fetch($sql);
     }
 
     public function ukupanIznos()

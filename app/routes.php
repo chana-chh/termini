@@ -73,7 +73,6 @@ $app->group('', function () {
     $this->post('/admin/stavka-menija/brisanje', '\App\Controllers\StavkaMenijaController:postStavkaMenijaBrisanje')->setName('stavke_menija.brisanje');
     $this->get('/admin/stavka-menija/izmena/{id}', '\App\Controllers\StavkaMenijaController:getStavkaMenijaIzmena')->setName('stavke_menija.izmena.get');
     $this->post('/admin/stavka-menija/izmena', '\App\Controllers\StavkaMenijaController:postStavkaMenijaIzmena')->setName('stavke_menija.izmena.post');
-
 })->add(new UserLevelMiddleware($container, [0]));
 
 // VLASNIK
@@ -117,6 +116,7 @@ $app->group('', function () {
     $this->post('/termin/ugovori/dopuna/meni/brisanje', '\App\Controllers\UgovorController:postDopunaMeniBrisanje')->setName('meni.dopuna.brisanje');
     $this->post('/termin/ugovori/dopuna/soba', '\App\Controllers\UgovorController:postUgovorDopunaSoba')->setName('ugovor.dopuna.soba');
     $this->post('/termin/ugovori/dopuna/soba/brisanje', '\App\Controllers\UgovorController:postDopunaSobaBrisanje')->setName('soba.dopuna.brisanje');
+    $this->post('/termin/ugovori/dopuna/aneks', '\App\Controllers\UgovorController:postUgovorDopunaAneks')->setName('ugovor.dopuna.aneks');
     // Stampa ugovora
     $this->get('/ugovori/stampa/fizicka/single/{id}', '\App\Controllers\StampaController:getUgovorStampaFizickaSingle')->setName('ugovori.stampa.fizicka.single');
     $this->get('/ugovori/stampa/pravna/single/{id}', '\App\Controllers\StampaController:getUgovorStampaPravnaSingle')->setName('ugovori.stampa.pravna.single');

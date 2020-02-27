@@ -15,10 +15,8 @@
 
 Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko placa)
 
-
-DOPUNA UGOVORA
-- treba u kontroleru proveriti da li ima vise menija nego zvanica
-- da li da se na pogledu izracunava ukupan iznos za sve manije ili da se u kontroleru automatski ovaj iznos upise u ugovor
+- da li korisnik vidi sve ili samo svoje podsetnike?
+- stavke menija - sve kategorije preraditi da budu kao u modelu Komitent
 
 # TODO
 
@@ -47,7 +45,7 @@ DOPUNA UGOVORA
 # KONCEPTI
 
 1. Posebno obratiti paznju na vlasnika i njegove potrebe za podacima
-2. Razmisliti o ulogama (nivoima) i dodati dashboard za administratora
+2. Razmisliti o ulogama (nivoima) i dodati dashboard za super admina
 3. Izbeci modale za izmenu i dodavanje. (veliki posao - automatizovati)
 4. Na pocetnoj strani za prijavljene korisnike (zakazivace) dodati termine za danas, isticanje ponuda za neki dan, podsetnike ...
 5. Na pocetnoj strani za goste postaviti formu upita za slobodan termin (honeypot)

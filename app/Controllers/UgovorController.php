@@ -296,6 +296,8 @@ class UgovorController extends Controller
             'broj_stolova' => ['required' => true,],
             'broj_mesta_po_stolu' => ['required' => true,],
             'iznos_dodatno' => ['required' => true,],
+            'iznos_meni' => ['required' => true,],
+            'iznos_sobe' => ['required' => true,],
             'fizicko_pravno' => ['required' => true,],
             'muzika_chk' => ['required' => true,],
             'fotograf_chk' => ['required' => true,],
@@ -361,8 +363,6 @@ class UgovorController extends Controller
         $model_termin = new Termin();
         $termin = $model_termin->find($ugovor->termin_id);
 
-        // provera uplata i dokumenata
-        // TODO: provera menija, soba i pdsetnika
         if (count($ugovor->uplate()) > 0) {
             $this->flash->addMessage('danger', "Postoje uplate vezane za ovaj ugovor. Da bi se obrisao ugovor nephodno je prethodno obrisati sve uplate vezane za njega.");
             return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
@@ -370,6 +370,21 @@ class UgovorController extends Controller
 
         if (count($ugovor->dokumenti()) > 0) {
             $this->flash->addMessage('danger', "Postoje dokumenti vezani za ovaj ugovor. Da bi se obrisao ugovor nephodno je prethodno obrisati sve dokumente vezane za njega.");
+            return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
+        }
+
+        if (count($ugovor->sobaUgovor()) > 0) {
+            $this->flash->addMessage('danger', "Postoje sobe vezani za ovaj ugovor. Da bi se obrisao ugovor nephodno je prethodno obrisati sve sobe vezane za njega.");
+            return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
+        }
+
+        if (count($ugovor->meniUgovor()) > 0) {
+            $this->flash->addMessage('danger', "Postoje meniji vezani za ovaj ugovor. Da bi se obrisao ugovor nephodno je prethodno obrisati sve menije vezane za njega.");
+            return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
+        }
+
+        if (count($ugovor->podsetnici()) > 0) {
+            $this->flash->addMessage('danger', "Postoje podsetnici vezani za ovaj ugovor. Da bi se obrisao ugovor nephodno je prethodno obrisati sve podsetnike vezane za njega.");
             return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $termin->id]));
         }
 
@@ -511,7 +526,17 @@ class UgovorController extends Controller
             $ugovor_meni = $model->find($model->lastId());
             $this->log($this::DODAVANJE, $ugovor_meni, ['ugovor_id','meni_id']);
 
-            $this->flash->addMessage('success', 'Meni je uspešno dodat na ugovor.');
+            $model_ugovor = new Ugovor();
+            $ugovor = $model_ugovor->find((int) $data['ugovor_id']);
+            $data_iznos = ['iznos_meni' => $ugovor->ukupanIznosMenija()];
+            $ugovor->update($data_iznos, $ugovor->id);
+            if ($ugovor->ukupanBrojMenija() > $ugovor->broj_mesta) {
+                $this->flash->addMessage('warning', 'Meni je uspešno dodat na ugovor, ali je broj menija veći od broja gostiju.');
+            } else {
+                $this->flash->addMessage('success', 'Meni je uspešno dodat na ugovor.');
+            }
+
+
             return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
         }
     }
@@ -571,6 +596,11 @@ class UgovorController extends Controller
             $ugovor_soba = $model->find($model->lastId());
             $this->log($this::DODAVANJE, $ugovor_soba, ['ugovor_id','soba_id']);
 
+            $model_ugovor = new Ugovor();
+            $ugovor = $model_ugovor->find((int) $data['ugovor_id']);
+            $data_iznos = ['iznos_sobe' => $ugovor->ukupanIznosSoba()];
+            $ugovor->update($data_iznos, $ugovor->id);
+
             $this->flash->addMessage('success', 'Soba je uspešno dodata na ugovor.');
             return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
         }
@@ -592,5 +622,48 @@ class UgovorController extends Controller
             $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja sobe.");
             return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => $id_ugovor]));
         }
+    }
+
+    public function postUgovorDopunaAneks($request, $response)
+    {
+        $data = $this->data();
+        dd($data, true);
+        // $data['ugovor_id'] = $data['ugovor_id_soba'];
+        // $data['cena_sa_popustom'] = (float) $data['cena'] - (float) $data['popust'];
+        // $data['iznos'] = $data['cena_sa_popustom'] * (int) $data['komada'];
+        // unset($data['ugovor_id_soba']);
+        // unset($data['cena']);
+
+        // $validation_rules = [
+        //     'ugovor_id' => ['required' => true,],
+        //     'soba_id' => ['required' => true,],
+        //     'komada' => ['required' => true,],
+        //     'popust' => ['required' => true,],
+        //     'cena_sa_popustom' => ['required' => true,],
+        //     'iznos' => ['required' => true,],
+        // ];
+
+        // $model = new SobaUgovor();
+
+        // $sql = "SELECT COUNT(*) AS broj FROM ugovor_soba WHERE ugovor_id = :u_id AND soba_id = :s_id;";
+        // $params = [':u_id' => $data['ugovor_id'], ':s_id' => $data['soba_id']];
+        // $br = (int) $model->fetch($sql, $params)[0]->broj;
+        // if ($br > 0) {
+        //     $this->validator->addError('soba_id', 'U ugovoru već postoji odabrana vrsta sobe.');
+        // }
+
+        // $this->validator->validate($data, $validation_rules);
+
+        // if ($this->validator->hasErrors()) {
+        //     $this->flash->addMessage('danger', 'Došlo je do greške prilikom dodavanja sobe na ugovor.');
+        //     return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
+        // } else {
+        //     $model->insert($data);
+        //     $ugovor_soba = $model->find($model->lastId());
+        //     $this->log($this::DODAVANJE, $ugovor_soba, ['ugovor_id','soba_id']);
+
+        //     $this->flash->addMessage('success', 'Soba je uspešno dodata na ugovor.');
+        //     return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
+        // }
     }
 }

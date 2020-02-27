@@ -205,6 +205,25 @@
           <div class="invalid-feedback">{{ errors.broj_stolova[0] ? : 'Obavezno polje' }}</div>
         </div>
       </div>
+      <hr>
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="iznos_meni" class="text-success">Ukupan iznos za meni</label>
+          <input type="number" class="form-control{{ errors.iznos_meni[0] ? ' is-invalid' : '' }} dodatna"
+            name="iznos_meni" id="iznos_meni" value="{{ old.iznos_meni ? : ugovor.iznos_meni }}" min="0" step="0.01"
+            autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.iznos_meni[0] ? : 'Obavezno polje' }}</div>
+        </div>
+        <div class="form-group col-md-3">
+          <label for="iznos_sobe" class="text-success">Ukupan iznos za sobe</label>
+          <input type="number" class="form-control{{ errors.iznos_sobe[0] ? ' is-invalid' : '' }} dodatna"
+            name="iznos_sobe" id="iznos_sobe" value="{{ old.iznos_sobe ? : ugovor.iznos_sobe }}" min="0" step="0.01"
+            autocomplete="off" required>
+          <div class="valid-feedback">Odgovarajući podatak</div>
+          <div class="invalid-feedback">{{ errors.iznos_sobe[0] ? : 'Obavezno polje' }}</div>
+        </div>
+      </div>
       {# CHEKBOXOVI POCETAK #}
       <hr>
       <div class="form-row">
@@ -631,7 +650,7 @@
 
       <div class="form-row">
         <div class="form-group col-md-6">
-          <label for="iznos_dodatno" class="text-success">Ukupan iznos dodatnih usluga</label>
+          <label for="iznos_dodatno" class="text-success">Ukupan iznos za dodatne usluge</label>
           <div class="input-group">
             <input type="number" class="form-control{{ errors.iznos_dodatno[0] ? ' is-invalid' : '' }} dodatna"
               name="iznos_dodatno" id="iznos_dodatno" value="{{ old.iznos_dodatno ? : ugovor.iznos_dodatno }}" min="0"

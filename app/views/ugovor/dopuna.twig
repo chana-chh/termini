@@ -14,23 +14,6 @@
 		<div class="btn-group btn-group-sm">
 			<a href="{{ path_for('termin.detalj.get', { id: ugovor.termin_id }) }}" class="btn btn-secondary"><i
 					class="fas fa-arrow-alt-circle-left"></i> Termin</a>
-			{# <a class="btn btn-warning btn-sm" href="{{ path_for('termin.ugovor.izmena.get', { id: ugovor.id }) }}"
-				title="Izmena odabranog ugovora"><i class="fas fa-edit"></i> Izmena</a>
-			<a href="{{ path_for('ugovor.uplate.lista', { id: ugovor.id }) }}" class="btn btn-success"><i
-					class="fas fa-money-bill"></i> Uplate</a>
-			{% if ugovor.fizicko_pravno == 1 %}
-			<a class="btn btn-primary btn-sm" href="{{ path_for('ugovori.stampa.pravna.single', { id: ugovor.id }) }}"
-				target="_blank">
-				<i class="fas fa-print"></i>
-				Štampa
-			</a>
-			{% else %}
-			<a class="btn btn-primary btn-sm" href="{{ path_for('ugovori.stampa.fizicka.single', { id: ugovor.id }) }}"
-				target="_blank">
-				<i class="fas fa-print"></i>
-				Štampa
-			</a>
-			{% endif %} #}
 		</div>
 	</div>
 </div>
@@ -163,9 +146,7 @@
 				<th class="w-15 text-right">Popust</th>
 				<th class="w-15 text-right">Cena sa popustom</th>
 				<th class="w-15 text-right">Iznos</th>
-				<th class="w-10 text-right text-warning">
-					<i class="fas fa-cogs"></i>
-				</th>
+				<th class="w-10 text-right text-warning"><i class="fas fa-cogs"></i></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -178,53 +159,62 @@
 				<td class="text-right">{{ um.cena_sa_popustom|number_format() }}</td>
 				<td class="text-right">{{ um.iznos|number_format() }}</td>
 				<td class="text-right">
-					<button class="btn btn-danger btn-sm otvori-brisanje-menija" data-toggle="modal" data-target="#brisanjeMenija"
-            			data-id="{{ um.id }}" title="Brisanje odabranog menija">
-            			<i class="fas fa-trash-alt"></i>
-            		</button>
+					<button class="btn btn-danger btn-sm otvori-brisanje-menija" data-toggle="modal"
+						data-target="#brisanjeMenija" data-id="{{ um.id }}" title="Brisanje odabranog menija">
+						<i class="fas fa-trash-alt"></i>
+					</button>
 				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
+		<tfoot>
+			<tr class="bg-light">
+				<td></td>
+				<td class="text-right">{{ ugovor.ukupanBrojMenija()|number_format(0) }}</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="text-right">{{ ugovor.ukupanIznosMenija()|number_format() }}</td>
+				<td></td>
+			</tr>
+		</tfoot>
 	</table>
 </div>
-{# forma za ukupan iznos menija i upisivanje iznosa u ugovor #}
-
 
 {# Modal za brisanje menija #}
-  <div id="brisanjeMenija" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title text-danger">Upozorenje!</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <h4>Da li želite trajno da obrišete meni?</h4>
-          <p class="text-danger">* Ova akcija je nepovratna!</p>
-          <form id="brisanje-menija" action="{{ path_for('meni.dopuna.brisanje') }}" method="POST">
-            {{ csrf|raw }}
-            <input type="hidden" id="idBrisanjeMenija" name="idBrisanjeMenija">
-			<input type="hidden" id="ugovor_idmeni" name="ugovor_idmeni" value="{{ ugovor.id }}">
-            <hr style="margin-top: 30px;">
+<div id="brisanjeMenija" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title text-danger">Upozorenje!</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h4>Da li želite trajno da obrišete meni?</h4>
+				<p class="text-danger">* Ova akcija je nepovratna!</p>
+				<form id="brisanje-menija" action="{{ path_for('meni.dopuna.brisanje') }}" method="POST">
+					{{ csrf|raw }}
+					<input type="hidden" id="idBrisanjeMenija" name="idBrisanjeMenija">
+					<input type="hidden" id="ugovor_idmeni" name="ugovor_idmeni" value="{{ ugovor.id }}">
+					<hr style="margin-top: 30px;">
 
-            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
-              <div class="form-group">
-                <button id="btn-brisanje-menija" type="submit" class="btn btn-danger">
-                  <i class="fas fa-trash-alt"></i>&emsp;Obriši
-                </button>
-                <a class="btn btn-secondary" data-dismiss="modal">
-                  <i class="fas fa-ban"></i>&emsp;Otkaži
-                </a>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+					<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+						<div class="form-group">
+							<button id="btn-brisanje-menija" type="submit" class="btn btn-danger">
+								<i class="fas fa-trash-alt"></i>&emsp;Obriši
+							</button>
+							<a class="btn btn-secondary" data-dismiss="modal">
+								<i class="fas fa-ban"></i>&emsp;Otkaži
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
 {# Kraj modala za brisanje menija#}
 
 
@@ -308,52 +298,63 @@
 				<td class="text-right">{{ us.cena_sa_popustom|number_format() }}</td>
 				<td class="text-right">{{ us.iznos|number_format() }}</td>
 				<td class="text-right">
-					<button class="btn btn-danger btn-sm otvori-brisanje-sobe" data-toggle="modal" data-target="#brisanjeSobe"
-            			data-id="{{ us.id }}" title="Brisanje odabranog sobe">
-            			<i class="fas fa-trash-alt"></i>
-            		</button>
+					<button class="btn btn-danger btn-sm otvori-brisanje-sobe" data-toggle="modal"
+						data-target="#brisanjeSobe" data-id="{{ us.id }}" title="Brisanje odabranog sobe">
+						<i class="fas fa-trash-alt"></i>
+					</button>
 				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
+		<tfoot>
+			<tr class="bg-light">
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="text-right">{{ ugovor.ukupanIznosSoba()|number_format() }}</td>
+				<td></td>
+			</tr>
+		</tfoot>
 	</table>
 </div>
 
 
 {# Modal za brisanje sobe #}
-  <div id="brisanjeSobe" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title text-danger">Upozorenje!</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <h4>Da li želite trajno da obrišete sobu?</h4>
-          <p class="text-danger">* Ova akcija je nepovratna!</p>
-          <form id="brisanje-sobe" action="{{ path_for('soba.dopuna.brisanje') }}" method="POST">
-            {{ csrf|raw }}
-            <input type="hidden" id="idBrisanjeSobe" name="idBrisanjeSobe">
-			<input type="hidden" id="ugovor_idmeni" name="ugovor_idmeni" value="{{ ugovor.id }}">
-            <hr style="margin-top: 30px;">
+<div id="brisanjeSobe" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title text-danger">Upozorenje!</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h4>Da li želite trajno da obrišete sobu?</h4>
+				<p class="text-danger">* Ova akcija je nepovratna!</p>
+				<form id="brisanje-sobe" action="{{ path_for('soba.dopuna.brisanje') }}" method="POST">
+					{{ csrf|raw }}
+					<input type="hidden" id="idBrisanjeSobe" name="idBrisanjeSobe">
+					<input type="hidden" id="ugovor_idmeni" name="ugovor_idmeni" value="{{ ugovor.id }}">
+					<hr style="margin-top: 30px;">
 
-            <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
-              <div class="form-group">
-                <button id="btn-brisanje-sobe" type="submit" class="btn btn-danger">
-                  <i class="fas fa-trash-alt"></i>&emsp;Obriši
-                </button>
-                <a class="btn btn-secondary" data-dismiss="modal">
-                  <i class="fas fa-ban"></i>&emsp;Otkaži
-                </a>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+					<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+						<div class="form-group">
+							<button id="btn-brisanje-sobe" type="submit" class="btn btn-danger">
+								<i class="fas fa-trash-alt"></i>&emsp;Obriši
+							</button>
+							<a class="btn btn-secondary" data-dismiss="modal">
+								<i class="fas fa-ban"></i>&emsp;Otkaži
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
 {# Kraj modala za brisanje sobe#}
 
 
@@ -504,118 +505,56 @@
 	</div>
 </div>
 
-{# Modal za brisanje dokumenta #}
-<div id="brisanjeDokumenta" class="modal fade" tabindex="-1" role="dialog">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title text-danger">Upozorenje!</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<h4>Da li želite trajno da obrišete dokument?</h4>
-				<h5 class="text-danger">* FAJL (dokument) ĆE TAKOĐE BITI OBRISAN !!!</h5>
-				<p class="text-danger">* Ova akcija je nepovratna!</p>
-				<form id="brisanje-dokumenta" action="{{ path_for('dokument.brisanje') }}" method="POST">
-					{{ csrf|raw }}
-					<input type="hidden" id="modal_dokument_id" name="modal_dokument_id">
-					<input type="hidden" id="modal_dokument_ugovor_id" name="modal_dokument_ugovor_id"
-						value="{{ugovor.id}}">
-					<hr style="margin-top: 30px;">
-
-					<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
-						<div class="form-group">
-							<button id="btn-brisanje-obrisi" type="submit" class="btn btn-danger">
-								<i class="fas fa-trash-alt"></i>&emsp;Obriši
-							</button>
-							<a class="btn btn-secondary" data-dismiss="modal">
-								<i class="fas fa-ban"></i>&emsp;Otkaži
-							</a>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-{# Kraj modala za brisanje dokumenta #}
-
-{# Modal za izmenu dokumenta #}
-<div id="izmenaDokumenta" class="modal fade" tabindex="-1" role="dialog">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title text-danger">Izmeni stavku</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form id="izmena-dokumenta" action="{{ path_for('dokument.izmena') }}" method="POST"
-					class="needs-validation" novalidate>
-					{{ csrf|raw }}
-					<input type="hidden" id="idIzmenaDokumenta" name="idIzmenaDokumenta">
-					<input type="hidden" id="idUgovorDokumenta" name="idUgovorDokumenta" value="{{ ugovor.id }}">
-					<div class="form-group">
-						<label for="opisModal">Opis</label>
-						<input type="text" class="form-control{{ errors.opisModal[0] ? ' is-invalid' : '' }}"
-							name="opisModal" id="opisModal" aria-describedby="opis dokumenta" required>
-						<div class="valid-feedback">Odgovarajući podatak</div>
-						<div class="invalid-feedback">
-							{{ errors.opisModal[0] ? : 'Obavezno polje' }}
-						</div>
-					</div>
-					<hr style="margin-top: 30px;">
-					<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
-						<div class="form-group">
-							<button id="btn-izmeni-dokument" type="submit" class="btn btn-warning">
-								<i class="fas fa-save"></i>&emsp;Snimi
-							</button>
-							<a class="btn btn-secondary" data-dismiss="modal">
-								<i class="fas fa-ban"></i>&emsp;Otkaži
-							</a>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-{# Kraj modala za izmenu dokumenta #}
 {% endblock sadrzaj %}
 {% block traka %}
 <div class="card border-dark mb-3">
-	<div class="card-header text-danger">
-		Ovde moze da ide aneks ugovora
+	<div class="card-header">
+		<h4 class="text-primary">Aneks ugovora</h4>
 	</div>
 	<div class="card-body text-dark">
-		<form id="dokument-forma" action="{{ path_for('dokument.dodavanje') }}" method="POST"
-			enctype="multipart/form-data" class="needs-validation" novalidate>
+		<form id="aneks-forma" action="{{ path_for('ugovor.dopuna.aneks') }}" method="POST" class="needs-validation"
+			novalidate>
 			{{ csrf|raw }}
 			<input type="hidden" id="ugovor_id" name="ugovor_id" value="{{ ugovor.id }}">
 			<div class="form-row">
-				<div class="col form-group">
-					<label for="opis">Opis</label>
-					<input type="text" value="{{ old.opis ? : '' }}"
-						class="form-control{{ errors.opis[0] ? ' is-invalid' : '' }}" name="opis" id="opis" required>
+				<div class="col-md-6 form-group">
+					<label for="aneks_broj_mesta">Broj mesta</label>
+					<input type="number" value="{{ old.aneks_broj_mesta ? : ugovor.broj_mesta }}"
+						class="form-control{{ errors.aneks_broj_mesta[0] ? ' is-invalid' : '' }}" min="1" step="1"
+						name="aneks_broj_mesta" id="aneks_broj_mesta" required>
 					<div class="valid-feedback">Odgovarajući podatak</div>
-					<div class="invalid-feedback">{{ errors.sala_id[0] ? : 'Obavezno polje' }}</div>
+					<div class="invalid-feedback">{{ errors.aneks_broj_mesta[0] ? : 'Obavezno polje' }}</div>
+				</div>
+				<div class="col-md-6 form-group">
+					<label for="aneks_iznos_meni">Iznos za menije</label>
+					<input type="number" value="{{ old.aneks_iznos_meni ? : ugovor.iznos_meni }}"
+						class="form-control{{ errors.aneks_iznos_meni[0] ? ' is-invalid' : '' }}" step="0.01"
+						name="aneks_iznos_meni" id="aneks_iznos_meni" required>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.aneks_iznos_meni[0] ? : 'Obavezno polje' }}</div>
 				</div>
 			</div>
 			<div class="form-row">
-				<div class="form-group col-lg-6">
-					<div class="custom-file">
-						<input type="file" class="custom-file-input{{ errors.dokument[0] ? ' is-invalid' : '' }}"
-							id="dokument" name="dokument" required>
-						<label id="file-label" class="custom-file-label" for="dokument" data-browse="Pronađi">Izaberi
-							dokument</label>
-						<div class="valid-feedback">Odgovarajući podatak</div>
-						<div class="invalid-feedback">{{ errors.dokument[0] ? : 'Morate odabrati dokument' }}</div>
-					</div>
+				<div class="col-md-6 form-group">
+					<label for="aneks_iznos_dodatno">Iznos za dodatne usluge</label>
+					<input type="number" value="{{ old.aneks_iznos_dodatno ? : ugovor.iznos_dodatno }}"
+						class="form-control{{ errors.aneks_iznos_dodatno[0] ? ' is-invalid' : '' }}" step="0.01"
+						name="aneks_iznos_dodatno" id="aneks_iznos_dodatno" required>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.aneks_iznos_dodatno[0] ? : 'Obavezno polje' }}</div>
 				</div>
-				<div class="col-lg-6 form-group text-right mb-0">
+				<div class="col-md-6 form-group">
+					<label for="aneks_iznos_sobe">Iznos za sobe</label>
+					<input type="number" value="{{ old.aneks_iznos_sobe ? : ugovor.iznos_sobe }}"
+						class="form-control{{ errors.aneks_iznos_sobe[0] ? ' is-invalid' : '' }}" step="0.01"
+						name="aneks_iznos_sobe" id="aneks_iznos_sobe" required>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.aneks_iznos_sobe[0] ? : 'Obavezno polje' }}</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col-md-6 mb-0"></div>
+				<div class="col-md-6 form-group text-right mb-0">
 					<button type="submit" class="btn btn-primary">
 						<i class="fas fa-plus-square"></i> Dodaj
 					</button>
@@ -625,48 +564,6 @@
 				</div>
 			</div>
 		</form>
-	</div>
-</div>
-<div class="card border-dark mb-3">
-	<div class="card-header">
-		Dokumenti
-	</div>
-	<div class="card-body text-dark">
-		<table class="table table-sm table-striped">
-			<thead class="thead-dark">
-				<tr>
-					<th class="w-10">#</th>
-					<th class="w-70">Opis</th>
-					<th class="w-20 text-right text-warning">
-						<i class="fas fa-cogs"></i>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for dok in ugovor.dokumenti() %}
-				<tr>
-					<th>{{ loop.index }}</th>
-					<td>{{ dok.opis }}</td>
-					<td class="text-right">
-						<div class="btn-group btn-group-sm">
-							<a href="{{ dok.link }}" class="btn btn-success" target="_blank">
-								<i class="fas fa-eye"></i>
-							</a>
-							<button class="btn btn-warning btn-sm otvori-izmenu-dokumenta" data-toggle="modal"
-								data-target="#izmenaDokumenta" data-id="{{ dok.id }}" title="Izmena podataka dokumenta">
-								<i class="fas fa-edit"></i>
-							</button>
-							<button class="btn btn-danger btn-sm otvori-brisanje-dokumenta" data-toggle="modal"
-								data-target="#brisanjeDokumenta" data-id="{{ dok.id }}"
-								title="Brisanje odabranog dokumenta">
-								<i class="fas fa-trash-alt"></i>
-							</button>
-						</div>
-					</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
 	</div>
 </div>
 {% endblock traka %}
