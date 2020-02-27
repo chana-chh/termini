@@ -13,15 +13,8 @@
 	Proveriti sva brisanja (negde, mislim da je meni, se ne proverava da li je za nesto vezano)
 !!!
 
-Prosecna starost je nekako vise za napomene, ja izbriso
-
-Trenutno zakljucavanje termina po pravilu ako su cekirane sve dodatne usluge nema smisla ako se ne doda i da su uneti meniji jer bez obzira na dodatne usluge ako nema menija ne moze da bude zakljucano.
-
-Automatski bih zakljucavao smo na osnovu toga da li postoji neka uplata.
-
 Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko placa)
 
-Termin zakazan za 29.02.2020, rok isteka 7 dana, kad se udje u pregled termina pise da je ponuda istekla 03.03.2020 (trenutno je 25.02.2020).
 
 DOPUNA UGOVORA
 - treba u kontroleru proveriti da li ima vise menija nego zvanica

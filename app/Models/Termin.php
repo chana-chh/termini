@@ -80,7 +80,7 @@ class Termin extends Model
 
     public function cenaTermina()
     {
-        $sql = "SELECT SUM(iznos_menija) AS cena FROM ugovori WHERE termin_id = {$this->id};";
+        $sql = "SELECT SUM(iznos_meni) AS cena FROM ugovori WHERE termin_id = {$this->id};";
         return (int) $this->fetch($sql)[0]->cena;
     }
 

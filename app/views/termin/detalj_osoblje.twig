@@ -70,69 +70,27 @@ naslov %}
   </div>
 </div>
 {% for ugovor in ugovori %}
-<div class="row mt-3">
-  <div class="col">
-    <h5>
+<h5>
       {{ ugovor.broj_mesta }} zvanica sa {{ ugovor.broj_stolova }} popunjenih stolova sa po {{
-            ugovor.broj_mesta_po_stolu}} stolica. Planirani meni je {{ ugovor.meni.naziv }} koji se sastoji iz:
-    </h5>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12" style="font-size: 0.875rem;">
-    <ul class="list-group list-group-horizontal-md ">
-      <li class="list-group-item flex-fill">
-        <p class="font-italic text-success">Hladno predjelo:</p>
-        {% set predjela = ugovor.meni.hladno_predjelo|split(',')%}
-          {% for p in predjela %}
-            {{p}}<br>
-          {% endfor %}
-      </li>
-      <li class="list-group-item flex-fill">
-         <p class="font-italic text-success">Sirevi:</p>
-        {% set predjela = ugovor.meni.sirevi|split(',')%}
-          {% for p in predjela %}
-            {{p}}<br>
-          {% endfor %}
-      </li>
-      <li class="list-group-item flex-fill">
-         <p class="font-italic text-success">Čorba:</p>
-        {% set predjela = ugovor.meni.corba|split(',')%}
-          {% for p in predjela %}
-            {{p}}<br>
-          {% endfor %}
-      </li>
-      <li class="list-group-item flex-fill">
-         <p class="font-italic text-success">Glavno jelo:</p>
-        {% set predjela = ugovor.meni.glavno_jelo|split(',')%}
-          {% for p in predjela %}
-            {{p}}<br>
-          {% endfor %}
-      </li>
-      <li class="list-group-item flex-fill">
-         <p class="font-italic text-success">Meso:</p>
-        {% set predjela = ugovor.meni.meso|split(',')%}
-          {% for p in predjela %}
-            {{p}}<br>
-          {% endfor %}
-      </li>
-      <li class="list-group-item flex-fill">
-         <p class="font-italic text-success">Hleb:</p>
-        {% set predjela = ugovor.meni.hleb|split(',')%}
-          {% for p in predjela %}
-            {{p}}<br>
-          {% endfor %}
-      </li>
-      <li class="list-group-item flex-fill">
-         <p class="font-italic text-success">Karta pića:</p>
-        {% set predjela = ugovor.meni.karta_pica|split(',')%}
-          {% for p in predjela %}
-            {{p}}<br>
-          {% endfor %}
-      </li>
+            ugovor.broj_mesta_po_stolu}} stolica. <br> Planirani meniji:     </h5>
+            {% for um in ugovor.meniUgovor() %}
+              <hr style="border-top: 1px dotted #8c8b8b">
+              <h4>{{ um.meni().naziv }}</h4>
+<div class="form-row">
+  {% for kat in kategorije %}
+  <div class="col-md-2">
+    <h4 class="text-info">{{ kat }}</h4>
+    <ul class="list-unstyled">
+      {% for stavka in um.meni().stavke(kat) %}
+      <li>{{ stavka.naziv }}</li>
+      {% endfor %}
     </ul>
   </div>
-</div>
+  {% endfor %}
+  </div>
+  {% endfor %}
+
+
 <hr style="border-top: 1px dotted #8c8b8b">
       <div class="row">
         <div class="col-md-4">
