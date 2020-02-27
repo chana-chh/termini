@@ -79,10 +79,9 @@ class MeniController extends Controller
     public function getMeniDodavanje($request, $response)
     {
         $modelMeni = new Meni();
-        $model = new StavkaMenija();
-        $stavke = $model->all()[0];
+        $stavke = new StavkaMenija();
         $standard = explode(',', $modelMeni->find(1)->stavke);
-        $kategorije = $model->enumOrSetList('kategorija');
+        $kategorije = $stavke->sveKategorije();
 
         $this->render($response, 'meni/dodavanje.twig', compact('kategorije', 'stavke', 'standard'));
     }
@@ -148,8 +147,8 @@ class MeniController extends Controller
         $id = (int) $args['id'];
         $modelMeni = new Meni();
         $meni = $modelMeni->find($id);
-        $modelStavke = new StavkaMenija();
-        $kategorije = $modelStavke->enumOrSetList('kategorija');
+        $stavke = new StavkaMenija();
+        $kategorije = $stavke->sveKategorije();
 
         $this->render($response, 'meni/detalj.twig', compact('meni', 'kategorije'));
     }
@@ -159,10 +158,9 @@ class MeniController extends Controller
         $id = (int) $args['id'];
         $modelMeni = new Meni();
         $meni = $modelMeni->find($id);
-        $model = new StavkaMenija();
-        $stavke = $model->all()[0];
+        $stavke = new StavkaMenija();
         $odabrano = explode(',', $meni->stavke);
-        $kategorije = $model->enumOrSetList('kategorija');
+        $kategorije = $stavke->sveKategorije();
 
         $this->render($response, 'meni/izmena.twig', compact('meni', 'kategorije', 'stavke', 'odabrano'));
     }

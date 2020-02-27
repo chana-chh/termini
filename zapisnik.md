@@ -16,9 +16,12 @@
 Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko placa)
 
 - da li korisnik vidi sve ili samo svoje podsetnike?
-- stavke menija - sve kategorije preraditi da budu kao u modelu Komitent
+
+- dodavanje - aneks polja?
 
 # TODO
+
+- srediti pregled ugovora (dodati menije i sobe)
 
 - Dugme nazad ukloniti (vraca na dodavanje, izmenu) i dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
 - Filter po salama
