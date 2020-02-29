@@ -11,7 +11,7 @@ class PodsetnikController extends Controller
         $data = $this->data();
         $data['ugovor_id'] = $data['ugovor_id_podsetnik'];
         unset($data['ugovor_id_podsetnik']);
-        
+
         $validation_rules = [
                 'datum' => ['required' => true,],
                 'tekst' => ['required' => true,],
@@ -33,6 +33,25 @@ class PodsetnikController extends Controller
             return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => $data['ugovor_id']]));
         }
     }
+
+    public function postPodsetnikReseno($request, $response)
+    {
+        $data = $this->data();
+        $id = (int) $data['id'];
+        $this->addCsrfToken($data);
+        $model = new Podsetnik();
+        $podsetnik = $model->find($id);
+        $reseno = 0;
+        if($podsetnik->reseno == 0){
+            $reseno = 1;
+        }
+        $model->update(['reseno' => $reseno], $id);
+        $podsetnik1 = $model->find($id);
+        $this->log($this::IZMENA,$podsetnik1,'datum',$podsetnik);
+
+        return json_encode($data);
+    }
+
     /*
     public function postPodsetnikiBrisanje($request, $response)
     {

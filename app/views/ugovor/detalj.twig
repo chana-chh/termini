@@ -467,12 +467,12 @@
 					<td>{{ pod.tekst|nl2br }}</td>
 					<td class="text-center">
 						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="cbp-{{pod.id}}" data-id="{{pod.id}}">
-							{# NA OVO IDE AJAX KOJI MENJA STATUS RESENO #}
+							<input class="form-check-input cb-podsetnik" type="checkbox" id="cbp-{{pod.id}}"
+								data-id="{{pod.id}}" {{ pod.reseno == 1 ? ' checked' : '' }}>
 						</div>
 					</td>
 					<td class="text-right">
-						{# SREDITI OVE DUGMICE #}
+						{# SREDITI OVE DUGMICE - odraditi izmenu i brisanje #}
 						<div class="btn-group btn-group-sm">
 							<button class="btn btn-warning btn-sm">
 								<i class="fas fa-edit"></i>
@@ -575,6 +575,35 @@
 {% block skripta %}
 <script>
 	$(document).ready(function () {
+
+		var podsetnici = document.querySelectorAll(".cb-podsetnik");
+
+		podsetnici.forEach(item => {
+			item.addEventListener('click', event => {
+				event.stopPropagation();
+				const id_podsetnika = item.getAttribute("data-id");
+
+				$.post(
+					"{{ path_for('podsetnik.reseno.post') }}",
+					{
+						id: id_podsetnika,
+						csrf_name: document.querySelector(".csrf_name").value,
+						csrf_value: document.querySelector(".csrf_value").value
+					},
+					function (data) {
+						data = JSON.parse(data);
+						const csrfNames = document.querySelectorAll(".csrf_name");
+						const csrfValues = document.querySelectorAll(".csrf_value");
+						csrfNames.forEach(name => {
+							name.value = data.csrf_name;
+						});
+						csrfValues.forEach(val => {
+							val.value = data.csrf_value;
+						});
+					}
+				);
+			});
+		});
 
 		$(".otvori-brisanje-dokumenta").on("click", function () {
 			var id = $(this).data("id");

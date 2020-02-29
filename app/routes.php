@@ -122,6 +122,8 @@ $app->group('', function () {
     $this->post('/termin/podsetnik/brisanje', '\App\Controllers\PodsetnikController:postPodsetnikiBrisanje')->setName('podsetnik.brisanje');
     $this->post('/termin/podsetnik/detalj', '\App\Controllers\PodsetnikController:postPodsetnikDetalj')->setName('podsetnik.detalj');
     $this->post('/termin/podsetnik/izmena', '\App\Controllers\PodsetnikController:postPodsetnikIzmena')->setName('podsetnik.izmena');
+    $this->post('/termin/podsetnik/reseno', '\App\Controllers\PodsetnikController:postPodsetnikReseno')->setName('podsetnik.reseno.post');
+
     // Stampa ugovora
     $this->get('/ugovori/stampa/fizicka/single/{id}', '\App\Controllers\StampaController:getUgovorStampaFizickaSingle')->setName('ugovori.stampa.fizicka.single');
     $this->get('/ugovori/stampa/pravna/single/{id}', '\App\Controllers\StampaController:getUgovorStampaPravnaSingle')->setName('ugovori.stampa.pravna.single');

@@ -185,7 +185,6 @@ class TerminController extends Controller
 
     public function postTerminZakljucivanje($request, $response)
     {
-        // $data = $request->getParams();
         $data = $this->data();
         $termin_id = (int) $data['termin_id'];
         $this->addCsrfToken($data);
