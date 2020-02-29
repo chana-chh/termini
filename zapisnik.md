@@ -3,26 +3,47 @@
 - Dokumentovati sve klase i metode (napraviti dokumentaciju na nekom sajtu).
 
 !!!
-
 	Zastita od neplacanja:
 	- db: opcije->datum_isteka
 	- kod prijavljivanja korisnika provera da li je isteko datum, ako je isteko datum pusta samo super admina
 	- super admin moze da unese novi datum
-
-	Treba napraviti listu termina (da ne bude samo kalendar).
-	Proveriti sva brisanja (negde, mislim da je meni, se ne proverava da li je za nesto vezano)
 !!!
 
-Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko placa)
+Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko placa).
+Ovo je na prvi pogled jasno, ali ja nemam pojma kako da ispovezujem da bi se kasnije vratili neki smisleni podaci (izvestaji)!
 
-- da li korisnik vidi sve ili samo svoje podsetnike?
+Nije bitno ko placa (to je skoro uvek organizator).
+
+Sta placa treba da bude:
+	- Avans
+	- Meni
+	- Sobe
+	- Muzika
+	- Fotograf
+	- Torta
+	- Dekoracija
+	- Kokteli
+	- Slatki sto
+	- Voćni sto
+	- Trubači
+	- Animator
+	- Posebni zahtevi
+
+Sta ako se (najcesce) uplati ceo dug, kako ga razloziti ??????
+
+Odakle da se odbija avans?
+
+Da li korisnik vidi sve ili samo svoje podsetnike?
+
+Dokumenta koja se dodaju mogu da vide i neprijavljeni !!!!!!!!!!!!!!!!
 
 
 # TODO
 
-- srediti pregled ugovora (dodati menije i sobe)
+- Srediti pregled - detalj ugovora (dodati izmenu i brisanje podsetnika)
+- Proveriti sva brisanja (da li se proverava da li je za nesto vezano)
 
-- Dugme nazad ukloniti (vraca na dodavanje, izmenu) i dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
+- Dodati onoliko dagmadi za vracanje sa koliko mesta moze da se dodje na stranu.
 - Filter po salama
 	- view: kalendar_po_salama
 - Pozadina događaja u beneton bojama
@@ -58,8 +79,9 @@ Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko
 1. Seminari: email pa licno
 2. Broj osoba, sala, datum, vreme
 3. Opcija ponude 7 dana (opcije) na kraju proslave aneks ugovora sa tacnim brojem (+- 5%)
-4. Meni i dodatne usluge, pice, pecenje (nase, njino)
-	- db: stavke_menija (id, naziv, cena, kategorija-predjelo, corba, glavno jelo ... enum ili s_kategorije_stavki_menija) ovo da bude kompletna ponuda da se ugura torta vocni i slatki sto, posebni zahtevi ...
+4. Meni i dodatne usluge, pice, pecenje (nase, njino) !!!!!!!!!!!!!!!!!!!!!
+	- db: stavke_menija (id, naziv, cena, kategorija-predjelo, corba, glavno jelo ... enum ili s_kategorije_stavki_menija)
+		ovo da bude kompletna ponuda da se ugura torta vocni i slatki sto, posebni zahtevi ??????????????
 5. Popust na ugovoru (iznos ili %)
 6. Skup svatova (jbg nisam pazio na casu da li je poseban ugovor ili isti?)
 7. Zakup prostora (ovde je nesto zbrzano pa nemam pojma sta sam pisao)

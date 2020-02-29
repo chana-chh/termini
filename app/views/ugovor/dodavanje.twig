@@ -236,7 +236,7 @@
           <label for="muzika_kom">Muzika komitent</label>
           <select name="muzika_kom" id="muzika_kom"
             class="custom-select{{ errors.muzika_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Muzika') %}
             <option value="{{ kom.id }}" {{old.muzika_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -274,7 +274,7 @@
           <label for="fotograf_kom">Fotograf komitent</label>
           <select name="fotograf_kom" id="fotograf_kom"
             class="custom-select{{ errors.fotograf_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Fotograf') %}
             <option value="{{ kom.id }}" {{old.fotograf_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -311,7 +311,7 @@
         <div class="form-group col-md-3">
           <label for="torta_kom">Torta komitent</label>
           <select name="torta_kom" id="torta_kom" class="custom-select{{ errors.torta_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Torta') %}
             <option value="{{ kom.id }}" {{old.torta_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -349,7 +349,7 @@
           <label for="dekoracija_kom">Dekoracija komitent</label>
           <select name="dekoracija_kom" id="dekoracija_kom"
             class="custom-select{{ errors.dekoracija_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Dekoracija') %}
             <option value="{{ kom.id }}" {{old.dekoracija_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -387,7 +387,7 @@
           <label for="kokteli_kom">Kokteli komitent</label>
           <select name="kokteli_kom" id="kokteli_kom"
             class="custom-select{{ errors.kokteli_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Kokteli') %}
             <option value="{{ kom.id }}" {{old.kokteli_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -425,7 +425,7 @@
           <label for="slatki_sto_kom">Slatki sto komitent</label>
           <select name="slatki_sto_kom" id="slatki_sto_kom"
             class="custom-select{{ errors.slatki_sto_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Slatki sto') %}
             <option value="{{ kom.id }}" {{old.slatki_sto_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -463,7 +463,7 @@
           <label for="vocni_sto_kom">Voćni sto komitent</label>
           <select name="vocni_sto_kom" id="vocni_sto_kom"
             class="custom-select{{ errors.vocni_sto_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Voćni sto') %}
             <option value="{{ kom.id }}" {{old.vocni_sto_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -501,7 +501,7 @@
           <label for="animator_kom">Animator komitent</label>
           <select name="animator_kom" id="animator_kom"
             class="custom-select{{ errors.animator_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Animator') %}
             <option value="{{ kom.id }}" {{old.animator_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -539,7 +539,7 @@
           <label for="trubaci_kom">Trubači komitent</label>
           <select name="trubaci_kom" id="trubaci_kom"
             class="custom-select{{ errors.trubaci_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Trubači') %}
             <option value="{{ kom.id }}" {{old.trubaci_kom == kom.id ? ' selected' : ''}}>{{ kom.naziv }}</option>
             {% endfor %}
@@ -577,7 +577,7 @@
           <label for="posebni_zahtevi_kom">Posebni zahtevi komitent</label>
           <select name="posebni_zahtevi_kom" id="posebni_zahtevi_kom"
             class="custom-select{{ errors.posebni_zahtevi_kom[0] ? ' is-invalid' : '' }}">
-            <option value="5">Bez komitenta</option>
+            <option value="1">Organizator</option>
             {% for kom in komitenti.stavkeZaKategoriju('Posebni zahtevi') %}
             <option value="{{ kom.id }}" {{old.posebni_zahtevi_kom == kom.id ? ' selected' : ''}}>
               {{ kom.naziv }}

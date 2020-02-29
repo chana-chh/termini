@@ -55,7 +55,7 @@ class Ugovor extends Model
 
     public function uplateDug()
     {
-        return $this->ukupanIznos() - $this->uplateSuma();
+        return $this->aneksUkupanIznos() - $this->uplateSuma();
     }
 
     public function dokumenti()
@@ -159,6 +159,11 @@ class Ugovor extends Model
     public function ukupanIznos()
     {
         return (float) ($this->iznos_meni + $this->iznos_sobe + $this->iznos_dodatno);
+    }
+
+    public function aneksUkupanIznos()
+    {
+        return (float) ($this->aneks_iznos_meni + $this->aneks_iznos_sobe + $this->aneks_iznos_dodatno);
     }
 
     public function komitent($naziv)

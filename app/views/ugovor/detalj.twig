@@ -497,6 +497,12 @@
 			enctype="multipart/form-data" class="needs-validation" novalidate>
 			{{ csrf|raw }}
 			<input type="hidden" id="ugovor_id" name="ugovor_id" value="{{ ugovor.id }}">
+			<div class="row mb-2">
+				<div class="col text-danger">
+					<strong>Važno:</strong> Nikada ne dodavati dokumenta sa ličnim podacima (lična karta, dokumenti sa
+					JMBG i slično). Ove dokumente mogu videti i osobe koje nisu prijavljene.
+				</div>
+			</div>
 			<div class="form-row">
 				<div class="col form-group">
 					<label for="opis">Opis</label>
