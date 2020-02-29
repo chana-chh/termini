@@ -117,6 +117,8 @@ $app->group('', function () {
     $this->post('/termin/ugovori/dopuna/soba', '\App\Controllers\UgovorController:postUgovorDopunaSoba')->setName('ugovor.dopuna.soba');
     $this->post('/termin/ugovori/dopuna/soba/brisanje', '\App\Controllers\UgovorController:postDopunaSobaBrisanje')->setName('soba.dopuna.brisanje');
     $this->post('/termin/ugovori/dopuna/aneks', '\App\Controllers\UgovorController:postUgovorDopunaAneks')->setName('ugovor.dopuna.aneks');
+    $this->post('/termin/obavestenje', '\App\Controllers\HomeController:postTerminObavestenje')->setName('termin.obavestenje');
+    $this->post('/termin/ukloni/vaznost', '\App\Controllers\HomeController:postUkloniVaznost')->setName('termin.ukloni.vaznost');
     // Podsetnici
     $this->post('/termin/podsetnik/dodavanje', '\App\Controllers\PodsetnikController:postPodsetnikDodavanje')->setName('podsetnik.dodavanje');
     $this->post('/termin/podsetnik/brisanje', '\App\Controllers\PodsetnikController:postPodsetnikiBrisanje')->setName('podsetnik.brisanje');

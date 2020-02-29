@@ -19,6 +19,61 @@ class HomeController extends Controller
         $this->render($response, 'home.twig', compact('termini'));
     }
 
+    public function postTerminObavestenje($request, $response)
+    {
+        $id_termina = (int)$request->getParam('idTermina');
+        $model = new Termin();
+        $termin = $model->find($id_termina);
+
+        $ugovori = $termin->ugovori();
+        if (count($ugovori)>0) {
+
+            $d = date('d.m.Y', strtotime($termin->datum));
+            $p = date('H:i', strtotime($termin->pocetak));
+            $k = date('H:i', strtotime($termin->kraj));
+
+            $telo = $this->renderPartial('mail/vaznost_termina.twig', compact('termin'));
+            foreach ($ugovori as $ugovor) {
+                if ($ugovor->email != ''){
+                    $adresa = $ugovor->email;
+                    $ime = $ugovor->punoIme();
+                    $poslato = $this->mailer->sendMail(
+                        [['email' => $adresa, 'name' => $ime]],
+                        "Istek rezervacije za termin u sali {$termin->sala()->naziv} za {$d}. godine",
+                        $telo
+                    );
+                }
+            }
+
+                if ($poslato) {
+                    $model->update(['obavestenje' => date('Y-m-d')], $id_termina);
+                    $this->flash->addMessage('success', "Obaveštenje je uspešno poslato.");
+                    return $response->withRedirect($this->router->pathFor('pocetna'));
+                } else {
+                    $this->flash->addMessage('danger', "Došlo je do greške prilikom slanja obaveštenja.");
+                    return $response->withRedirect($this->router->pathFor('pocetna'));
+                }
+        }else{
+            $this->flash->addMessage('danger', "E-mail adrese na koje treba poslati obaveštenje nisu dodate.");
+            return $response->withRedirect($this->router->pathFor('pocetna'));
+        }
+    }
+
+    public function postUkloniVaznost($request, $response)
+    {
+        $id_termina = (int)$request->getParam('idTerminaVaznost');
+        $model = new Termin();
+        $izmenjeno = $model->update(['vaznost' => null], $id_termina);
+
+                if ($izmenjeno) {
+                    $this->flash->addMessage('success', "Važnost rezervacije termina je uspešno uklonjena.");
+                    return $response->withRedirect($this->router->pathFor('pocetna'));
+                } else {
+                    $this->flash->addMessage('danger', "Došlo je do greške prilikom uklanjanja važnosti rezervacije.");
+                    return $response->withRedirect($this->router->pathFor('pocetna'));
+                }
+    }
+
     public function getKalendar($request, $response)
     {
         $model_termin = new Termin();
