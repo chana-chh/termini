@@ -116,8 +116,14 @@ $app->group('', function () {
     $this->post('/termin/ugovori/dopuna/meni/brisanje', '\App\Controllers\UgovorController:postDopunaMeniBrisanje')->setName('meni.dopuna.brisanje');
     $this->post('/termin/ugovori/dopuna/soba', '\App\Controllers\UgovorController:postUgovorDopunaSoba')->setName('ugovor.dopuna.soba');
     $this->post('/termin/ugovori/dopuna/soba/brisanje', '\App\Controllers\UgovorController:postDopunaSobaBrisanje')->setName('soba.dopuna.brisanje');
+    $this->post('/termin/ugovori/dopuna/aneks', '\App\Controllers\UgovorController:postUgovorDopunaAneks')->setName('ugovor.dopuna.aneks');
     $this->post('/termin/obavestenje', '\App\Controllers\HomeController:postTerminObavestenje')->setName('termin.obavestenje');
     $this->post('/termin/ukloni/vaznost', '\App\Controllers\HomeController:postUkloniVaznost')->setName('termin.ukloni.vaznost');
+    // Podsetnici
+    $this->post('/termin/podsetnik/dodavanje', '\App\Controllers\PodsetnikController:postPodsetnikDodavanje')->setName('podsetnik.dodavanje');
+    $this->post('/termin/podsetnik/brisanje', '\App\Controllers\PodsetnikController:postPodsetnikiBrisanje')->setName('podsetnik.brisanje');
+    $this->post('/termin/podsetnik/detalj', '\App\Controllers\PodsetnikController:postPodsetnikDetalj')->setName('podsetnik.detalj');
+    $this->post('/termin/podsetnik/izmena', '\App\Controllers\PodsetnikController:postPodsetnikIzmena')->setName('podsetnik.izmena');
     // Stampa ugovora
     $this->get('/ugovori/stampa/fizicka/single/{id}', '\App\Controllers\StampaController:getUgovorStampaFizickaSingle')->setName('ugovori.stampa.fizicka.single');
     $this->get('/ugovori/stampa/pravna/single/{id}', '\App\Controllers\StampaController:getUgovorStampaPravnaSingle')->setName('ugovori.stampa.pravna.single');

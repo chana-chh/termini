@@ -133,11 +133,27 @@ class Ugovor extends Model
 
     public function podsetnici($korisnik_id = null)
     {
-        $sql = "SELECT * FROM podsetnici WHERE ugovor_id = {$this->id}";
+        $sql = "SELECT * FROM podsetnici WHERE ugovor_id = {$this->id} ORDER BY datum DESC";
         if ($korisnik_id !== null) {
-            $sql = "SELECT * FROM podsetnici WHERE ugovor_id = {$this->id} AND korisnik_id = {$korisnik_id}";
+            $sql = "SELECT * FROM podsetnici WHERE ugovor_id = {$this->id} AND korisnik_id = {$korisnik_id} ORDER BY datum DESC";
         }
         return $this->fetch($sql);
+    }
+
+    public function ukupanIznosDodatno()
+    {
+        $iznos = 0;
+        $iznos += (float) $this->muzika_iznos;
+        $iznos += (float) $this->fotograf_iznos;
+        $iznos += (float) $this->torta_iznos;
+        $iznos += (float) $this->dekoracija_iznos;
+        $iznos += (float) $this->kokteli_iznos;
+        $iznos += (float) $this->slatki_sto_iznos;
+        $iznos += (float) $this->vocni_sto_iznos;
+        $iznos += (float) $this->animator_iznos;
+        $iznos += (float) $this->trubaci_iznos;
+        $iznos += (float) $this->posebni_zahtevi_iznos;
+        return $iznos;
     }
 
     public function ukupanIznos()

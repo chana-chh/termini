@@ -475,7 +475,7 @@ class UgovorController extends Controller
             return $response->withRedirect($this->router->pathFor('ugovor.sobe.lista', ['id' => $$id_ugovora]));
         }
     }
-
+    //Sobe privremeno!!!
     public function getUgovorDopuna($request, $response, $args)
     {
         $id = (int) $args['id'];
@@ -626,44 +626,31 @@ class UgovorController extends Controller
 
     public function postUgovorDopunaAneks($request, $response)
     {
-        $data = $this->data();
-        dd($data, true);
-        // $data['ugovor_id'] = $data['ugovor_id_soba'];
-        // $data['cena_sa_popustom'] = (float) $data['cena'] - (float) $data['popust'];
-        // $data['iznos'] = $data['cena_sa_popustom'] * (int) $data['komada'];
-        // unset($data['ugovor_id_soba']);
-        // unset($data['cena']);
+        $data = $this->data('ugovor_id_aneks');
+        $id = $this->dataId('ugovor_id_aneks');
 
-        // $validation_rules = [
-        //     'ugovor_id' => ['required' => true,],
-        //     'soba_id' => ['required' => true,],
-        //     'komada' => ['required' => true,],
-        //     'popust' => ['required' => true,],
-        //     'cena_sa_popustom' => ['required' => true,],
-        //     'iznos' => ['required' => true,],
-        // ];
+        $validation_rules = [
+            'aneks_broj_mesta' => ['required' => true,],
+            'aneks_iznos_meni' => ['required' => true,],
+            'aneks_iznos_dodatno' => ['required' => true,],
+            'aneks_iznos_sobe' => ['required' => true,],
+        ];
 
-        // $model = new SobaUgovor();
+        $model = new Ugovor();
 
-        // $sql = "SELECT COUNT(*) AS broj FROM ugovor_soba WHERE ugovor_id = :u_id AND soba_id = :s_id;";
-        // $params = [':u_id' => $data['ugovor_id'], ':s_id' => $data['soba_id']];
-        // $br = (int) $model->fetch($sql, $params)[0]->broj;
-        // if ($br > 0) {
-        //     $this->validator->addError('soba_id', 'U ugovoru već postoji odabrana vrsta sobe.');
-        // }
+        $this->validator->validate($data, $validation_rules);
 
-        // $this->validator->validate($data, $validation_rules);
+        if ($this->validator->hasErrors()) {
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom dodavanja aneksa ugovora.');
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => $id]));
+        } else {
+            $stari = $model->find($id);
+            $model->update($data, $id);
+            $novi = $model->find($id);
+            $this->log($this::IZMENA, $novi, ['broj_ugovora'], $stari);
 
-        // if ($this->validator->hasErrors()) {
-        //     $this->flash->addMessage('danger', 'Došlo je do greške prilikom dodavanja sobe na ugovor.');
-        //     return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
-        // } else {
-        //     $model->insert($data);
-        //     $ugovor_soba = $model->find($model->lastId());
-        //     $this->log($this::DODAVANJE, $ugovor_soba, ['ugovor_id','soba_id']);
-
-        //     $this->flash->addMessage('success', 'Soba je uspešno dodata na ugovor.');
-        //     return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => (int) $data['ugovor_id']]));
-        // }
+            $this->flash->addMessage('success', 'Aneks je uspešno dodat na ugovor.');
+            return $response->withRedirect($this->router->pathFor('ugovor.dopuna.get', ['id' => $id]));
+        }
     }
 }

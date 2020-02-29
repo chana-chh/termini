@@ -17,7 +17,6 @@ Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko
 
 - da li korisnik vidi sve ili samo svoje podsetnike?
 
-- dodavanje - aneks polja?
 
 # TODO
 
