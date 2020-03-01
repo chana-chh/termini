@@ -13,6 +13,10 @@ Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko
 Ovo je na prvi pogled jasno, ali ja nemam pojma kako da ispovezujem da bi se kasnije vratili neki smisleni podaci (izvestaji)!
 
 Nije bitno ko placa (to je skoro uvek organizator).
+Uglavnom nije moguce utvrditi sta placa, ako se (najcesce) uplati ceo dug, kako ga razloziti ??????
+
+Ovo moze samo kad razliciti ljudi placaju razlicite usluge.
+Odakle da se odbija avans?
 
 Sta placa treba da bude:
 	- Avans
@@ -29,11 +33,8 @@ Sta placa treba da bude:
 	- Animator
 	- Posebni zahtevi
 
-Sta ako se (najcesce) uplati ceo dug, kako ga razloziti ??????
-
-Odakle da se odbija avans?
-
 Da li korisnik vidi sve ili samo svoje podsetnike?
+
 
 Dokumenta koja se dodaju mogu da vide i neprijavljeni !!!!!!!!!!!!!!!!
 
