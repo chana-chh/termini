@@ -26,35 +26,49 @@ class HomeController extends Controller
         $termin = $model->find($id_termina);
 
         $ugovori = $termin->ugovori();
-        if (count($ugovori)>0) {
+        $broj_ugovora = count($ugovori);
+        if ($broj_ugovora > 0) {
 
             $d = date('d.m.Y', strtotime($termin->datum));
             $p = date('H:i', strtotime($termin->pocetak));
             $k = date('H:i', strtotime($termin->kraj));
 
             $telo = $this->renderPartial('mail/vaznost_termina.twig', compact('termin'));
+            $broj_poslatih = 0;
+            $nisu_prosli = [];
             foreach ($ugovori as $ugovor) {
                 if ($ugovor->email != ''){
-                    $adresa = $ugovor->email;
+                    $adresa = trim($ugovor->email);
+                    $adresa = filter_var($adresa, FILTER_SANITIZE_EMAIL);
                     $ime = $ugovor->punoIme();
+                    if (filter_var($adresa, FILTER_VALIDATE_EMAIL)) {
                     $poslato = $this->mailer->sendMail(
                         [['email' => $adresa, 'name' => $ime]],
                         "Istek rezervacije za termin u sali {$termin->sala()->naziv} za {$d}. godine",
                         $telo
-                    );
+                    );}
+                }
+                if ($poslato) {
+                   $broj_poslatih++;
+                }else{
+                    array_push($nisu_prosli, $ime);
                 }
             }
 
-                if ($poslato) {
+                if ($broj_poslatih == $broj_ugovora) {
                     $model->update(['obavestenje' => date('Y-m-d')], $id_termina);
                     $this->flash->addMessage('success', "Obaveštenje je uspešno poslato.");
                     return $response->withRedirect($this->router->pathFor('pocetna'));
-                } else {
+                }elseif($broj_poslatih == 0) {
                     $this->flash->addMessage('danger', "Došlo je do greške prilikom slanja obaveštenja.");
+                    return $response->withRedirect($this->router->pathFor('pocetna'));
+                }else{
+                    $comma_separated = implode(",", $nisu_prosli);
+                    $this->flash->addMessage('warning', "Samo je deo obaveštenja uspešno prosleđen. Problem se javio kod: ".$comma_separated);
                     return $response->withRedirect($this->router->pathFor('pocetna'));
                 }
         }else{
-            $this->flash->addMessage('danger', "E-mail adrese na koje treba poslati obaveštenje nisu dodate.");
+            $this->flash->addMessage('danger', "E-mail adrese na koje treba poslati obaveštenje nisu dodate ili nije definisan ugovor za termin.");
             return $response->withRedirect($this->router->pathFor('pocetna'));
         }
     }

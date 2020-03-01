@@ -52,13 +52,15 @@ naslov %}
     <h4>
       <i class="fas fa-drumstick-bite text-secondary"></i> Meniji koje je potrebno pripremiti
     </h4>
+    {% for ugo in termin.ugovori() %}
+    {% for um in ugo.meniUgovor() %}
     <ul class="list-group list-group-flush">
-      {% for meni in meniji %}
       <li class="list-group-item">
-        <h5>{{ meni.naziv }}:&emsp;{{ meni.komada }}</h5>
+        <h5>{{ um.meni().naziv }}:&emsp;{{ um.komada }}</h5>
       </li>
-      {% endfor %}
     </ul>
+    {% endfor %}
+  {% endfor %}
   </div>
 </div>
 <hr>
