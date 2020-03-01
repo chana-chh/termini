@@ -374,7 +374,7 @@
 		<div class="row">
 			<div class="col">
 				<table class="table table-sm table-hover mb-0">
-					<thead>
+					<thead class="thead-dark">
 						<tr>
 							<th class="w-10">#</th>
 							<th class="w-40">Usluga</th>
@@ -447,6 +447,14 @@
 								{{ ugovor.posebni_zahtevi_iznos|number_format() }}</td>
 						</tr>
 					</tbody>
+					<tfoot class="bg-light">
+						<tr>
+							<th></th>
+							<td></td>
+							<td class="text-right">
+								{{ ugovor.ukupanIznosDodatno()|number_format() }}</td>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
