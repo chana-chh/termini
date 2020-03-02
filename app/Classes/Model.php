@@ -133,9 +133,10 @@ abstract class Model
     {
         $sql = "SELECT DATA_TYPE, COLUMN_TYPE
 				FROM INFORMATION_SCHEMA.COLUMNS
-				WHERE TABLE_NAME = :tn AND COLUMN_NAME = :cn;";
-        $params = [':tn' => $this->table, ':cn' => $column];
+				WHERE TABLE_SCHEMA = :ts AND TABLE_NAME = :tn AND COLUMN_NAME = :cn;";
+        $params = [':ts' => Config::get('db.dbname'), ':tn' => $this->table, ':cn' => $column];
         $result = $this->fetch($sql, $params)[0];
+
         if ($result->DATA_TYPE === 'enum' || $result->DATA_TYPE === 'set') {
             $list = explode(
                 ",",
@@ -145,12 +146,12 @@ abstract class Model
                     substr($result->COLUMN_TYPE, 5, (strlen($result->COLUMN_TYPE) - 6))
                 )
             );
-            if (is_array($list) && !empty($list)) {
-                return $list;
-            }
-        } else {
-            return null;
         }
+        if (is_array($list) && !empty($list)) {
+            return $list;
+        }
+
+        return null;
     }
 
     public function paginate(int $page, string $name='page', string $sql = null, array $params = null, int $perpage = null, int $span = null)

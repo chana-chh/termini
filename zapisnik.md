@@ -9,37 +9,20 @@
 	- super admin moze da unese novi datum
 !!!
 
-Kod uplata mora da postoje sledeca polja (ko placa, sta placa, kad placa, koliko placa).
-Ovo je na prvi pogled jasno, ali ja nemam pojma kako da ispovezujem da bi se kasnije vratili neki smisleni podaci (izvestaji)!
-
-Nije bitno ko placa (to je skoro uvek organizator).
-Uglavnom nije moguce utvrditi sta placa, ako se (najcesce) uplati ceo dug, kako ga razloziti ??????
-
-Ovo moze samo kad razliciti ljudi placaju razlicite usluge.
-Odakle da se odbija avans?
-
-Sta placa treba da bude:
-	- Avans
-	- Meni
-	- Sobe
-	- Muzika
-	- Fotograf
-	- Torta
-	- Dekoracija
-	- Kokteli
-	- Slatki sto
-	- Voćni sto
-	- Trubači
-	- Animator
-	- Posebni zahtevi
-
 Da li korisnik vidi sve ili samo svoje podsetnike?
-
 
 Dokumenta koja se dodaju mogu da vide i neprijavljeni !!!!!!!!!!!!!!!!
 
 
 # TODO
+
+- Promeniti dodavanje i izmenu ugovora da se iznosi za meni, sobe i dodatne usluge automatski racunaju
+  (ima dosta mesta gde moze da se nasteluje cena)
+
+- Da li u aneks unositi iznose ili prepraviti (menije, sobe i dodatne usluge)?
+- Malo zbunjuje ako se cene direktno steluju na ugovoru
+  (automatski racuna pravu cenu, druga cena je upisana u ugovor iznos, a treca u aneksu).
+
 
 - Srediti pregled - detalj ugovora (dodati izmenu i brisanje podsetnika)
 - Proveriti sva brisanja (da li se proverava da li je za nesto vezano)

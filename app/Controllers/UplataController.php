@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Classes\Logger;
 use App\Models\Ugovor;
 use App\Models\Termin;
 use App\Models\Meni;
@@ -12,16 +11,10 @@ class UplataController extends Controller
 {
     public function postUplataDodavanje($request, $response)
     {
-        // $data = $request->getParams();
         $data = $this->data();
         $ugovor_id = (int) $data['ugovor_id'];
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
 
         $data['korisnik_id'] = $this->auth->user()->id;
-
-        $kapara = isset($data['kapara']) ? 1 : 0;
-        $data['kapara'] = $kapara;
 
         $validation_rules = [
             'ugovor_id' => [
@@ -32,10 +25,19 @@ class UplataController extends Controller
             ],
             'iznos' => [
                 'required' => true,
-                'min' => 1
+                'greater_than' => 0,
             ],
             'nacin_placanja' => [
                 'required' => true
+            ],
+            'svrha_placanja' => [
+                'required' => true
+            ],
+            'opis' => [
+                'maxlen' => 150,
+            ],
+            'uplatilac' => [
+                'maxlen' => 150,
             ],
         ];
 
@@ -57,7 +59,7 @@ class UplataController extends Controller
             } else {
                 $model_termin->update(['zauzet' => 0], $termin->id);
             }
-            $this->log(Logger::DODAVANJE, $uplata, 'datum');
+            $this->log($this::DODAVANJE, $uplata, 'datum');
             $this->flash->addMessage('success', "Uplata je uspešno evidentirana.");
             return $response->withRedirect($this->router->pathFor('ugovor.uplate.lista', ['id' => $ugovor_id]));
         }
@@ -79,15 +81,12 @@ class UplataController extends Controller
 
     public function postUplataIzmena($request, $response)
     {
-        // $data = $request->getParams();
         $data = $this->data();
         $id = $data['idIzmena'];
         $model = new Uplata();
         $uplata = $model->find($id);
         $ugovor_id = $uplata->ugovor_id;
         unset($data['idIzmena']);
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
 
         $kapara = isset($data['kaparaModal']) ? 1 : 0;
 
@@ -131,7 +130,7 @@ class UplataController extends Controller
                 $model_termin->update(['zauzet' => 0], $termin->id);
             }
 
-            $this->log(Logger::IZMENA, $uplata, 'datum', $uplata);
+            $this->log($this::IZMENA, $uplata, 'datum', $uplata);
             $this->flash->addMessage('success', "Podaci o uplati su uspešno izmenjeni.");
             return $response->withRedirect($this->router->pathFor('ugovor.uplate.lista', ['id' => $ugovor_id]));
         }
@@ -156,7 +155,7 @@ class UplataController extends Controller
         $success = $model->deleteOne($id);
 
         if ($success) {
-            $this->log(Logger::BRISANJE, $uplata, 'datum', $uplata);
+            $this->log($this::BRISANJE, $uplata, 'datum', $uplata);
             $this->flash->addMessage('success', "Uplata je uspešno obrisana.");
             return $response->withRedirect($this->router->pathFor('ugovor.uplate.lista', ['id' => $ugovor->id]));
         } else {

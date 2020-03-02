@@ -10,6 +10,7 @@ $config = [
         'chasha_app_settings' => [
             'db' => [
                 'dsn' => 'mysql:host=127.0.0.1;dbname=termini;charset=utf8mb4',
+                'dbname' => 'termini',
                 'username' => 'root',
                 'password' => '',
                 'options' => [

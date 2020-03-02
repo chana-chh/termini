@@ -420,8 +420,11 @@ class UgovorController extends Controller
         $id = (int) $args['id'];
         $model_ugovor = new Ugovor();
         $ugovor = $model_ugovor->find($id);
+        $model_uplata = new Uplata();
+        $nacin = $model_uplata->enumOrSetList('nacin_placanja');
+        $svrha = $model_uplata->enumOrSetList('svrha_placanja');
 
-        $this->render($response, 'ugovor/uplate.twig', compact('ugovor'));
+        $this->render($response, 'ugovor/uplate.twig', compact('ugovor', 'nacin', 'svrha'));
     }
 
 

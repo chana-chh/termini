@@ -87,11 +87,12 @@
 			<thead class="thead-dark">
 				<tr>
 					<th class="w-5">ID</th>
-					<th class="w-15">Datum</th>
-					<th class="w-15 text-right">Iznos</th>
+					<th class="w-5">Datum</th>
+					<th class="w-10 text-right">Iznos</th>
 					<th class="w-15">Način plaćanja</th>
-					<th class="w-30">Opis</th>
-					<th class="w-10 text-center">Kapara</th>
+					<th class="w-15">Svrha plaćanja</th>
+					<th class="w-20">Opis</th>
+					<th class="w-20">Uplatilac</th>
 					<th class="w-10 text-right text-warning">
 						<i class="fas fa-cogs"></i>
 					</th>
@@ -100,16 +101,13 @@
 			<tbody>
 				{% for uplata in ugovor.uplate %}
 				<tr>
-					<th class="text-danger">{{ uplata.id }}</th>
-					<td>
-						<strong>{{ uplata.datum|date }}</strong>
-					</td>
-					<td class="text-right">{{ uplata.iznos|number_format }}</td>
+					<td class="text-danger">{{ uplata.id }}</td>
+					<td>{{ uplata.datum|date() }}</td>
+					<td class="text-right">{{ uplata.iznos|number_format() }}</td>
 					<td>{{ uplata.nacin_placanja }}</td>
+					<td>{{ uplata.svrha_placanja }}</td>
 					<td>{{ uplata.opis }}</td>
-					<td class="text-center">
-						{{ (uplata.kapara == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-					</td>
+					<td>{{ uplata.uplatilac }}</td>
 					<td class="text-right">
 						<div class="btn-group btn-group-sm">
 							<button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal"
@@ -129,7 +127,8 @@
 				<tr class="bg-dark text-light">
 					<th></th>
 					<td>Zbir</td>
-					<td class="text-right">{{ ugovor.uplateSuma()|number_format }}</td>
+					<td class="text-right">{{ ugovor.uplateSuma()|number_format() }}</td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -301,16 +300,7 @@
 			{{ csrf|raw }}
 			<input type="hidden" id="ugovor_id" name="ugovor_id" value="{{ ugovor.id }}">
 			<div class="form-row">
-				<div class="col form-group">
-					<label for="opis">Opis</label>
-					<input type="text" class="form-control{{ errors.opis[0] ? ' is-invalid' : '' }}" name="opis"
-						id="opis" value="{{ old.opis ? : '' }}" required>
-					<div class="valid-feedback">Odgovarajući podatak</div>
-					<div class="invalid-feedback">{{ errors.opis[0] ? : 'Obavezno polje' }}</div>
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="col form-group">
+				<div class="col-md-6 form-group">
 					<label for="datum">Datum</label>
 					<input name="datum" type="date" id="datum"
 						class="form-control{{ errors.datum[0] ? ' is-invalid' : '' }}"
@@ -318,39 +308,62 @@
 					<div class="valid-feedback">Odgovarajući podatak</div>
 					<div class="invalid-feedback">{{ errors.datum[0] ? : 'Obavezno polje' }}</div>
 				</div>
-				<div class="col form-group">
-					<label for="nacin_placanja">Način plaćanja:</label>
-					<select class="custom-select mb-2 {{ errors.nacin_placanja[0] ? ' is-invalid' : '' }}"
-						name="nacin_placanja" id="nacin_placanja" required>
-						<option value=""></option>
-						<option value="gotovina" {{ old.nacin_placanja == 'gotovina' ? ' checked' : '' }}>Gotovina
-						</option>
-						<option value="kartica" {{ old.nacin_placanja == 'kartica' ? ' checked' : '' }}>Kartica</option>
-						<option value="ček" {{ old.nacin_placanja == 'ček' ? ' checked' : '' }}>Ček</option>
-						<option value="faktura" {{ old.nacin_placanja == 'faktura' ? ' checked' : '' }}>Faktura</option>
-					</select>
-					<div class="valid-feedback">Odgovarajući podatak</div>
-					<div class="invalid-feedback">{{ errors.nacin_placanja[0] ? : 'Obavezno polje' }}</div>
-				</div>
-			</div>
-			<div class="form-row">
-				<div class="col form-group">
+				<div class="col-md-6 form-group">
 					<label for="iznos">Iznos</label>
 					<input type="number" class="form-control{{ errors.iznos[0] ? ' is-invalid' : '' }}" name="iznos"
 						id="iznos" min="1" step="0.01" value="{{ old.iznos ? : 0 }}" required>
 					<div class="valid-feedback">Odgovarajući podatak</div>
 					<div class="invalid-feedback">{{ errors.iznos[0] ? : 'Iznos mora biti veći od 0' }}</div>
 				</div>
-				<div class="col form-group">
-					<div class="form-check">
-						<label for="kapara">Kapara</label><br>
-						<input type="checkbox" class="form-check-input ml-0{{ errors.kapara[0] ? ' is-invalid' : '' }}"
-							name="kapara" id="kapara" {{ old.kapara == 1 ? ' checked' : '' }}>
-						<div class="valid-feedback">Odgovarajući podatak</div>
-						<div class="invalid-feedback">{{ errors.kapara[0] ? : '' }}</div>
-					</div>
+			</div>
+			<div class="form-row">
+				<div class="col-md-6 form-group">
+					<label for="nacin_placanja">Način plaćanja:</label>
+					<select class="custom-select mb-2 {{ errors.nacin_placanja[0] ? ' is-invalid' : '' }}"
+						name="nacin_placanja" id="nacin_placanja" required>
+						<option value=""></option>
+						{% for n in nacin %}
+						<option value="{{ n }}" {{ old.nacin_placanja == n ? ' checked' : '' }}>
+							{{ n }}
+						</option>
+						{% endfor %}
+					</select>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.nacin_placanja[0] ? : 'Obavezno polje' }}</div>
+				</div>
+				<div class="col-md-6 form-group">
+					<label for="svrha_placanja">Svrha plaćanja:</label>
+					<select class="custom-select mb-2 {{ errors.svrha_placanja[0] ? ' is-invalid' : '' }}"
+						name="svrha_placanja" id="svrha_placanja" required>
+						{% for s in svrha %}
+						<option value="{{ s }}" {{ old.svrha_placanja == s ? ' checked' : '' }}>
+							{{ s }}
+						</option>
+						{% endfor %}
+					</select>
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.svrha_placanja[0] ? : 'Obavezno polje' }}</div>
 				</div>
 			</div>
+			<div class="form-row">
+				<div class="col form-group">
+					<label for="opis">Opis</label>
+					<input type="text" class="form-control{{ errors.opis[0] ? ' is-invalid' : '' }}" name="opis"
+						id="opis" value="{{ old.opis ? : '' }}">
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.opis[0] ? : 'Maksimalno 150 karaktera.' }}</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="col form-group">
+					<label for="uplatilac">Uplatilac</label>
+					<input type="text" class="form-control{{ errors.uplatilac[0] ? ' is-invalid' : '' }}"
+						name="uplatilac" id="uplatilac" value="{{ old.uplatilac ? : '' }}" maxlength="150">
+					<div class="valid-feedback">Odgovarajući podatak</div>
+					<div class="invalid-feedback">{{ errors.uplatilac[0] ? : 'Maksimalno 150 karaktera.' }}</div>
+				</div>
+			</div>
+
 			<div class="form-row">
 				<div class="col form-group text-right mb-0">
 					<button type="submit" class="btn btn-primary">
