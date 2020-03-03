@@ -20,7 +20,7 @@
 <div class="row mt-md-2 d-none d-sm-flex">
   <div class="col">
     <h1>
-      <i class="fas fa-handshake text-secondary"></i> Pregled stavki menija
+      <i class="fas fa-cheese text-secondary"></i> Pregled stavki menija
     </h1>
     {% if data %}
     <small><em class="text-warning">[filtrirano]</em></small>
@@ -33,7 +33,7 @@
       <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
         <i class="fas fa-filter"></i> Filter</button>
       <a href="{{ path_for('stavke_menija') }}" class="btn btn-secondary btn-sm pretraga_div"><i
-          class="fas fa-handshake"></i>&emsp;Sve stavke menija</a>
+          class="fas fa-cheese"></i>&emsp;Sve stavke menija</a>
     </div>
   </div>
 </div>
@@ -41,7 +41,7 @@
 <div class="row mt-2 d-sm-none">
   <div class="col">
     <h4>
-      <i class="fas fa-handshake text-secondary"></i> Pregled stavki menija
+      <i class="fas fa-cheese text-secondary"></i> Pregled stavki menija
     </h4>
     {% if data %}
     <small><em class="text-warning">[filtrirano]</em></small>
@@ -55,8 +55,8 @@
     <div class="btn-group btn-group">
       <button type="button" class="btn btn-success btn-sm prikazi" id="prikazi" title="Prikaži formu za filtriranje">
         <i class="fas fa-filter"></i> Filter</button>
-      <a href="{{ path_for('komitenti') }}" class="btn btn-secondary btn-sm pretraga_div"><i
-          class="fas fa-handshake"></i>&emsp;Sve stavke menija</a>
+      <a href="{{ path_for('stavke_menija') }}" class="btn btn-secondary btn-sm pretraga_div"><i
+          class="fas fa-cheese"></i>&emsp;Sve stavke menija</a>
     </div>
   </div>
 </div>
@@ -78,16 +78,12 @@
         </div>
         <div class="form-group col-md-2">
           <label for="kategorijaf">Kategorija</label>
-          <select class="custom-select" id="kategorijaf" name="kategorijaf">
-            <option value=""></option>
-            <option value="Predjelo">Predjelo</option>
-            <option value="Sirevi">Sirevi</option>
-            <option value="Čorba">Čorba</option>
-            <option value="Glavno jelo">Glavno jelo</option>
-            <option value="Meso">Meso</option>
-            <option value="Hleb">Hleb</option>
-            <option value="Piće">Piće</option>
-          </select>
+        <select class="custom-select" id="kategorijaf" name="kategorijaf">
+          <option value=""></option>
+          {% for kat in kategorije %}
+              <option value="{{ kat }}" {{ old.kat == kat ? ' selected' : '' }}>{{ kat }}</option>
+          {% endfor %}
+        </select>
         </div>
         <div class="col-md-6 text-right mt-4">
           <div class="btn-group">
@@ -95,7 +91,7 @@
               <i class="fas fa-filter"></i> Filtriraj
             </button>
             <a href="{{ path_for('stavke_menija') }}" class="btn btn-secondary btn-sm">
-              <i class="fas fa-handshake"></i>&emsp;Sve stavke menija</a>
+              <i class="fas fa-cheese"></i>&emsp;Sve stavke menija</a>
           </div>
         </div>
       </div>
@@ -195,60 +191,6 @@
     </div>
   </div>
 </div>
-{# Kraj modala za brisanje #}
-
-{# Modal za izmenu
-<div id="izmenaModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-danger">Izmeni stavku</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="izmena-forma" action="{{ path_for('komitenti.izmena') }}" method="POST" class="needs-validation"
-          novalidate>
-          {{ csrf|raw }}
-          <input type="hidden" id="idIzmena" name="idIzmena">
-          <div class="form-group">
-            <label for="nazivModal">Naziv</label>
-            <input type="text" class="form-control{{ errors.nazivModal[0] ? ' is-invalid' : '' }}" name="nazivModal"
-              id="nazivModal" aria-describedby="naziv komitenta" required>
-            <div class="valid-feedback">Odgovarajući podatak</div>
-            <div class="invalid-feedback">
-              {{ errors.naziv[0] ? : 'Obavezno polje' }}
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="kategorijaModal">Kategorija</label>
-            <select class="form-control{{ errors.kategorijaModal[0] ? ' is-invalid' : '' }}" id="kategorijaModal"
-              name="kategorijaModal" required>
-            </select>
-            <div class="valid-feedback">Odgovarajući podatak</div>
-            <div class="invalid-feedback">
-              {{ errors.kategorijaModal[0] ? : 'Obavezno polje' }}
-            </div>
-          </div>
-          <hr style="margin-top: 30px;">
-          <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
-            <div class="form-group">
-              <button id="btn-brisanje-izmeni" type="submit" class="btn btn-warning">
-                <i class="fas fa-save"></i>&emsp;Snimi
-              </button>
-              <a class="btn btn-secondary" data-dismiss="modal">
-                <i class="fas fa-ban"></i>&emsp;Otkaži
-              </a>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
- Kraj modala za izmenu #}
-
 {% endblock sadrzaj %}
 {% block traka %}
 
@@ -295,16 +237,11 @@
       </div>
       <div class="form-group">
         <label for="kategorija">Kategorija</label>
-        <select class="custom-select{{ errors.kategorija[0] ? ' is-invalid' : '' }}" id="kategorija" name="kategorija"
-          required>
+        <select class="custom-select{{ errors.kategorija[0] ? ' is-invalid' : '' }}" id="kategorija" name="kategorija" required>
           <option value=""></option>
-          <option value="Predjelo">Predjelo</option>
-          <option value="Sirevi">Sirevi</option>
-          <option value="Čorba">Čorba</option>
-          <option value="Glavno jelo">Glavno jelo</option>
-          <option value="Meso">Meso</option>
-          <option value="Hleb">Hleb</option>
-          <option value="Piće">Piće</option>
+          {% for kat in kategorije %}
+              <option value="{{ kat }}" {{ old.kat == kat ? ' selected' : '' }}>{{ kat }}</option>
+          {% endfor %}
         </select>
         <div class="valid-feedback">Odgovarajući podatak</div>
         <div class="invalid-feedback">
@@ -314,7 +251,7 @@
       <div class="row justify-content-end text-right">
         <div class="col">
           <button type="submit" class="btn btn-primary text-right"><i class="fas fa-plus-square"
-              title="Dodavanje komitenta"></i> &emsp;Dodaj</button>
+              title="Dodavanje stavke menija"></i> &emsp;Dodaj</button>
           <a href="{{ path_for('stavke_menija') }}" class="btn btn-secondary"><i class="fas fa-ban"></i>
             &emsp;Otkaži</a>
         </div>

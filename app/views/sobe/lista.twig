@@ -88,8 +88,9 @@
     <thead class="thead-dark">
       <tr>
         <th class="w-5" scope="col">ID</th>
-        <th class="w-50" scope="col">Naziv (tip) sobe</th>
-        <th class="w-35" scope="col">Cena</th>
+        <th class="w-40" scope="col">Naziv (tip) sobe</th>
+        <th class="w-15" scope="col">Cena</th>
+        <th class="w-30" scope="col">Opis</th>
         <th class="w-10" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
       </tr>
     </thead>
@@ -98,7 +99,8 @@
       <tr>
         <th scope="row" class="text-danger">{{ soba.id }}</th>
         <td><strong>{{ soba.naziv }}</strong></td>
-        <td class="text-success">{{ soba.cena|number_format(2, '.', ',') }}</td>
+        <td class="text-success"><strong>{{ soba.cena|number_format(2, '.', ',') }}</strong></td>
+        <td><em>{{ soba.opis }}</em></td>
         <td style="text-align:right;">
           <div class="btn-group btn-group-sm">
             <button class="btn btn-warning btn-sm otvori-izmenu" data-toggle="modal" data-target="#izmenaModal"
@@ -191,7 +193,7 @@
               </div>
             </div>
           <div class="form-group">
-            <label for="cenaModal">CenaModal</label>
+            <label for="cenaModal">Cena</label>
               <input
                 type="number"
                 class="form-control{{ errors.cenaModal[0] ? ' is-invalid' : '' }}"
@@ -206,6 +208,10 @@
               <div class="invalid-feedback">
                 {{ errors.cenaModal[0] ? : 'Obavezno polje' }}
               </div>
+          </div>
+          <div class="form-group">
+              <label for="opisModal">Opis</label>
+              <textarea class="form-control" name="opisModal" id="opisModal" rows="3"></textarea>
           </div>
             <hr style="margin-top: 30px;">
             <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
@@ -247,6 +253,10 @@
           <div class="invalid-feedback">
             {{ errors.cena[0] ? : 'Obavezno polje' }}
           </div>
+        </div>
+        <div class="form-group">
+          <label for="opis">Opis</label>
+          <textarea class="form-control" name="opis" id="opis" rows="3"></textarea>
         </div>
          <div class="row justify-content-end text-right">
             <div class="col">
@@ -320,6 +330,7 @@
             $("#idIzmena").val(data.soba.id);
             $("#nazivModal").val(data.soba.naziv);
             $("#cenaModal").val(data.soba.cena);
+            $("#opisModal").val(data.soba.opis);
           }
         });
 

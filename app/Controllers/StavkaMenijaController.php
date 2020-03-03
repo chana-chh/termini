@@ -9,9 +9,10 @@ class StavkaMenijaController extends Controller
     public function getStavkaMenija($request, $response)
     {
         $model = new StavkaMenija();
+        $kategorije = $model->enumOrSetList('kategorija');
         $stavke = $model->paginate($this->page(), 'page', "SELECT * FROM stavke_menija ORDER BY kategorija;");
 
-        $this->render($response, 'stavka_menija/lista.twig', compact('stavke'));
+        $this->render($response, 'stavka_menija/lista.twig', compact('stavke', 'kategorije'));
     }
 
     public function postStavkaMenijaPretraga($request, $response)
@@ -30,7 +31,7 @@ class StavkaMenijaController extends Controller
 
         if (empty($data['nazivf']) &&
             $cena === 0 &&
-            empty($data['kategorija'])) {
+            empty($data['kategorijaf'])) {
             return $response->withRedirect($this->router->pathFor('stavke_menija'));
         }
 

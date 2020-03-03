@@ -18,8 +18,6 @@ class TipDogadjajaController extends Controller
     public function postTipDodavanje($request, $response)
     {
         $data = $this->data();
-
-        // TODO: izdvojiti u metodu koja pravi chechbox vrednosti
         $multi_ugovori = isset($data['multi_ugovori']) ? 1 : 0;
         $data['multi_ugovori'] = $multi_ugovori;
 
@@ -28,7 +26,7 @@ class TipDogadjajaController extends Controller
                 'required' => true,
                 'minlen' => 5,
                 'maxlen' => 50,
-                'unique' => 'tip_dogadjaja.tip'
+                'unique' => 'tipovi_dogadjaja.tip'
             ],
         ];
 
@@ -58,7 +56,7 @@ class TipDogadjajaController extends Controller
 
         if ($success) {
             $this->flash->addMessage('success', "Tip događaja je uspešno obrisan.");
-            $this->log(Logger::BRISANJE, $tip_dogadjaja, 'tip', $tip_dogadjaja);
+            $this->log($this::BRISANJE, $tip_dogadjaja, 'tip', $tip_dogadjaja);
             return $response->withRedirect($this->router->pathFor('tip_dogadjaja'));
         } else {
             $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja tipa događaja.");
@@ -81,12 +79,10 @@ class TipDogadjajaController extends Controller
 
     public function postTipIzmena($request, $response)
     {
-        // $data = $request->getParams();
+
         $data = $this->data();
         $id = $data['idIzmena'];
         unset($data['idIzmena']);
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
 
         $multi_ugovori = isset($data['multi_ugovoriM']) ? 1 : 0;
 
@@ -100,8 +96,7 @@ class TipDogadjajaController extends Controller
                 'required' => true,
                 'minlen' => 5,
                 'maxlen' => 50,
-                'alnum' => true,
-                'unique' => 'tip_dogadjaja.tip#id:' . $id,
+                'unique' => 'tipovi_dogadjaja.tip#id:' . $id,
             ],
             'multi_ugovori' => [
                 'required' => true,
@@ -119,7 +114,7 @@ class TipDogadjajaController extends Controller
             $stari = $model->find($id);
             $model->update($datam, $id);
             $tip_dogadjaja = $model->find($id);
-            $this->log(Logger::IZMENA, $tip_dogadjaja, 'tip', $stari);
+            $this->log($this::IZMENA, $tip_dogadjaja, 'tip', $stari);
             return $response->withRedirect($this->router->pathFor('tip_dogadjaja'));
         }
     }

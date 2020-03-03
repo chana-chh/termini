@@ -119,10 +119,10 @@
             <input type="hidden" id="idIzmena" name="idIzmena">
             <div class="form-group">
               <label for="nazivModal">Naziv</label>
-              <input type="text" class="form-control{{ errors.nazivModal[0] ? ' is-invalid' : '' }}" name="nazivModal" id="nazivModal" aria-describedby="naziv sale" required>
+              <input type="text" class="form-control{{ errors.nazivModal[0] ? ' is-invalid' : '' }}" name="nazivModal" id="nazivModal" aria-describedby="naziv sale" required minlength="4">
               <div class="valid-feedback">Odgovarajući podatak</div>
               <div class="invalid-feedback">
-                {{ errors.naziv[0] ? : 'Obavezno polje' }}
+                {{ errors.naziv[0] ? : 'Obavezno polje minimalne dužine od 4 karaktera.' }}
               </div>
             </div>
             <div class="form-group">
@@ -172,7 +172,7 @@
         {{ csrf|raw }}
         <div class="form-group">
           <label for="naziv">Naziv</label>
-          <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}" name="naziv" id="naziv" aria-describedby="Naziv sale" required>
+          <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}" name="naziv" id="naziv" aria-describedby="Naziv sale" required minlength="4">
           <div class="valid-feedback">Odgovarajući podatak</div>
           <div class="invalid-feedback">
             {{ errors.naziv[0] ? : 'Obavezno polje' }}

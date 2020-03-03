@@ -104,7 +104,7 @@
       <tr>
         <th class="w-10">ID</th>
         <th class="w-20">Naziv</th>
-        <th class="w-15 text-right">Cena</th>
+        <th class="w-15 text-center">Cena</th>
         <th class="w-45">Napomena</th>
         <th class="w-10 text-right"><i class="fas fa-cogs text-warning"></i></th>
       </tr>
@@ -114,9 +114,9 @@
       <tr>
         <th class="text-danger">{{ me.id }}</th>
         <td>{{ me.naziv }}</td>
-        <td class="text-right">{{ me.cena|number_format()}}</td>
+        <td class="text-success text-center"><strong>{{ me.cena|number_format()}}</strong></td>
         <td>
-          {{ me.napomena|nl2br }}
+         <em>{{ me.napomena|nl2br }}</em>
         </td>
         <td class="text-right">
           <div class="btn-group btn-group-sm">

@@ -133,7 +133,8 @@ class SobaController extends Controller
 
         $datam = [
             "naziv" => $data['nazivModal'],
-            "cena" => $data['cenaModal']
+            "cena" => $data['cenaModal'],
+            "opis" => $data['opisModal']
         ];
 
         $validation_rules = [

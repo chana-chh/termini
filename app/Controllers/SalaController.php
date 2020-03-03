@@ -11,23 +11,19 @@ class SalaController extends Controller
         $model = new Sala();
         $sale = $model->all();
 
-        $this->render($response, 'sale.twig', compact('sale'));
+        $this->render($response, 'sale\sale.twig', compact('sale'));
     }
 
     public function postSalaDodavanje($request, $response)
     {
-        // $data = $request->getParams();
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
 
         $data = $this->data();
 
         $validation_rules = [
             'naziv' => [
                 'required' => true,
-                'minlen' => 5,
+                'minlen' => 4,
                 'maxlen' => 70,
-                'alnum' => true,
                 'unique' => 'sale.naziv'
             ],
             'max_kapacitet_mesta' => [
@@ -92,12 +88,9 @@ class SalaController extends Controller
 
     public function postSalaIzmena($request, $response)
     {
-        // $data = $request->getParams();
         $data = $this->data();
         $id = $data['idIzmena'];
         unset($data['idIzmena']);
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
 
         $datam = [
             "naziv" => $data['nazivModal'],
@@ -109,9 +102,8 @@ class SalaController extends Controller
         $validation_rules = [
             'naziv' => [
                 'required' => true,
-                'minlen' => 5,
+                'minlen' => 4,
                 'maxlen' => 70,
-                'alnum' => true,
                 'unique' => 'sale.naziv#id:' . $id,
             ],
             'max_kapacitet_mesta' => [
