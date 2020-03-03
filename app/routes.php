@@ -85,8 +85,8 @@ $app->group('', function () {
     $this->get('/vlasnik/ugovori/pretraga', '\App\Controllers\VlasnikController:getUgovorPretragaVlasnik')->setName('vlasnik.ugovori.pretraga');
     $this->post('/vlasnik/ugovori/pretraga', '\App\Controllers\VlasnikController:postUgovorPretragaVlasnik');
     // izvestaji
-    $this->get('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:getPoSalama')->setName('izvestaji.Komitenti');
-    $this->post('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:postPoSalama')->setName('izvestaji.Komitenti.post');
+    $this->get('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:getPoSalama')->setName('izvestaji.sale');
+    $this->post('/izvestaji/po-salama', '\App\Controllers\IzvestajiController:postPoSalama')->setName('izvestaji.sale.post');
     $this->get('/izvestaji/po-salama-lista', '\App\Controllers\IzvestajiController:getPoSalamaLista')->setName('izvestaji.sale.lista');
     $this->get('/izvestaji/po-tipovima', '\App\Controllers\IzvestajiController:getPoTipovima')->setName('izvestaji.tipovi');
     $this->post('/izvestaji/po-tipovima', '\App\Controllers\IzvestajiController:postPoTipovima')->setName('izvestaji.tipovi.post');
