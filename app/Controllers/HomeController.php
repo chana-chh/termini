@@ -28,7 +28,6 @@ class HomeController extends Controller
         $ugovori = $termin->ugovori();
         $broj_ugovora = count($ugovori);
         if ($broj_ugovora > 0) {
-
             $d = date('d.m.Y', strtotime($termin->datum));
             $p = date('H:i', strtotime($termin->pocetak));
             $k = date('H:i', strtotime($termin->kraj));
@@ -37,37 +36,38 @@ class HomeController extends Controller
             $broj_poslatih = 0;
             $nisu_prosli = [];
             foreach ($ugovori as $ugovor) {
-                if ($ugovor->email != ''){
+                if ($ugovor->email != '') {
                     $adresa = trim($ugovor->email);
                     $adresa = filter_var($adresa, FILTER_SANITIZE_EMAIL);
                     $ime = $ugovor->punoIme();
                     if (filter_var($adresa, FILTER_VALIDATE_EMAIL)) {
-                    $poslato = $this->mailer->sendMail(
+                        $poslato = $this->mailer->sendMail(
                         [['email' => $adresa, 'name' => $ime]],
                         "Istek rezervacije za termin u sali {$termin->sala()->naziv} za {$d}. godine",
                         $telo
-                    );}
+                    );
+                    }
                 }
                 if ($poslato) {
-                   $broj_poslatih++;
-                }else{
+                    $broj_poslatih++;
+                } else {
                     array_push($nisu_prosli, $ime);
                 }
             }
 
-                if ($broj_poslatih == $broj_ugovora) {
-                    $model->update(['obavestenje' => date('Y-m-d')], $id_termina);
-                    $this->flash->addMessage('success', "Obaveštenje je uspešno poslato.");
-                    return $response->withRedirect($this->router->pathFor('pocetna'));
-                }elseif($broj_poslatih == 0) {
-                    $this->flash->addMessage('danger', "Došlo je do greške prilikom slanja obaveštenja.");
-                    return $response->withRedirect($this->router->pathFor('pocetna'));
-                }else{
-                    $comma_separated = implode(",", $nisu_prosli);
-                    $this->flash->addMessage('warning', "Samo je deo obaveštenja uspešno prosleđen. Problem se javio kod: ".$comma_separated);
-                    return $response->withRedirect($this->router->pathFor('pocetna'));
-                }
-        }else{
+            if ($broj_poslatih == $broj_ugovora) {
+                $model->update(['obavestenje' => date('Y-m-d')], $id_termina);
+                $this->flash->addMessage('success', "Obaveštenje je uspešno poslato.");
+                return $response->withRedirect($this->router->pathFor('pocetna'));
+            } elseif ($broj_poslatih == 0) {
+                $this->flash->addMessage('danger', "Došlo je do greške prilikom slanja obaveštenja.");
+                return $response->withRedirect($this->router->pathFor('pocetna'));
+            } else {
+                $comma_separated = implode(",", $nisu_prosli);
+                $this->flash->addMessage('warning', "Samo je deo obaveštenja uspešno prosleđen. Problem se javio kod: ".$comma_separated);
+                return $response->withRedirect($this->router->pathFor('pocetna'));
+            }
+        } else {
             $this->flash->addMessage('danger', "E-mail adrese na koje treba poslati obaveštenje nisu dodate ili nije definisan ugovor za termin.");
             return $response->withRedirect($this->router->pathFor('pocetna'));
         }
@@ -79,13 +79,13 @@ class HomeController extends Controller
         $model = new Termin();
         $izmenjeno = $model->update(['vaznost' => null], $id_termina);
 
-                if ($izmenjeno) {
-                    $this->flash->addMessage('success', "Važnost rezervacije termina je uspešno uklonjena.");
-                    return $response->withRedirect($this->router->pathFor('pocetna'));
-                } else {
-                    $this->flash->addMessage('danger', "Došlo je do greške prilikom uklanjanja važnosti rezervacije.");
-                    return $response->withRedirect($this->router->pathFor('pocetna'));
-                }
+        if ($izmenjeno) {
+            $this->flash->addMessage('success', "Važnost rezervacije termina je uspešno uklonjena.");
+            return $response->withRedirect($this->router->pathFor('pocetna'));
+        } else {
+            $this->flash->addMessage('danger', "Došlo je do greške prilikom uklanjanja važnosti rezervacije.");
+            return $response->withRedirect($this->router->pathFor('pocetna'));
+        }
     }
 
     public function getKalendar($request, $response)
@@ -137,7 +137,7 @@ class HomeController extends Controller
         if (empty($data['sala_id']) && empty($data['tip_dogadjaja_id']) && strlen($data['status']) == 0) {
             return $response->withRedirect($this->router->pathFor('kalendar'));
         }
-        
+
 
         $where = " WHERE ";
         $params = [];
@@ -164,26 +164,26 @@ class HomeController extends Controller
                 $model_termin = new Termin();
                 $sql = "SELECT * FROM {$model_termin->getTable()}{$where}termini.datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND zauzet = 1;";
                 $termini = $model_termin->fetch($sql, $params);
-            }elseif ($data['status'] == 2) {
+            } elseif ($data['status'] == 2) {
                 $where = $where === " WHERE " ? " WHERE " : $where.' AND ';
                 $model_termin = new Termin();
                 $sql = "SELECT {$model_termin->getTable()}.*, ugovori.termin_id FROM {$model_termin->getTable()} LEFT JOIN ugovori ON termini.id = ugovori.termin_id{$where}termini.datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND zauzet = 0 AND ugovori.termin_id IS NULL;";
                 $termini = $model_termin->fetch($sql, $params);
-            }else{
+            } else {
                 $where = $where === " WHERE " ? " WHERE " : $where.' AND ';
                 $model_termin = new Termin();
                 $sql = "SELECT {$model_termin->getTable()}.*, ugovori.termin_id FROM {$model_termin->getTable()} LEFT JOIN ugovori ON termini.id = ugovori.termin_id{$where}termini.datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND zauzet = 0 AND ugovori.termin_id IS NOT NULL;";
                 $termini = $model_termin->fetch($sql, $params);
             }
-        }else{
-                $where = $where === " WHERE " ? "" : $where;
-                $model_termin = new Termin();
-                $sql = "SELECT * FROM {$model_termin->getTable()}{$where} AND datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH);";
-                $termini = $model_termin->fetch($sql, $params);
+        } else {
+            $where = $where === " WHERE " ? "" : $where;
+            $model_termin = new Termin();
+            $sql = "SELECT * FROM {$model_termin->getTable()}{$where} AND datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH);";
+            $termini = $model_termin->fetch($sql, $params);
         }
 
         $data_kal = [];
-        
+
         foreach ($termini as $termin) {
             $ikonica = $termin->statusIkonica();
             $bojica = $termin->statusBoja();

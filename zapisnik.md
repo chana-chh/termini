@@ -16,6 +16,37 @@ Dokumenta koja se dodaju mogu da vide i neprijavljeni !!!!!!!!!!!!!!!!
 
 # TODO
 
+CHANA:
+
+	+ termini
+		+ kontroler
+		+ model
+		+ detalj
+		+ pregled
+		+ dodavanje
+		+ izmena
+	- ugovori
+		- kontroler
+		- model
+		- detalj
+		- pregled
+		- dodavanje
+		- izmena
+	- dokumenta
+		- kontroler
+		- model
+		- detalj
+		- pregled
+		- dodavanje
+		- izmena
+	- uplate
+		- kontroler
+		- model
+		- detalj
+		- pregled
+		- dodavanje
+		- izmena
+
 - Promeniti dodavanje i izmenu ugovora da se iznosi za meni, sobe i dodatne usluge automatski racunaju
   (ima dosta mesta gde moze da se nasteluje cena)
 

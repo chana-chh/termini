@@ -46,6 +46,7 @@
   }
 </style>
 {% endblock stil %}
+
 {% block naslov %}
 <div class="row d-none d-sm-flex">
   <div class="col">
@@ -108,12 +109,15 @@
 <div class="row mb-2">
   <div class="col-lg-12" id="kalendar"></div>
 </div>
-{% endblock naslov %} {% block skripta %}
+{% endblock naslov %}
+
+{% block skripta %}
 <script src="{{ base_url() }}/js/moment.min.js"></script>
 <script src="{{ base_url() }}/js/fullcalendar.min.js"></script>
 <script src="{{ base_url() }}/js/sr.js"></script>
 <script>
   $(document).ready(function () {
+
     $('#idi').click(function () {
       if ($('#datum').val()) {
         $("#kalendar").fullCalendar('gotoDate', $('#datum').val());
@@ -123,6 +127,7 @@
         alert('Odaberite željeni datum!')
       }
     });
+
     $('#idib').click(function () {
       if ($('#datumb').val()) {
         $("#kalendar").fullCalendar('gotoDate', $('#datumb').val());
@@ -132,6 +137,7 @@
         alert('Odaberite željeni datum!')
       }
     });
+
     $("#kalendar").fullCalendar({
       themeSystem: "bootstrap4",
       customButtons: {

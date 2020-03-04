@@ -2,14 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Classes\Logger;
 use App\Models\Termin;
 use App\Models\Sala;
 use App\Models\TipDogadjaja;
 
 class TerminController extends Controller
 {
-    public function getTerminPregled($request, $response, $args) // Kalendar
+    public function getTerminPregled($request, $response, $args)
     {
         $datum = isset($args['datum']) ? $args['datum'] : null;
         $url_termin_dodavanje = $this->router->pathFor('termin.dodavanje.get');
@@ -64,10 +63,6 @@ class TerminController extends Controller
     {
         $datum = isset($data['datum']) ? $data['datum'] : null;
 
-        // $data = $request->getParams();
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
-
         $data = $this->data();
 
         $vaznost = $data['vaznost'];
@@ -77,21 +72,11 @@ class TerminController extends Controller
         $kraj = strtotime("{$data['datum']} {$data['kraj']}");
 
         $validation_rules = [
-            'sala' => [
-                'required' => true
-            ],
-            'datum' => [
-                'required' => true
-            ],
-            'pocetak' => [
-                'required' => true
-            ],
-            'kraj' => [
-                'required' => true
-            ],
-            'opis' => [
-                'required' => true
-            ],
+            'sala' => ['required' => true],
+            'datum' => ['required' => true],
+            'pocetak' => ['required' => true],
+            'kraj' => ['required' => true],
+            'opis' => ['required' => true],
         ];
 
         if ($kraj <= $pocetak) {
@@ -140,15 +125,13 @@ class TerminController extends Controller
             $model_termin->insert($data);
             $termin = $model_termin->find($model_termin->lastId());
             $link = $this->router->fullUrlFor($this->request->getUri(), 'termin.detalj.get', ["id"=>$termin->id]);
-            // $d = date('d.m.Y', strtotime($termin->datum));
-            // $p = date('H:i', strtotime($termin->pocetak));
-            // $k = date('H:i', strtotime($termin->kraj));
 
             $telo = $this->renderPartial('mail/zakazan_termin.twig', compact('termin', 'link'));
 
             $this->log($this::DODAVANJE, $termin, 'opis');
 
             // Ovo je iskljuceno da ne bi stalno slali mail kad se zakaze termin :)
+
             // $this->mailer->sendMail(
             //     [['email' => 'stashakg@gmail.com', 'name' => 'Stanislav']],
             //     "Zakazan je novi termin u sali {$termin->sala()->naziv} za {$d}. godine",
@@ -162,7 +145,8 @@ class TerminController extends Controller
 
     public function postTerminBrisanje($request, $response)
     {
-        $id = (int) $request->getParam('modal_termin_brisanje_id');
+        $id = $this->dataId('modal_termin_brisanje_id');
+        // $id = (int) $request->getParam();
         $model = new Termin();
         $termin = $model->find($id);
         $datum = $termin->datum;
@@ -174,7 +158,7 @@ class TerminController extends Controller
 
         $success = $model->deleteOne($id);
         if ($success) {
-            $this->log(Logger::BRISANJE, $termin, 'opis', $termin);
+            $this->log($this::BRISANJE, $termin, 'opis', $termin);
             $this->flash->addMessage('success', "Termin je uspešno obrisan.");
             return $response->withRedirect($this->router->pathFor('termin.pregled.get', ['datum' => $datum]));
         } else {
@@ -217,34 +201,21 @@ class TerminController extends Controller
 
     public function postTerminIzmena($request, $response)
     {
-        // $data = $request->getParams();
-        $data = $this->data();
-        $id = (int) $data['termin_id'];
-        unset($data['termin_id']);
+        $data = $this->data('termin_id');
+        $id = $this->dataId('termin_id');
 
         $vaznost = $data['vaznost'];
         unset($data['vaznost']);
-        // unset($data['csrf_name']);
-        // unset($data['csrf_value']);
+
         $pocetak = strtotime("{$data['datum']} {$data['pocetak']}");
         $kraj = strtotime("{$data['datum']} {$data['kraj']}");
 
         $validation_rules = [
-            'sala' => [
-                'required' => true
-            ],
-            'datum' => [
-                'required' => true
-            ],
-            'pocetak' => [
-                'required' => true
-            ],
-            'kraj' => [
-                'required' => true
-            ],
-            'opis' => [
-                'required' => true
-            ],
+            'sala' => ['required' => true],
+            'datum' => ['required' => true],
+            'pocetak' => ['required' => true],
+            'kraj' => ['required' => true],
+            'opis' => ['required' => true],
         ];
 
         if ($kraj <= $pocetak) {
@@ -297,7 +268,7 @@ class TerminController extends Controller
                 $model_termin->update(['zauzet' => 1], $termin->id);
             }
 
-            $this->log(Logger::IZMENA, $termin, 'opis', $stari);
+            $this->log($this::IZMENA, $termin, 'opis', $stari);
             $this->flash->addMessage('success', 'Termin je uspešno izmenjen.');
             return $response->withRedirect($this->router->pathFor('termin.detalj.get', ['id' => $id]));
         }

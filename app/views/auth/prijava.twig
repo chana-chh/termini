@@ -10,11 +10,12 @@
       <div class="form-group">
         <label for="korisnicko_ime">Korisničko ime</label>
         <input class="form-control" type="text" name="korisnicko_ime" id="korisnicko_ime"
-          value="{{ old.korisnicko_ime }}" autocomplete="off" />
+          value="{{ old.korisnicko_ime }}" autocomplete="false">
       </div>
       <div class="form-group">
         <label for="lozinka" class="uk-form-label">Lozinka</label>
-        <input class="form-control" type="password" name="lozinka" id="lozinka" class="uk-input" autocomplete="off" />
+        <input class="form-control" type="password" name="lozinka" id="lozinka" class="uk-input"
+          autocomplete="new-password">
       </div>
       <div class="btn-group float-right">
         <input type="submit" value="Prijavi se" class="btn btn-info" />

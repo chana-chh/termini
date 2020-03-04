@@ -55,7 +55,7 @@ class Ugovor extends Model
 
     public function uplateDug()
     {
-        return $this->aneksUkupanIznos() - $this->uplateSuma();
+        return $this->ukupanIznos() - $this->uplateSuma();
     }
 
     public function dokumenti()

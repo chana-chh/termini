@@ -1,11 +1,9 @@
 {% extends "templates/app.twig" %}
-{% block stil %}
-{% endblock stil %}
-{% block naslov %}
 
+{% block naslov %}
 {% if termin.vaznost %}
 {% if date(termin.vaznost) <  date() %}
-<div class="row mx-2 my-2">
+<div class="row m-2">
   <div class="col">
     <div class="alert alert-danger text-center" role="alert">
       Ponuda za ovaj termin je istekla {{ termin.vaznost|date() }}!
@@ -13,7 +11,7 @@
   </div>
 </div>
 {% else %}
-<div class="row mx-2 my-2">
+<div class="row m-2">
   <div class="col">
     <div class="alert alert-warning text-center" role="alert">
       Ponuda za ovaj termin ističe {{ termin.vaznost|date() }}!
@@ -64,8 +62,7 @@
       <tr>
         <th>Vreme</th>
         <td>
-          {{ termin.datum|date() }} od {{ termin.pocetak|date("H:i") }} do
-          {{ termin.kraj|date("H:i") }}
+          {{ termin.datum|date() }} od {{ termin.pocetak|date("H:i") }} do {{ termin.kraj|date("H:i") }}
         </td>
       </tr>
       <tr>
@@ -82,58 +79,53 @@
           <div class="custom-control custom-checkbox">
             <input class="custom-control-input" type="checkbox" id="zauzet"
               {{ termin.zauzet == 1 ? ' checked="checked"' : "" }} disabled>
-            <label class="custom-control-label" for="zauzet"><strong></strong></label>
+            <label class="custom-control-label" for="zauzet"></label>
           </div>
         </td>
       </tr>
       <tr>
         <th>Napomena</th>
-        <td>{{ termin.napomena | nl2br }}</td>
-      </tr>
-      <tr>
-        <th></th>
-        <td></td>
+        <td>{{ termin.napomena|nl2br }}</td>
       </tr>
     </tbody>
   </table>
 </div>
+<hr>
 {# Modal za brisanje termina #}
 <div id="brisanjeModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-danger">Upozorenje!</h5>
+        <h2 class="modal-title text-danger">Upozorenje!</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <h6>Da li želite trajno da obrišete termin?</h6>
+        <p class="lead">Da li želite trajno da obrišete termin?</p>
         <p class="text-danger">* Ova akcija je nepovratna!</p>
         <form action="{{ path_for('termin.brisanje.post') }}" method="POST" id="modal-forma-brisanje-termina">
           {{ csrf | raw }}
-          <input type="hidden" name="modal_termin_brisanje_id" id="modal-termin-brisanje-id" />
-        </form>
+          <input type="hidden" name="modal_termin_brisanje_id" id="modal-termin-brisanje-id">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" id="modal-obrisi-termin">
+        <button type="submit" class="btn btn-danger" id="modal-obrisi-termin">
           <i class="fas fa-trash-alt"></i> Obriši
         </button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           <i class="fas fa-ban"></i> Otkaži
         </button>
+        </form>
       </div>
     </div>
   </div>
 </div>
 {# Kraj modala za brisanje termina #}
 <div class="row">
-  <div class="col-lg-8">
-    <h2>
-      <i class="fas fa-file-signature text-secondary"></i> Ugovori za termin
-    </h2>
+  <div class="col-md-8">
+    <h2><i class="fas fa-file-signature text-secondary"></i> Ugovori za termin</h2>
   </div>
-  <div class="col-lg-4 text-right pt-1">
+  <div class="col-md-4 text-right pt-1">
     <a href="{{ path_for('termin.dodavanje.ugovor', { termin_id: termin.id }) }}" class="btn btn-primary btn-sm">
       <i class="fas fa-plus-square"></i> Dodavanje ugovora
     </a>
@@ -164,10 +156,10 @@
         <td>{{ ugovor.broj_ugovora }}</td>
         <td>{{ ugovor.datum|date() }}</td>
         <td class="text-info text-right">
-          <strong>{{ ugovor.ukupanIznos()|number_format }}</strong>
+          <strong>{{ ugovor.ukupanIznos()|number_format() }}</strong>
         </td>
         <td class="{{ ugovor.uplateDug() > 0 ? 'text-danger' : 'text-success' }} text-right">
-          <strong>{{ ugovor.uplateDug()|number_format }}</strong>
+          <strong>{{ ugovor.uplateDug()|number_format() }}</strong>
         </td>
         <td>{{ ugovor.punoIme() }}</td>
         <td>{{ ugovor.telefon }}</td>
@@ -211,18 +203,17 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-danger">Upozorenje!</h5>
+        <h2 class="modal-title text-danger">Upozorenje!</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <h6>Da li želite trajno da obrišete ugovor?</h6>
+        <p class="lead">Da li želite trajno da obrišete ugovor?</p>
         <p class="text-danger">* Ova akcija je nepovratna!</p>
         <form action="{{ path_for('termin.ugovor.brisanje') }}" method="POST" id="modal-forma-brisanje-ugovora">
           {{ csrf | raw }}
           <input type="hidden" id="idBrisanje" name="idBrisanje" />
-        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" id="modal-obrisi-ugovor">
@@ -231,15 +222,18 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           <i class="fas fa-ban"></i> Otkaži
         </button>
+        </form>
       </div>
     </div>
   </div>
 </div>
 {# Kraj modala za brisanje ugovora #}
 {% endblock naslov %}
+
 {% block skripta %}
 <script>
   $(document).ready(function () {
+
     $(".otvori-brisanje").on("click", function () {
       var id = "{{ termin.id }}";
       $("#modal-termin-brisanje-id").val(id);
@@ -248,14 +242,6 @@
     $(".otvori-brisanje-ugovora").on("click", function () {
       var id = $(this).data("id");
       $("#idBrisanje").val(id);
-    });
-
-    $("#modal-obrisi-termin").on("click", function () {
-      $("#modal-forma-brisanje-termina").submit();
-    });
-
-    $("#modal-obrisi-ugovor").on("click", function () {
-      $("#modal-forma-brisanje-ugovora").submit();
     });
 
     $("#zakljuci-termin").on("click", function (e) {

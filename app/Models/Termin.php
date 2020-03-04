@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Classes\Model;
-use App\Classes\Db;
 
 class Termin extends Model
 {
@@ -80,7 +79,7 @@ class Termin extends Model
 
     public function cenaTermina()
     {
-        $sql = "SELECT SUM(iznos_meni) AS cena FROM ugovori WHERE termin_id = {$this->id};";
+        $sql = "SELECT SUM(iznos_meni + iznos_sobe + iznos_dodatno) AS cena FROM ugovori WHERE termin_id = {$this->id};";
         return (int) $this->fetch($sql)[0]->cena;
     }
 
@@ -106,7 +105,7 @@ class Termin extends Model
         if ($this->status() == 2) {
             return 'fas fa-question-circle text-primary';
         }
-        
+
         return null;
     }
 
@@ -123,19 +122,7 @@ class Termin extends Model
         if ($this->status() == 2) {
             return '#CCE5FF';
         }
-        
-        return null;
-    }
 
-    public function __toString()
-    {
-        return 'Podaci iz modela: sala_id:' . $this->sala_id .
-                ', tip_dogadjaja_id:' . $this->tip_dogadjaja_id .
-                ', datum:' . $this->datum .
-                ', pocetak:' . $this->pocetak .
-                ', kraj:' . $this->kraj .
-                ', opis:' . $this->opis .
-                ', zauzet:' . $this->zauzet .
-                ', napomena:' . $this->napomena;
+        return null;
     }
 }
