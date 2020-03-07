@@ -75,6 +75,17 @@
 		<td>{{ ugovor.broj_stolova }} / {{ ugovor.broj_mesta_po_stolu }}</td>
 	</tr>
 	<tr>
+		<th><strong>Posebni zahtevi</strong></th>
+		<td colspan="3">{{ ugovor.posebni_zahtevi_opis }}</td>
+	</tr>
+	<tr>
+		<th><strong>Napomena</strong></th>
+		<td colspan="3">{{ ugovor.napomena }}</td>
+	</tr>
+</table>
+<br>
+<table class="table table-sm">
+	<tr class="bg-secondary text-white">
 		<th><strong>Iznos</strong></th>
 		<td><em>Meni</em></td>
 		<td><em>Dodatne usluge</em></td>
@@ -86,17 +97,8 @@
 		<td>{{ ugovor.iznos_dodatno|number_format() }}</td>
 		<td>{{ ugovor.iznos_sobe|number_format() }}</td>
 	</tr>
-	<tr>
-		<th><strong>Posebni zahtevi</strong></th>
-		<td colspan="3">{{ ugovor.posebni_zahtevi_opis }}</td>
-	</tr>
-	<tr>
-		<th><strong>Napomena</strong></th>
-		<td colspan="3">{{ ugovor.napomena }}</td>
-	</tr>
 </table>
 <hr>
-
 <h3 class="text-info">Meni</h3>
 <div class="table-responsive">
 	<table class="table table-sm table-hover">

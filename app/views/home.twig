@@ -20,9 +20,8 @@
         <th class="w-5" scope="col">ID</th>
         <th class="w-20" scope="col">Sala</th>
         <th class="w-10" scope="col">Datum</th>
-        <th class="w-10" scope="col">Sad</th>
         <th class="w-10" scope="col">Datum važnosti</th>
-        <th class="w-10 text-center" scope="col">Obaveštenje</th>
+        <th class="w-20" scope="col">Obaveštenje</th>
         <th class="w-20" scope="col">Opis</th>
         <th class="w-10" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
       </tr>
@@ -33,9 +32,8 @@
         <th scope="row" class="text-danger">{{ termin.id }}</th>
         <td><strong><a href="{{ path_for('termin.detalj.get', { id: termin.id }) }}" title="Detaljni pregled odabranog termina">{{ termin.sala().naziv }}</a></strong></td>
         <td>{{ termin.datum|date() }}</td>
-        <td>{{ 'now'|date() }}</td>
         <td class="{{ date(termin.vaznost) <  date() ? "text-danger" : "text-primary" }}"><strong>{{ termin.vaznost|date() }}</strong></td>
-        <td class="text-center">{{ termin.obavestenje !=  null ? "<i class=\"fas fa-check text-success\"></i>" : "" }}</td>
+        <td class="text-center">{{ termin.obavestenje !=  null ?  termin.obavestenje : "" }}</td>
         <td class="font-italic">{{ termin.opis|length > 50 ? termin.opis|slice(0, 50) ~ ' ...' : termin.opis  }}</td>
         <td style="text-align:right;">
           <div class="btn-group btn-group-sm">

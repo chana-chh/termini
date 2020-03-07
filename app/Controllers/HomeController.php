@@ -64,6 +64,7 @@ class HomeController extends Controller
                 return $response->withRedirect($this->router->pathFor('pocetna'));
             } else {
                 $comma_separated = implode(",", $nisu_prosli);
+                $model->update(['obavestenje' => "Samo je deo obaveštenja uspešno prosleđen. Problem se javio kod: ".$comma_separated], $id_termina);
                 $this->flash->addMessage('warning', "Samo je deo obaveštenja uspešno prosleđen. Problem se javio kod: ".$comma_separated);
                 return $response->withRedirect($this->router->pathFor('pocetna'));
             }
