@@ -197,7 +197,7 @@
 <div class="card border-dark mb-3">
   <div class="card-header">Dodavanje stavke menija</div>
   <div class="card-body text-dark mobilni">
-    <form action="{{ path_for('stavke_menija.dodavanje') }}" method="POST" class="needs-validation" novalidate>
+    <form id="dod" action="{{ path_for('stavke_menija.dodavanje') }}" method="POST" class="needs-validation" novalidate>
       {{ csrf|raw }}
       <div class="form-group">
         <label for="naziv">Naziv</label>
@@ -297,47 +297,6 @@
       var id = $(this).data("id");
       $('#idBrisanje').val(id);
     });
-
-
-    $(document).on('click', '.otvori-izmenu', function () {
-
-      var csrfName = $(".csrf_name").val();
-      var csrfValue = $(".csrf_value").val();
-      var id = $(this).data("id");
-
-      var csrfAndData = {
-        "csrf_name": csrfName,
-        "csrf_value": csrfValue,
-        "id": id
-      };
-
-      var ruta = ["{{ path_for('komitenti.detalj') }}"];
-
-      $.ajax({
-        url: ruta,
-        type: "POST",
-        data: csrfAndData,
-        success: function (data) {
-          $(".csrf_name").val(data.cname);
-          $(".csrf_value").val(data.cvalue);
-          $("#idIzmena").val(data.komitent.id);
-          $("#nazivModal").val(data.komitent.naziv);
-
-          $.each(data.kategorije, function (index, lokObjekat) {
-            $("#kategorijaModal").append(
-              '<option value="' +
-              lokObjekat.vrednost +
-              '">' +
-              lokObjekat.naziv +
-              "</option>"
-            );
-          });
-          $("#kategorijaModal").val(data.komitent.kategorija);
-        }
-      });
-
-    });
-
   });
 </script>
 {% endblock skripta %}

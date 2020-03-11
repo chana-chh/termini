@@ -158,7 +158,7 @@ $app->group('', function () {
     $this->get('/admin/meni/detalj/{id}', '\App\Controllers\MeniController:getMeniDetalj')->setName('meni.detalj');
     $this->get('/admin/meni/pretraga', '\App\Controllers\MeniController:getMeniPretraga')->setName('meni.pretraga');
     $this->post('/admin/meni/pretraga', '\App\Controllers\MeniController:postMeniPretraga');
-    $this->post('/admin/meni/ajax', '\App\Controllers\MeniController:ajaxMeni')->setName('meni.dodavanje.ajax');
+    // $this->post('/admin/meni/ajax', '\App\Controllers\MeniController:ajaxMeni')->setName('meni.dodavanje.ajax');
 })->add(new UserLevelMiddleware($container, [0,200]));
 
 // OSOBLJE

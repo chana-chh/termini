@@ -109,7 +109,8 @@
 				<th class="w-15 text-right">Cena</th>
 				<th class="w-15 text-right">Popust</th>
 				<th class="w-15 text-right">Cena sa popustom</th>
-				<th class="w-15 text-right">Iznos</th>
+				<th class="w-10 text-right">Iznos</th>
+				<th class="w-5 text-right"><i class="fas fa-cogs text-warning"></i></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -121,6 +122,10 @@
 				<td class="text-right">{{ um.popust|number_format() }}</td>
 				<td class="text-right">{{ um.cena_sa_popustom|number_format() }}</td>
 				<td class="text-right">{{ um.iznos|number_format() }}</td>
+				<td class="text-right">
+					<a class="btn btn-success btn-sm" style="font-size: 0.8em; padding: 0px 3px 0px 3px;" href="{{ path_for('meni.detalj', { id: um.meni().id }) }}"
+              		title="Detaljni pregled odabranog menija"><i class="fas fa-eye"></i></a>
+				</td>
 			</tr>
 			{% endfor %}
 		</tbody>
@@ -132,6 +137,7 @@
 				<td></td>
 				<td></td>
 				<td class="text-right text-primary">{{ ugovor.ukupanIznosMenija()|number_format() }}</td>
+				<td></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -193,7 +199,7 @@
 				<th>1</th>
 				<td>Muzika</td>
 				<td>
-					{{ ugovor.komitent('muzika_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('muzika_kom').naziv }}
+					{{ ugovor.komitent('muzika_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.muzika_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -205,7 +211,7 @@
 				<th>2</th>
 				<td>Fotograf</td>
 				<td>
-					{{ ugovor.komitent('fotograf_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('fotograf_kom').naziv }}
+					{{ ugovor.komitent('fotograf_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.fotograf_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -217,7 +223,7 @@
 				<th>3</th>
 				<td>Torta</td>
 				<td>
-					{{ ugovor.komitent('torta_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('torta_kom').naziv }}
+					{{ ugovor.komitent('torta_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.torta_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -229,7 +235,7 @@
 				<th>4</th>
 				<td>Dekoracija</td>
 				<td>
-					{{ ugovor.komitent('dekoracija_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('dekoracija_kom').naziv }}
+					{{ ugovor.komitent('dekoracija_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.dekoracija_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -241,7 +247,7 @@
 				<th>5</th>
 				<td>Kokteli</td>
 				<td>
-					{{ ugovor.komitent('kokteli_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('kokteli_kom').naziv }}
+					{{ ugovor.komitent('kokteli_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.kokteli_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -253,7 +259,7 @@
 				<th>6</th>
 				<td>Slatki sto</td>
 				<td>
-					{{ ugovor.komitent('slatki_sto_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('slatki_sto_kom').naziv }}
+					{{ ugovor.komitent('slatki_sto_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.slatki_sto_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -265,7 +271,7 @@
 				<th>7</th>
 				<td>Voćni sto</td>
 				<td>
-					{{ ugovor.komitent('vocni_sto_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('vocni_sto_kom').naziv }}
+					{{ ugovor.komitent('vocni_sto_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.vocni_sto_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -277,7 +283,7 @@
 				<th>8</th>
 				<td>Animator</td>
 				<td>
-					{{ ugovor.komitent('animator_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('animator_kom').naziv }}
+					{{ ugovor.komitent('animator_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.animator_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -289,7 +295,7 @@
 				<th>9</th>
 				<td>Trubači</td>
 				<td>
-					{{ ugovor.komitent('trubaci_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('trubaci_kom').naziv }}
+					{{ ugovor.komitent('trubaci_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.trubaci_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
@@ -301,7 +307,7 @@
 				<th>10</th>
 				<td>Posebni zahtevi</td>
 				<td>
-					{{ ugovor.komitent('posebni_zahtevi_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('posebni_zahtevi_kom').naziv }}
+					{{ ugovor.komitent('posebni_zahtevi_kom') }}
 				</td>
 				<td class="text-center">
 					{{ (ugovor.posebni_zahtevi_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}

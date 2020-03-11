@@ -29,4 +29,13 @@ class Meni extends Model
         $rez = $this->fetch($sql, null, 'App\Models\StavkaMenija');
         return $rez;
     }
+
+    public function kategorije()
+    {
+        $in = "({$this->stavke})";
+        $sql = "SELECT kategorija FROM stavke_menija WHERE id IN {$in} GROUP BY kategorija";
+        $rez = $this->fetch($sql, null, 'App\Models\StavkaMenija');
+        return $rez;
+    }
+
 }

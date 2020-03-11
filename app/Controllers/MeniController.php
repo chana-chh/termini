@@ -147,8 +147,7 @@ class MeniController extends Controller
         $id = (int) $args['id'];
         $modelMeni = new Meni();
         $meni = $modelMeni->find($id);
-        $stavke = new StavkaMenija();
-        $kategorije = $stavke->sveKategorije();
+        $kategorije = $meni->kategorije();
 
         $this->render($response, 'meni/detalj.twig', compact('meni', 'kategorije'));
     }
@@ -204,54 +203,54 @@ class MeniController extends Controller
         }
     }
 
-    public function ajaxMeni($request, $response)
-    {
-        $data = $this->data();
-        $naziv = $data['nazivMenija'];
-        $cena = $data['cenaMenija'];
-        $napomena = $data['napomenaMenija'];
-        unset($data['nazivMenija']);
-        unset($data['cenaMenija']);
-        unset($data['napomenaMenija']);
+    // public function ajaxMeni($request, $response)
+    // {
+    //     $data = $this->data();
+    //     $naziv = $data['nazivMenija'];
+    //     $cena = $data['cenaMenija'];
+    //     $napomena = $data['napomenaMenija'];
+    //     unset($data['nazivMenija']);
+    //     unset($data['cenaMenija']);
+    //     unset($data['napomenaMenija']);
 
-        $validation_rules = [
-            'naziv' => [
-                'required' => true,
-                'maxlen' => 50,
-                'unique' => 's_meniji.naziv'
-            ],
-            'cena' => [
-                'required' => true,
-                'min' => 0,
-            ],
-        ];
+    //     $validation_rules = [
+    //         'naziv' => [
+    //             'required' => true,
+    //             'maxlen' => 50,
+    //             'unique' => 's_meniji.naziv'
+    //         ],
+    //         'cena' => [
+    //             'required' => true,
+    //             'min' => 0,
+    //         ],
+    //     ];
 
-        $data['naziv'] = $naziv;
-        $data['cena'] = $cena;
-        $data['napomena'] = $napomena;
-        $data['korisnik_id'] = $this->auth->user()->id;
+    //     $data['naziv'] = $naziv;
+    //     $data['cena'] = $cena;
+    //     $data['napomena'] = $napomena;
+    //     $data['korisnik_id'] = $this->auth->user()->id;
 
-        $this->validator->validate($data, $validation_rules);
+    //     $this->validator->validate($data, $validation_rules);
 
-        $ar=[];
-        $this->addCsrfToken($ar);
-        $ar['greska'] = false;
+    //     $ar=[];
+    //     $this->addCsrfToken($ar);
+    //     $ar['greska'] = false;
 
-        if ($this->validator->hasErrors()) {
-            $ar['greska'] = true;
-            return $response->withJson($ar);
-        } else {
-            $this->flash->addMessage('success', 'Nov meni je uspešno dodat.');
-            $modelMenija = new Meni();
-            $modelMenija->insert($data);
-            $id_menija = $modelMenija->lastId();
-            $meni = $modelMenija->find($id_menija);
-            $this->log(Logger::DODAVANJE, $meni, 'naziv');
-            $meniji = $modelMenija->all();
-            $ar['meniji'] = $meniji;
-            $ar['id_menija'] = $id_menija;
+    //     if ($this->validator->hasErrors()) {
+    //         $ar['greska'] = true;
+    //         return $response->withJson($ar);
+    //     } else {
+    //         $this->flash->addMessage('success', 'Nov meni je uspešno dodat.');
+    //         $modelMenija = new Meni();
+    //         $modelMenija->insert($data);
+    //         $id_menija = $modelMenija->lastId();
+    //         $meni = $modelMenija->find($id_menija);
+    //         $this->log(Logger::DODAVANJE, $meni, 'naziv');
+    //         $meniji = $modelMenija->all();
+    //         $ar['meniji'] = $meniji;
+    //         $ar['id_menija'] = $id_menija;
 
-            return $response->withJson($ar);
-        }
-    }
+    //         return $response->withJson($ar);
+    //     }
+    // }
 }

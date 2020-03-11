@@ -46,22 +46,25 @@
 </div>
 
 <hr class="ne_stampaj" />
-
-<h2>Meni: <span class="text-primary text-uppercase">{{ meni.naziv }}</span></h2>
+<div class="row text-center">
+  <div class="col">
+    <h2 class="text-primary text-uppercase">&emsp;{{ meni.naziv }}</h2>
+  </div>
+</div>
 <div class="row ne_stampaj">
   <div class="col">
     <h3><span class="badge badge-success">{{ meni.cena|number_format() }} din</span></h3>
   </div>
 </div>
 <hr class="mb-5">
-<div class="row justify-content-center mobilni">
+<div class="row justify-content-center mobilni dve_kolone">
   <div class="col-md-5 bg-light text-dark">
   {% for kat in kategorije %}
   {% if loop.index is odd %}
-    <h3 class="font-italic">{{ kat }}</h3>
+    <h3 class="font-italic">{{ kat.kategorija }}</h3>
     <hr style="border-top: 1px dotted #8c8b8b">
     <ul>
-      {% for stavka in meni.stavke(kat) %}
+      {% for stavka in meni.stavke(kat.kategorija) %}
       <li>{{ stavka.naziv }}</li>
       {% endfor %}
     </ul>
@@ -71,10 +74,10 @@
     <div class="col-md-5 bg-light text-dark">
   {% for kat in kategorije %}
   {% if loop.index is even %}
-    <h3 class="font-italic">{{ kat }}</h3>
+    <h3 class="font-italic">{{ kat.kategorija }}</h3>
     <hr style="border-top: 1px dotted #8c8b8b">
     <ul>
-      {% for stavka in meni.stavke(kat) %}
+      {% for stavka in meni.stavke(kat.kategorija) %}
       <li>{{ stavka.naziv }}</li>
       {% endfor %}
     </ul>

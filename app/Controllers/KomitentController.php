@@ -11,16 +11,13 @@ class KomitentController extends Controller
     {
         $model = new Komitent();
         $komitenti = $model->paginate($this->page(), 'page', "SELECT * FROM komintenti ORDER BY kategorija;");
-
-        $kategorije = $model->enumOrSetList('kategorija');
-
+        $kategorije = $model->sveKategorije();
         $this->render($response, 'komitenti/lista.twig', compact('komitenti', 'kategorije'));
     }
 
     public function postKomitentiPretraga($request, $response)
     {
         $_SESSION['DATA_KOMITENTI_PRETRAGA'] = $request->getParams();
-
         return $response->withRedirect($this->router->pathFor('komitenti.pretraga'));
     }
 
@@ -74,9 +71,7 @@ class KomitentController extends Controller
 
     public function postKomitentiDodavanje($request, $response)
     {
-
         $data = $this->data();
-
         $validation_rules = [
             'naziv' => [
                 'required' => true,
@@ -132,7 +127,7 @@ class KomitentController extends Controller
 
         $id = $data['id'];
         $modelKomitent = new Komitent();
-        $kategorije = $modelKomitent->enumOrSetList('kategorija');
+        $kategorije = $modelKomitent->sveKategorije();
         $komitent = $modelKomitent->find($id);
         $ar = ["cname" => $cName, "cvalue"=>$cValue, "komitent"=>$komitent, "kategorije"=>$kategorije];
 

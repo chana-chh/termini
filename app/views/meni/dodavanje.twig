@@ -47,7 +47,7 @@
     <div class="form-group col-md-3">
       <label for="naziv">Naziv</label>
       <input type="text" class="form-control{{ errors.naziv[0] ? ' is-invalid' : '' }}" value="{{ old.naziv ? : '' }}"
-        name="naziv" id="naziv" aria-describedby="Naziv sale" autocomplete="off" required>
+        name="naziv" id="naziv" aria-describedby="Naziv menija" autocomplete="off" required>
       <div class="valid-feedback">Odgovarajući podatak</div>
       <div class="invalid-feedback">
         {{ errors.naziv[0] ? : 'Obavezno polje' }}
@@ -69,7 +69,7 @@
     </div>
     <div class="form-group col-md-6">
       <label for="napomena">Napomena</label>
-      <textarea class="form-control" name="napomena" id="napomena" rows="3">{{ old.napomena ? : meni.napomena }}</textarea>
+      <textarea class="form-control" name="napomena" id="napomena" rows="3">{{ old.napomena ? : '' }}</textarea>
     </div>
   </div>
   <hr>

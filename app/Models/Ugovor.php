@@ -168,7 +168,10 @@ class Ugovor extends Model
 
     public function komitent($naziv)
     {
-        $kom = new Komitent();
-        return $kom->find($this->$naziv);
+        $kom_model = new Komitent();
+        if ($this->$naziv) {
+            return $kom_model->find($this->$naziv)->naziv;
+        }
+        return " Bez komitenta";
     }
 }

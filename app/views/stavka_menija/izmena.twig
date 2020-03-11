@@ -29,7 +29,7 @@
 				<div class="form-group col-4">
 					<label for="cena">Cena</label>
 					<input class="form-control{{ errors.cena[0] ? ' is-invalid' : '' }}" type="text" name="cena"
-						id="cena" value="{{ old.cena ? : stavka.cena  }}" autocomplete="off" required />
+						id="cena" value="{{ old.cena ? : stavka.cena  }}" autocomplete="off" min="0" step="0.01" required/>
 					<div class="valid-feedback">Odgovarajući podatak</div>
 					<div class="invalid-feedback">
 						{{ errors.cena[0] ? : 'Obavezno polje.' }}
@@ -51,7 +51,7 @@
 			<div class="form-row">
 				<div class="form-group col-4">
 					<label for="vreme_pripreme">Vreme pripreme (min)</label>
-					<input class="form-control{{ errors.vreme_pripreme[0] ? ' is-invalid' : '' }}" type="text" name="vreme_pripreme" id="vreme_pripreme"
+					<input class="form-control{{ errors.vreme_pripreme[0] ? ' is-invalid' : '' }}" type="text" name="vreme_pripreme" id="vreme_pripreme" min="0" step="1"
 						value="{{ old.vreme_pripreme ? : stavka.vreme_pripreme  }}" autocomplete="off" />
 					<div class="valid-feedback">Odgovarajući podatak</div>
 					<div class="invalid-feedback">
@@ -61,7 +61,7 @@
 				<div class="form-group col-4">
 					<label for="kolicina">Količina (g)</label>
 					<input class="form-control{{ errors.kolicina[0] ? ' is-invalid' : '' }}" type="text" name="kolicina" id="kolicina"
-						value="{{ old.kolicina ? : stavka.kolicina  }}" autocomplete="off" />
+						value="{{ old.kolicina ? : stavka.kolicina  }}" autocomplete="off" min="0" step="1"/>
 					<div class="valid-feedback">Odgovarajući podatak</div>
 					<div class="invalid-feedback">
 						{{ errors.kolicina[0] ? : 'Obavezno polje.' }}
@@ -71,7 +71,7 @@
 			<div class="row text-right">
 				<div class="col">
 					<button type="submit" class="btn btn-primary text-right">
-						<i class="fas fa-save" title="Dodavanje novog korisnika"></i> Snimi
+						<i class="fas fa-save" title="Snimi izmene podataka za odabranu stavku menija"></i> Snimi
 					</button>
 					<a href="{{ path_for('stavke_menija') }}" class="btn btn-secondary">
 						<i class="fas fa-ban"></i> Otkaži
