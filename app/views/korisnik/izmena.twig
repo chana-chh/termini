@@ -43,7 +43,7 @@
 					id="email" value="{{ old.email ? : korisnik.email }}" autocomplete="off" required />
 				<div class="valid-feedback">Odgovarajući podatak</div>
 				<div class="invalid-feedback">
-					{{ errors.email[0] ? : 'Obavezno polje obavezno.' }}
+					{{ errors.email[0] ? : 'Obavezno polje u formi elektronske adrese.' }}
 				</div>
 			</div>
 			<div class="form-row">
@@ -99,7 +99,7 @@
 			<div class="row justify-content-end text-right">
 				<div class="col">
 					<button type="submit" class="btn btn-primary text-right">
-						<i class="fas fa-save" title="Dodavanje novog korisnika"></i> Snimi
+						<i class="fas fa-save" title="Sačuvaj izmene podataka korisnika"></i> Snimi
 					</button>
 					<a href="{{ path_for('admin.korisnik.lista') }}" class="btn btn-secondary">
 						<i class="fas fa-ban"></i> Otkaži
@@ -110,12 +110,7 @@
 	</div>
 	<div class="col-md-3"></div>
 </div>
-
 {% endblock naslov %}
-{% block sadrzaj %}
-{% endblock sadrzaj %}
-{% block traka %}
-{% endblock traka %}
 {% block skripta %}
 <script>
 	(function () {

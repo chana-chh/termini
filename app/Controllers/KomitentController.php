@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Komitent;
+use App\Models\Kategorija;
 
 class KomitentController extends Controller
 {
@@ -10,8 +11,9 @@ class KomitentController extends Controller
     public function getKomitenti($request, $response)
     {
         $model = new Komitent();
-        $komitenti = $model->paginate($this->page(), 'page', "SELECT * FROM komintenti ORDER BY kategorija;");
-        $kategorije = $model->sveKategorije();
+        $komitenti = $model->paginate($this->page(), 'page', "SELECT * FROM komintenti;");
+        $kategorije_model = new Kategorija;
+        $kategorije = $kategorije_model->all();
         $this->render($response, 'komitenti/lista.twig', compact('komitenti', 'kategorije'));
     }
 
@@ -33,10 +35,7 @@ class KomitentController extends Controller
         }
 
         $data['nazivf'] = str_replace('%', '', $data['nazivf']);
-        $data['kategorijaf'] = str_replace('%', '', $data['kategorijaf']);
-
         $naziv = '%' . filter_var($data['nazivf'], FILTER_SANITIZE_STRING) . '%';
-        $kategorija = '%' . filter_var($data['kategorijaf'], FILTER_SANITIZE_STRING) . '%';
 
         $query = [];
         parse_str($request->getUri()->getQuery(), $query);
@@ -57,8 +56,8 @@ class KomitentController extends Controller
             if ($where !== " WHERE ") {
                 $where .= " AND ";
             }
-            $where .= "kategorija LIKE :kategorija";
-            $params[':kategorija'] = $kategorija;
+            $where .= "kategorija_id = :kategorija";
+            $params[':kategorija'] = $data['kategorijaf'];
         }
 
         $where = $where === " WHERE " ? "" : $where;
@@ -78,7 +77,7 @@ class KomitentController extends Controller
                 'maxlen' => 255,
                 'unique' => 'komintenti.naziv'
             ],
-            'kategorija' => [
+            'kategorija_id' => [
                 'required' => true
             ]
         ];
@@ -127,7 +126,8 @@ class KomitentController extends Controller
 
         $id = $data['id'];
         $modelKomitent = new Komitent();
-        $kategorije = $modelKomitent->sveKategorije();
+        $kategorije_model = new Kategorija;
+        $kategorije = $kategorije_model->all();
         $komitent = $modelKomitent->find($id);
         $ar = ["cname" => $cName, "cvalue"=>$cValue, "komitent"=>$komitent, "kategorije"=>$kategorije];
 
@@ -142,7 +142,7 @@ class KomitentController extends Controller
 
         $datam = [
             "naziv" => $data['nazivModal'],
-            "kategorija" => $data['kategorijaModal'],
+            "kategorija_id" => $data['kategorijaModal'],
             "napomena" => $data['napomenaModal']
         ];
 
@@ -152,7 +152,7 @@ class KomitentController extends Controller
                 'maxlen' => 255,
                 'unique' => 'komintenti.naziv#id:' . $id,
             ],
-            'kategorija' => [
+            'kategorija_id' => [
                 'required' => true
             ]
         ];

@@ -61,6 +61,12 @@ $app->group('', function () {
     $this->post('/admin/tip/brisanje', '\App\Controllers\TipDogadjajaController:postTipBrisanje')->setName('tip_dogadjaja.brisanje');
     $this->post('/admin/tip/detalj', '\App\Controllers\TipDogadjajaController:postTipDetalj')->setName('tip_dogadjaja.detalj');
     $this->post('/admin/tip/izmena', '\App\Controllers\TipDogadjajaController:postTipIzmena')->setName('tip_dogadjaja.izmena');
+    //Tipovi događaja
+    $this->get('/admin/kategorije', '\App\Controllers\KategorijaController:getKategorije')->setName('kategorija');
+    $this->post('/admin/kategorije/dodavanje', '\App\Controllers\KategorijaController:postKategorijeDodavanje')->setName('kategorija.dodavanje');
+    $this->post('/admin/kategorije/brisanje', '\App\Controllers\KategorijaController:postKategorijeBrisanje')->setName('kategorija.brisanje');
+    $this->post('/admin/kategorije/detalj', '\App\Controllers\KategorijaController:postKategorijeDetalj')->setName('kategorija.detalj');
+    $this->post('/admin/kategorije/izmena', '\App\Controllers\KategorijaController:postKategorijeIzmena')->setName('kategorija.izmena');
     //Logovi
     $this->get('/admin/logovi', '\App\Controllers\LogController:getLog')->setName('logovi');
     $this->get('/admin/logovi/pretraga', '\App\Controllers\LogController:getLogPretraga')->setName('logovi.pretraga');

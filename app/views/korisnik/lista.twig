@@ -178,7 +178,7 @@
           }}" type="email" name="email" id="email" value="{{ old.email ? : '' }}" autocomplete="off" required />
         <div class="valid-feedback">Odgovarajući podatak</div>
         <div class="invalid-feedback">
-          {{ errors.email[0] ? : 'Obavezno polje obavezno.' }}
+          {{ errors.email[0] ? : 'Obavezno polje u formi elektronske adrese.' }}
         </div>
       </div>
       <div class="form-group">
@@ -209,7 +209,7 @@
           required />
         <div class="valid-feedback">Odgovarajući podatak</div>
         <div class="invalid-feedback">
-          {{ errors.lozinka_potvrda[0] ? : 'Obavezno polje koje mora biti isto kao i "Lozinka"' }}
+          {{ errors.lozinka_potvrda[0] ? : 'Obavezno polje koje mora biti isto kao i polje "Lozinka"' }}
         </div>
       </div>
       <div class="form-group">
