@@ -131,6 +131,11 @@ class Ugovor extends Model
         return $iznos;
     }
 
+    public function dodatneUsluge()
+    {
+        return $this->hasMany('App\Models\DodatnaUsluga', 'ugovor_id');
+    }
+
     public function podsetnici($korisnik_id = null)
     {
         $sql = "SELECT * FROM podsetnici WHERE ugovor_id = {$this->id} ORDER BY datum DESC";
@@ -142,23 +147,17 @@ class Ugovor extends Model
 
     public function ukupanIznosDodatno()
     {
-        $iznos = 0;
-        $iznos += (float) $this->muzika_iznos;
-        $iznos += (float) $this->fotograf_iznos;
-        $iznos += (float) $this->torta_iznos;
-        $iznos += (float) $this->dekoracija_iznos;
-        $iznos += (float) $this->kokteli_iznos;
-        $iznos += (float) $this->slatki_sto_iznos;
-        $iznos += (float) $this->vocni_sto_iznos;
-        $iznos += (float) $this->animator_iznos;
-        $iznos += (float) $this->trubaci_iznos;
-        $iznos += (float) $this->posebni_zahtevi_iznos;
-        return $iznos;
+        $sql = "SELECT SUM(cena) AS iznos FROM dodatne_usluge WHERE ugovor_id = {$this->id};";
+        $promenjiva = $this->fetch($sql);
+        if ($promenjiva != null) {
+            return (float) $this->fetch($sql)[0]->iznos;
+        }
+        return 0;
     }
 
     public function ukupanIznos()
     {
-        return (float) ($this->iznos_meni + $this->iznos_sobe + $this->iznos_dodatno);
+        return (float) ($this->iznos_meni + $this->iznos_sobe + $this->ukupanIznosDodatno());
     }
 
     public function aneksUkupanIznos()

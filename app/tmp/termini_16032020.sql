@@ -1,23 +1,35 @@
--- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               10.1.36-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win32
--- HeidiSQL Version:             10.1.0.5464
--- --------------------------------------------------------
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-
--- Dumping database structure for termini
 DROP DATABASE IF EXISTS `termini`;
 CREATE DATABASE IF NOT EXISTS `termini` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
 USE `termini`;
 
--- Dumping structure for table termini.dokumenti
+DROP TABLE IF EXISTS `dodatne_usluge`;
+CREATE TABLE IF NOT EXISTS `dodatne_usluge` (
+  `id` int(10) unsigned NOT NULL,
+  `ugovor_id` int(10) unsigned NOT NULL,
+  `komitent_id` int(10) unsigned NOT NULL,
+  `status` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `cena` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `opis` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `FK_ugovor_dodatne_ugovori` (`ugovor_id`),
+  KEY `FK_dodatne_usluge_komintenti` (`komitent_id`),
+  CONSTRAINT `FK_dodatne_usluge_komintenti` FOREIGN KEY (`komitent_id`) REFERENCES `komintenti` (`id`),
+  CONSTRAINT `FK_ugovor_dodatne_ugovori` FOREIGN KEY (`ugovor_id`) REFERENCES `ugovori` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DELETE FROM `dodatne_usluge`;
+/*!40000 ALTER TABLE `dodatne_usluge` DISABLE KEYS */;
+INSERT INTO `dodatne_usluge` (`id`, `ugovor_id`, `komitent_id`, `status`, `cena`, `opis`) VALUES
+	(0, 5, 3, 1, 47000.00, 'Cvece'),
+	(1, 5, 5, 0, 15000.00, 'Najbolje fotke');
+/*!40000 ALTER TABLE `dodatne_usluge` ENABLE KEYS */;
+
 DROP TABLE IF EXISTS `dokumenti`;
 CREATE TABLE IF NOT EXISTS `dokumenti` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -31,37 +43,61 @@ CREATE TABLE IF NOT EXISTS `dokumenti` (
   KEY `FK_dokumenti_korisnici` (`korisnik_id`),
   CONSTRAINT `FK_dokumenti_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`),
   CONSTRAINT `FK_dokumenti_ugovori` FOREIGN KEY (`ugovor_id`) REFERENCES `ugovori` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.dokumenti: ~0 rows (approximately)
+DELETE FROM `dokumenti`;
 /*!40000 ALTER TABLE `dokumenti` DISABLE KEYS */;
+INSERT INTO `dokumenti` (`id`, `ugovor_id`, `link`, `opis`, `korisnik_id`, `created_at`) VALUES
+	(1, 5, 'http://localhost/termini/pub/doc/5_test_5218771d0ef7bb42.pdf', 'test', 1, '2020-02-29 15:08:54');
 /*!40000 ALTER TABLE `dokumenti` ENABLE KEYS */;
 
--- Dumping structure for table termini.komintenti
+DROP TABLE IF EXISTS `kategorije`;
+CREATE TABLE IF NOT EXISTS `kategorije` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `naziv` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `korisnik_id` int(10) unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `FK_kategorije_korisnici` (`korisnik_id`),
+  CONSTRAINT `FK_kategorije_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DELETE FROM `kategorije`;
+/*!40000 ALTER TABLE `kategorije` DISABLE KEYS */;
+INSERT INTO `kategorije` (`id`, `naziv`, `korisnik_id`, `created_at`) VALUES
+	(1, 'Organizator', 1, '2020-03-13 12:51:18'),
+	(2, 'Torte', 1, '2020-03-13 12:51:18'),
+	(3, 'Dekoracije', 1, '2020-03-13 12:51:18'),
+	(4, 'Animator', 1, '2020-03-13 12:51:18'),
+	(5, 'Fotograf', 1, '2020-03-13 12:51:18');
+/*!40000 ALTER TABLE `kategorije` ENABLE KEYS */;
+
 DROP TABLE IF EXISTS `komintenti`;
 CREATE TABLE IF NOT EXISTS `komintenti` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `naziv` varchar(255) NOT NULL,
-  `kategorija` enum('Muzika','Fotograf','Torta','Dekoracija','Kokteli','Slatki sto','Voćni sto','Trubači','Animator','Posebni zahtevi','Ostalo','Bez komitenta') NOT NULL,
   `korisnik_id` int(10) unsigned NOT NULL,
+  `kategorija_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `napomena` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `FK_komintenti_korisnici` (`korisnik_id`),
+  KEY `FK_komintenti_kategorije` (`kategorija_id`),
+  CONSTRAINT `FK_komintenti_kategorije` FOREIGN KEY (`kategorija_id`) REFERENCES `kategorije` (`id`),
   CONSTRAINT `FK_komintenti_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table termini.komintenti: ~3 rows (approximately)
+DELETE FROM `komintenti`;
 /*!40000 ALTER TABLE `komintenti` DISABLE KEYS */;
-INSERT IGNORE INTO `komintenti` (`id`, `naziv`, `kategorija`, `korisnik_id`, `created_at`, `napomena`) VALUES
-	(1, 'FotoDragan', 'Fotograf', 1, '2020-02-24 08:44:50', NULL),
-	(2, 'Mirka - torte', 'Torta', 1, '2020-02-24 08:45:08', NULL),
-	(3, 'Flora', 'Dekoracija', 1, '2020-02-24 08:45:22', 'Ugovor ističe u martu 2020. Telefon 065 334455'),
-	(4, 'Neki bend', 'Muzika', 1, '2020-02-24 23:11:39', 'Muzicari koji piju'),
-	(5, 'Bez komitenta', 'Muzika', 0, '2020-02-25 23:13:24', NULL);
+INSERT INTO `komintenti` (`id`, `naziv`, `korisnik_id`, `kategorija_id`, `created_at`, `napomena`) VALUES
+	(1, 'Organizator', 1, 1, '2020-02-24 08:44:50', NULL),
+	(2, 'Mirka - torte', 1, 2, '2020-02-24 08:45:08', NULL),
+	(3, 'Flora', 1, 3, '2020-02-24 08:45:22', 'Ugovor ističe u martu 2020. Telefon 065 334455'),
+	(4, 'Neki animator', 1, 4, '2020-02-24 23:11:39', 'Ludaci'),
+	(5, 'FotoDragan', 0, 5, '2020-02-25 23:13:24', NULL),
+	(6, 'Chanky', 0, 3, '2020-03-13 13:26:31', 'A!');
 /*!40000 ALTER TABLE `komintenti` ENABLE KEYS */;
 
--- Dumping structure for table termini.korisnici
 DROP TABLE IF EXISTS `korisnici`;
 CREATE TABLE IF NOT EXISTS `korisnici` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -79,14 +115,13 @@ CREATE TABLE IF NOT EXISTS `korisnici` (
   CONSTRAINT `FK_korisnici_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.korisnici: ~2 rows (approximately)
+DELETE FROM `korisnici`;
 /*!40000 ALTER TABLE `korisnici` DISABLE KEYS */;
-INSERT IGNORE INTO `korisnici` (`id`, `ime`, `prezime`, `email`, `korisnicko_ime`, `lozinka`, `nivo`, `korisnik_id`, `created_at`) VALUES
-	(0, 'SuperAdmin', '', '', 'ChaShaOne', '$2y$10$RWD9bVOhe1GlWER7DVKMAukc2/OAwpoAvC/8A.wYOpGtqMFTezQHm', 1000, 1, '2020-01-20 08:27:55'),
+INSERT INTO `korisnici` (`id`, `ime`, `prezime`, `email`, `korisnicko_ime`, `lozinka`, `nivo`, `korisnik_id`, `created_at`) VALUES
+	(0, 'SuperAdmin', '', '', 'ninja', '$2y$10$RWD9bVOhe1GlWER7DVKMAukc2/OAwpoAvC/8A.wYOpGtqMFTezQHm', 1000, 1, '2020-01-20 08:27:55'),
 	(1, 'Admin', '', '', 'admin', '$2y$10$RWD9bVOhe1GlWER7DVKMAukc2/OAwpoAvC/8A.wYOpGtqMFTezQHm', 0, 1, '2020-01-08 19:47:03');
 /*!40000 ALTER TABLE `korisnici` ENABLE KEYS */;
 
--- Dumping structure for table termini.logovi
 DROP TABLE IF EXISTS `logovi`;
 CREATE TABLE IF NOT EXISTS `logovi` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -98,11 +133,11 @@ CREATE TABLE IF NOT EXISTS `logovi` (
   PRIMARY KEY (`id`),
   KEY `FK_logovi_korisnici` (`korisnik_id`),
   CONSTRAINT `FK_logovi_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.logovi: ~32 rows (approximately)
+DELETE FROM `logovi`;
 /*!40000 ALTER TABLE `logovi` DISABLE KEYS */;
-INSERT IGNORE INTO `logovi` (`id`, `opis`, `datum`, `izmene`, `tip`, `korisnik_id`) VALUES
+INSERT INTO `logovi` (`id`, `opis`, `datum`, `izmene`, `tip`, `korisnik_id`) VALUES
 	(1, '1, sale - naziv: PROBA', '2020-02-24 08:37:04', '', 'dodavanje', 1),
 	(2, '1, sobe - naziv: Jednokrevetna, cena: 1000.00, ', '2020-02-24 08:37:23', '', 'dodavanje', 1),
 	(3, '2, sobe - naziv: Dvokrevetna, cena: 2000.00, ', '2020-02-24 08:37:33', '', 'dodavanje', 1),
@@ -150,10 +185,72 @@ INSERT IGNORE INTO `logovi` (`id`, `opis`, `datum`, `izmene`, `tip`, `korisnik_i
 	(45, '7, ugovor_meni - ugovor_id: 5, meni_id: 3, ', '2020-02-27 23:13:43', '', 'dodavanje', 1),
 	(46, '2, ugovor_soba - ugovor_id: 5, soba_id: 1, ', '2020-02-27 23:17:59', '', 'dodavanje', 1),
 	(47, '3, ugovor_soba - ugovor_id: 5, soba_id: 2, ', '2020-02-27 23:18:20', '', 'dodavanje', 1),
-	(48, '5, ugovori - broj_ugovora: ', '2020-02-27 23:19:53', 'a:1:{s:10:"iznos_sobe";a:2:{s:14:"stara_vrednost";s:8:"23000.00";s:13:"nova_vrednost";s:8:"25000.00";}}', 'izmena', 1);
+	(48, '5, ugovori - broj_ugovora: ', '2020-02-27 23:19:53', 'a:1:{s:10:"iznos_sobe";a:2:{s:14:"stara_vrednost";s:8:"23000.00";s:13:"nova_vrednost";s:8:"25000.00";}}', 'izmena', 1),
+	(49, '5, ugovori - broj_ugovora: , ', '2020-02-28 21:14:31', 'a:0:{}', 'izmena', 1),
+	(50, '5, ugovori - broj_ugovora: ', '2020-02-28 21:46:50', 'a:0:{}', 'izmena', 1),
+	(51, '5, ugovori - broj_ugovora: ', '2020-02-28 21:51:15', 'a:0:{}', 'izmena', 1),
+	(52, '1, podsetnici - datum: 2020-03-08, ', '2020-02-28 23:11:48', '', 'dodavanje', 1),
+	(53, '2, podsetnici - datum: 2020-03-05, ', '2020-02-28 23:15:53', '', 'dodavanje', 1),
+	(54, '1, podsetnici - datum: 2020-03-08', '2020-02-29 15:02:41', 'a:1:{s:6:"reseno";a:2:{s:14:"stara_vrednost";i:1;s:13:"nova_vrednost";i:0;}}', 'izmena', 1),
+	(55, '2, podsetnici - datum: 2020-03-05', '2020-02-29 15:03:04', 'a:0:{}', 'izmena', 1),
+	(56, '1, podsetnici - datum: 2020-03-08', '2020-02-29 15:03:13', 'a:0:{}', 'izmena', 1),
+	(57, '1, podsetnici - datum: 2020-03-08', '2020-02-29 15:03:23', 'a:1:{s:6:"reseno";a:2:{s:14:"stara_vrednost";i:1;s:13:"nova_vrednost";i:0;}}', 'izmena', 1),
+	(58, '2, podsetnici - datum: 2020-03-05', '2020-02-29 15:03:24', 'a:1:{s:6:"reseno";a:2:{s:14:"stara_vrednost";i:1;s:13:"nova_vrednost";i:0;}}', 'izmena', 1),
+	(59, '2, podsetnici - datum: 2020-03-05', '2020-02-29 15:03:35', 'a:0:{}', 'izmena', 1),
+	(60, '2, podsetnici - datum: 2020-03-05', '2020-02-29 15:07:00', 'a:1:{s:6:"reseno";a:2:{s:14:"stara_vrednost";i:1;s:13:"nova_vrednost";i:0;}}', 'izmena', 1),
+	(61, '1, podsetnici - datum: 2020-03-08', '2020-02-29 15:07:01', 'a:0:{}', 'izmena', 1),
+	(62, '1, podsetnici - datum: 2020-03-08', '2020-02-29 15:08:39', 'a:1:{s:6:"reseno";a:2:{s:14:"stara_vrednost";i:1;s:13:"nova_vrednost";i:0;}}', 'izmena', 1),
+	(63, '2, podsetnici - datum: 2020-03-05', '2020-02-29 15:08:43', 'a:0:{}', 'izmena', 1),
+	(64, '5, ugovori - broj_ugovora: ', '2020-02-29 15:32:37', 'a:0:{}', 'izmena', 1),
+	(65, '5, ugovori - broj_ugovora: , ', '2020-02-29 15:44:25', 'a:0:{}', 'izmena', 1),
+	(66, '4, meniji - naziv: Meni 04', '2020-03-10 11:42:24', '', 'dodavanje', 0),
+	(67, '4, meniji - naziv: Meni 04', '2020-03-10 11:43:54', 'a:2:{s:6:"stavke";a:2:{s:14:"stara_vrednost";s:3:"1,2";s:13:"nova_vrednost";s:1:"1";}s:4:"cena";a:2:{s:14:"stara_vrednost";s:7:"3000.00";s:13:"nova_vrednost";s:7:"1000.00";}}', 'izmena', 0),
+	(68, '4, meniji - naziv: Meni 04', '2020-03-10 11:44:06', 'a:1:{s:8:"napomena";a:2:{s:14:"stara_vrednost";s:23:"Losos i pršuta, brale!";s:13:"nova_vrednost";s:13:"Losos  brale!";}}', 'izmena', 0),
+	(69, '8, ugovor_meni - ugovor_id: 5, meni_id: 4, ', '2020-03-10 12:45:31', '', 'dodavanje', 0),
+	(70, '8, ugovor_meni - komada: 1', '2020-03-10 12:45:38', 'a:7:{s:2:"id";i:8;s:9:"ugovor_id";i:5;s:7:"meni_id";i:4;s:6:"komada";i:1;s:6:"popust";s:4:"0.00";s:16:"cena_sa_popustom";s:7:"1000.00";s:5:"iznos";s:7:"1000.00";}', 'brisanje', 0),
+	(71, '9, ugovor_meni - ugovor_id: 5, meni_id: 4, ', '2020-03-10 12:46:27', '', 'dodavanje', 0),
+	(72, '9, ugovor_meni - komada: 1', '2020-03-10 12:47:22', 'a:7:{s:2:"id";i:9;s:9:"ugovor_id";i:5;s:7:"meni_id";i:4;s:6:"komada";i:1;s:6:"popust";s:6:"100.00";s:16:"cena_sa_popustom";s:6:"900.00";s:5:"iznos";s:6:"900.00";}', 'brisanje', 0),
+	(73, '10, ugovor_meni - ugovor_id: 5, meni_id: 4, ', '2020-03-10 12:47:28', '', 'dodavanje', 0),
+	(74, '10, ugovor_meni - komada: 1', '2020-03-10 12:47:35', 'a:7:{s:2:"id";i:10;s:9:"ugovor_id";i:5;s:7:"meni_id";i:4;s:6:"komada";i:1;s:6:"popust";s:6:"200.00";s:16:"cena_sa_popustom";s:6:"800.00";s:5:"iznos";s:6:"800.00";}', 'brisanje', 0),
+	(75, '4, meniji - naziv: Meni 04', '2020-03-10 13:37:21', 'a:7:{s:2:"id";i:4;s:5:"naziv";s:7:"Meni 04";s:6:"stavke";s:1:"1";s:4:"cena";s:7:"1000.00";s:8:"napomena";s:13:"Losos  brale!";s:11:"korisnik_id";i:0;s:10:"created_at";s:19:"2020-03-10 11:42:24";}', 'brisanje', 0),
+	(76, '1, meniji - naziv: Meni 1', '2020-03-10 14:30:25', 'a:1:{s:6:"stavke";a:2:{s:14:"stara_vrednost";s:3:"1,2";s:13:"nova_vrednost";s:5:"1,2,3";}}', 'izmena', 0),
+	(77, '4, stavke_menija - naziv: Kiso kupus, kategorija: Glavno jelo, ', '2020-03-10 14:44:24', '', 'dodavanje', 0),
+	(78, '2, stavke_menija - naziv: Pršuta', '2020-03-10 14:57:21', 'a:1:{s:8:"kolicina";a:2:{s:14:"stara_vrednost";i:0;s:13:"nova_vrednost";i:220;}}', 'izmena', 0),
+	(79, '4, stavke_menija - naziv: Kiso kupus', '2020-03-10 15:14:17', 'a:2:{s:10:"kategorija";a:2:{s:14:"stara_vrednost";s:11:"Glavno jelo";s:13:"nova_vrednost";s:8:"Predjelo";}s:8:"kolicina";a:2:{s:14:"stara_vrednost";i:1500;s:13:"nova_vrednost";i:2000;}}', 'izmena', 0),
+	(80, '4, stavke_menija - naziv: Kiso kupus', '2020-03-10 15:19:01', 'a:1:{s:8:"kolicina";a:2:{s:14:"stara_vrednost";i:2000;s:13:"nova_vrednost";i:1900;}}', 'izmena', 0),
+	(81, '4, stavke_menija - naziv: Kiso kupus', '2020-03-10 15:24:34', 'a:1:{s:8:"kolicina";a:2:{s:14:"stara_vrednost";i:1900;s:13:"nova_vrednost";i:2100;}}', 'izmena', 0),
+	(82, '4, stavke_menija - naziv: Kiso kupus', '2020-03-10 15:31:00', 'a:1:{s:14:"vreme_pripreme";a:2:{s:14:"stara_vrednost";i:145;s:13:"nova_vrednost";i:150;}}', 'izmena', 0),
+	(83, '3, stavke_menija - naziv: Sirac neki 2', '2020-03-11 09:43:45', 'a:2:{s:5:"naziv";a:2:{s:14:"stara_vrednost";s:10:"Sirac neki";s:13:"nova_vrednost";s:12:"Sirac neki 2";}s:10:"kategorija";a:2:{s:14:"stara_vrednost";s:6:"Sirevi";s:13:"nova_vrednost";s:8:"Predjelo";}}', 'izmena', 0),
+	(84, '3, stavke_menija - naziv: Sirac neki', '2020-03-11 09:46:02', 'a:1:{s:5:"naziv";a:2:{s:14:"stara_vrednost";s:12:"Sirac neki 2";s:13:"nova_vrednost";s:10:"Sirac neki";}}', 'izmena', 0),
+	(85, '3, stavke_menija - naziv: Sirac neki', '2020-03-11 09:51:57', 'a:1:{s:8:"kolicina";a:2:{s:14:"stara_vrednost";i:100;s:13:"nova_vrednost";i:1001;}}', 'izmena', 0),
+	(86, '3, stavke_menija - naziv: Sirac neki', '2020-03-11 09:53:17', 'a:1:{s:8:"kolicina";a:2:{s:14:"stara_vrednost";i:1001;s:13:"nova_vrednost";i:100;}}', 'izmena', 0),
+	(87, '3, stavke_menija - naziv: Sirac neki', '2020-03-11 09:56:07', 'a:1:{s:8:"kolicina";a:2:{s:14:"stara_vrednost";i:100;s:13:"nova_vrednost";i:190;}}', 'izmena', 0),
+	(88, '3, stavke_menija - naziv: Sirac nekit', '2020-03-11 09:59:02', 'a:1:{s:5:"naziv";a:2:{s:14:"stara_vrednost";s:10:"Sirac neki";s:13:"nova_vrednost";s:11:"Sirac nekit";}}', 'izmena', 0),
+	(89, '5, stavke_menija - naziv: Kobaja, kategorija: Jela od mesa, ', '2020-03-11 09:59:17', '', 'dodavanje', 0),
+	(90, '6, stavke_menija - naziv: brb, kategorija: Predjelo, ', '2020-03-11 10:18:31', '', 'dodavanje', 0),
+	(91, '7, stavke_menija - naziv: trt, kategorija: Predjelo, ', '2020-03-11 10:19:58', '', 'dodavanje', 0),
+	(92, '8, stavke_menija - naziv: fds, kategorija: Čorba, ', '2020-03-11 10:21:35', '', 'dodavanje', 0),
+	(93, '8, stavke_menija - naziv: fds', '2020-03-11 11:58:46', 'a:8:{s:2:"id";i:8;s:5:"naziv";s:3:"fds";s:4:"cena";s:6:"100.00";s:10:"kategorija";s:6:"Čorba";s:11:"korisnik_id";i:0;s:10:"created_at";s:19:"2020-03-11 10:21:35";s:14:"vreme_pripreme";i:100;s:8:"kolicina";i:100;}', 'brisanje', 0),
+	(94, '7, stavke_menija - naziv: trt', '2020-03-11 11:58:49', 'a:8:{s:2:"id";i:7;s:5:"naziv";s:3:"trt";s:4:"cena";s:7:"1000.00";s:10:"kategorija";s:8:"Predjelo";s:11:"korisnik_id";i:0;s:10:"created_at";s:19:"2020-03-11 10:19:58";s:14:"vreme_pripreme";i:100;s:8:"kolicina";i:1100;}', 'brisanje', 0),
+	(95, '6, stavke_menija - naziv: brb', '2020-03-11 11:58:55', 'a:8:{s:2:"id";i:6;s:5:"naziv";s:3:"brb";s:4:"cena";s:6:"100.00";s:10:"kategorija";s:8:"Predjelo";s:11:"korisnik_id";i:0;s:10:"created_at";s:19:"2020-03-11 10:18:31";s:14:"vreme_pripreme";i:10;s:8:"kolicina";i:100;}', 'brisanje', 0),
+	(96, '6, komintenti - naziv: Tiki, kategorija: Dekoracija, ', '2020-03-11 12:04:53', '', 'dodavanje', 0),
+	(97, '6, komintenti - naziv: Tiki', '2020-03-11 12:06:31', 'a:1:{s:8:"napomena";a:2:{s:14:"stara_vrednost";s:13:"Trg Slobode 4";s:13:"nova_vrednost";s:24:"Trg Slobode 4, 034355998";}}', 'izmena', 0),
+	(98, '4, komintenti - naziv: Neki animator', '2020-03-11 12:06:51', 'a:2:{s:5:"naziv";a:2:{s:14:"stara_vrednost";s:9:"Neki bend";s:13:"nova_vrednost";s:13:"Neki animator";}s:8:"napomena";a:2:{s:14:"stara_vrednost";s:18:"Muzicari koji piju";s:13:"nova_vrednost";s:6:"Ludaci";}}', 'izmena', 0),
+	(99, '4, komintenti - naziv: Neki animator', '2020-03-11 12:06:57', 'a:1:{s:10:"kategorija";a:2:{s:14:"stara_vrednost";s:6:"Muzika";s:13:"nova_vrednost";s:8:"Animator";}}', 'izmena', 0),
+	(100, '6, komintenti - naziv: Tiki', '2020-03-11 12:07:14', 'a:6:{s:2:"id";i:6;s:5:"naziv";s:4:"Tiki";s:10:"kategorija";s:10:"Dekoracija";s:11:"korisnik_id";i:0;s:10:"created_at";s:19:"2020-03-11 12:04:53";s:8:"napomena";s:24:"Trg Slobode 4, 034355998";}', 'brisanje', 0),
+	(101, '2, korisnici - ime: Pera, prezime: Peric, ', '2020-03-12 09:50:49', '', 'dodavanje', 0),
+	(102, '2, korisnici - ime: PeraD, prezime: Peric, ', '2020-03-12 09:54:20', 'a:1:{s:3:"ime";a:2:{s:14:"stara_vrednost";s:4:"Pera";s:13:"nova_vrednost";s:5:"PeraD";}}', 'izmena', 0),
+	(103, '2, korisnici - ime: PeraD, prezime: Peric, ', '2020-03-12 09:54:39', 'a:9:{s:2:"id";i:2;s:3:"ime";s:5:"PeraD";s:7:"prezime";s:5:"Peric";s:5:"email";s:10:"pera@kk.rs";s:14:"korisnicko_ime";s:6:"perica";s:7:"lozinka";s:60:"$2y$10$w52zJ3aZ7usIwpEn8iYBhOTuCsB0S2hZjL7DlKKULATylLCsAgsqC";s:4:"nivo";i:200;s:11:"korisnik_id";i:0;s:10:"created_at";s:19:"2020-03-12 09:50:49";}', 'brisanje', 0),
+	(104, '6, ugovori - broj_ugovora: 335/2020', '2020-03-12 12:01:42', '', 'dodavanje', 0),
+	(105, '8, ugovor_meni - ugovor_id: 6, meni_id: 2, ', '2020-03-12 12:02:15', '', 'dodavanje', 0),
+	(106, '6, komintenti - naziv: Chanky, kategorija: , ', '2020-03-13 13:26:31', '', 'dodavanje', 0),
+	(107, '4, komintenti - naziv: Neki animator', '2020-03-13 13:35:20', 'a:1:{s:13:"kategorija_id";a:2:{s:14:"stara_vrednost";i:4;s:13:"nova_vrednost";i:2;}}', 'izmena', 0),
+	(108, '4, komintenti - naziv: Neki animator', '2020-03-13 13:35:26', 'a:0:{}', 'izmena', 0),
+	(109, '6, kategorije - naziv: Muzika', '2020-03-13 13:49:41', '', 'dodavanje', 0),
+	(110, '6, kategorije - naziv: Muzika narodna', '2020-03-13 13:50:28', 'a:1:{s:5:"naziv";a:2:{s:14:"stara_vrednost";s:6:"Muzika";s:13:"nova_vrednost";s:14:"Muzika narodna";}}', 'izmena', 0),
+	(111, '6, kategorije - naziv: Muzika narodna', '2020-03-13 13:50:35', 'a:4:{s:2:"id";i:6;s:5:"naziv";s:14:"Muzika narodna";s:11:"korisnik_id";i:0;s:10:"created_at";s:19:"2020-03-13 13:49:41";}', 'brisanje', 0);
 /*!40000 ALTER TABLE `logovi` ENABLE KEYS */;
 
--- Dumping structure for table termini.meniji
 DROP TABLE IF EXISTS `meniji`;
 CREATE TABLE IF NOT EXISTS `meniji` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -168,15 +265,14 @@ CREATE TABLE IF NOT EXISTS `meniji` (
   CONSTRAINT `FK_s_meniji_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.meniji: ~3 rows (approximately)
+DELETE FROM `meniji`;
 /*!40000 ALTER TABLE `meniji` DISABLE KEYS */;
-INSERT IGNORE INTO `meniji` (`id`, `naziv`, `stavke`, `cena`, `napomena`, `korisnik_id`, `created_at`) VALUES
-	(1, 'Meni 1', '1,2', 3000.00, 'Napomena A', 1, '2020-02-24 08:43:22'),
+INSERT INTO `meniji` (`id`, `naziv`, `stavke`, `cena`, `napomena`, `korisnik_id`, `created_at`) VALUES
+	(1, 'Meni 1', '1,2,3', 3000.00, 'Napomena A', 1, '2020-02-24 08:43:22'),
 	(2, 'Meni 2', '2', 2000.00, 'Napomena B', 1, '2020-02-24 08:43:22'),
 	(3, 'Meni 3', '2', 2500.00, 'Luksuzni meni', 1, '2020-02-24 08:43:22');
 /*!40000 ALTER TABLE `meniji` ENABLE KEYS */;
 
--- Dumping structure for table termini.podsetnici
 DROP TABLE IF EXISTS `podsetnici`;
 CREATE TABLE IF NOT EXISTS `podsetnici` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -191,13 +287,15 @@ CREATE TABLE IF NOT EXISTS `podsetnici` (
   KEY `FK_podsetnici_korisnici` (`korisnik_id`),
   CONSTRAINT `FK_podsetnici_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`),
   CONSTRAINT `FK_podsetnici_ugovori` FOREIGN KEY (`ugovor_id`) REFERENCES `ugovori` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.podsetnici: ~0 rows (approximately)
+DELETE FROM `podsetnici`;
 /*!40000 ALTER TABLE `podsetnici` DISABLE KEYS */;
+INSERT INTO `podsetnici` (`id`, `ugovor_id`, `datum`, `tekst`, `reseno`, `korisnik_id`, `created_at`) VALUES
+	(1, 5, '2020-03-08', 'Podsetnik za 8. mart\r\nUraditi nesto', 0, 1, '2020-02-28 23:11:48'),
+	(2, 5, '2020-03-05', 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Delectus eligendi voluptas cumque aliquam quod. Veritatis consequuntur ducimus atque aliquam nihil?', 1, 1, '2020-02-28 23:15:53');
 /*!40000 ALTER TABLE `podsetnici` ENABLE KEYS */;
 
--- Dumping structure for table termini.sale
 DROP TABLE IF EXISTS `sale`;
 CREATE TABLE IF NOT EXISTS `sale` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -213,15 +311,14 @@ CREATE TABLE IF NOT EXISTS `sale` (
   CONSTRAINT `FK_sale_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.sale: ~3 rows (approximately)
+DELETE FROM `sale`;
 /*!40000 ALTER TABLE `sale` DISABLE KEYS */;
-INSERT IGNORE INTO `sale` (`id`, `naziv`, `max_kapacitet_mesta`, `max_kapacitet_stolova`, `napomena`, `korisnik_id`, `created_at`) VALUES
+INSERT INTO `sale` (`id`, `naziv`, `max_kapacitet_mesta`, `max_kapacitet_stolova`, `napomena`, `korisnik_id`, `created_at`) VALUES
 	(1, 'PROBA', 300, 30, '', 1, '2020-02-24 08:37:04'),
 	(2, 'PROBA II', 200, 20, '', 1, '2020-02-24 08:37:57'),
 	(3, 'PROBA III', 100, 10, '', 1, '2020-02-24 08:38:06');
 /*!40000 ALTER TABLE `sale` ENABLE KEYS */;
 
--- Dumping structure for table termini.sobe
 DROP TABLE IF EXISTS `sobe`;
 CREATE TABLE IF NOT EXISTS `sobe` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -234,21 +331,20 @@ CREATE TABLE IF NOT EXISTS `sobe` (
   CONSTRAINT `FK_sobe_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table termini.sobe: ~3 rows (approximately)
+DELETE FROM `sobe`;
 /*!40000 ALTER TABLE `sobe` DISABLE KEYS */;
-INSERT IGNORE INTO `sobe` (`id`, `naziv`, `cena`, `korisnik_id`, `created_at`) VALUES
+INSERT INTO `sobe` (`id`, `naziv`, `cena`, `korisnik_id`, `created_at`) VALUES
 	(1, 'Jednokrevetna', 1000.00, 1, '2020-02-24 08:37:23'),
 	(2, 'Dvokrevetna', 2000.00, 1, '2020-02-24 08:37:33'),
 	(3, 'Trokrevetna', 3000.00, 1, '2020-02-24 08:37:42');
 /*!40000 ALTER TABLE `sobe` ENABLE KEYS */;
 
--- Dumping structure for table termini.stavke_menija
 DROP TABLE IF EXISTS `stavke_menija`;
 CREATE TABLE IF NOT EXISTS `stavke_menija` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `naziv` varchar(150) NOT NULL,
   `cena` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
-  `kategorija` enum('Predjelo','Sirevi','Čorba','Glavno jelo','Meso','Hleb','Piće') NOT NULL,
+  `kategorija` enum('Predjelo','Sirevi','Čorba','Glavno jelo','Jela od mesa','Hleb','Piće') NOT NULL,
   `korisnik_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `vreme_pripreme` int(10) unsigned DEFAULT '0',
@@ -256,16 +352,18 @@ CREATE TABLE IF NOT EXISTS `stavke_menija` (
   PRIMARY KEY (`id`),
   KEY `FK_stavke_menija_korisnici` (`korisnik_id`),
   CONSTRAINT `FK_stavke_menija_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table termini.stavke_menija: ~2 rows (approximately)
+DELETE FROM `stavke_menija`;
 /*!40000 ALTER TABLE `stavke_menija` DISABLE KEYS */;
-INSERT IGNORE INTO `stavke_menija` (`id`, `naziv`, `cena`, `kategorija`, `korisnik_id`, `created_at`, `vreme_pripreme`, `kolicina`) VALUES
+INSERT INTO `stavke_menija` (`id`, `naziv`, `cena`, `kategorija`, `korisnik_id`, `created_at`, `vreme_pripreme`, `kolicina`) VALUES
 	(1, 'Losos', 1000.00, 'Predjelo', 0, '2020-02-24 09:38:30', 35, 250),
-	(2, 'Pršuta', 2000.00, 'Predjelo', 0, '2020-02-24 09:38:30', 0, 0);
+	(2, 'Pršuta', 2000.00, 'Predjelo', 0, '2020-02-24 09:38:30', 0, 220),
+	(3, 'Sirac nekit', 500.00, 'Predjelo', 1, '2020-03-10 14:30:05', 10, 190),
+	(4, 'Kiso kupus', 750.00, 'Predjelo', 0, '2020-03-10 14:44:24', 150, 2100),
+	(5, 'Kobaja', 100.00, 'Jela od mesa', 0, '2020-03-11 09:59:17', 10, 100);
 /*!40000 ALTER TABLE `stavke_menija` ENABLE KEYS */;
 
--- Dumping structure for table termini.termini
 DROP TABLE IF EXISTS `termini`;
 CREATE TABLE IF NOT EXISTS `termini` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -279,7 +377,7 @@ CREATE TABLE IF NOT EXISTS `termini` (
   `napomena` text COLLATE utf8mb4_unicode_ci,
   `korisnik_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `vaznost` date DEFAULT NULL,
+  `vaznost` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `FK_termini_sale` (`sala_id`),
   KEY `FK_termini_korisnici` (`korisnik_id`),
@@ -289,14 +387,13 @@ CREATE TABLE IF NOT EXISTS `termini` (
   CONSTRAINT `FK_termini_sale` FOREIGN KEY (`sala_id`) REFERENCES `sale` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.termini: ~0 rows (approximately)
+DELETE FROM `termini`;
 /*!40000 ALTER TABLE `termini` DISABLE KEYS */;
-INSERT IGNORE INTO `termini` (`id`, `sala_id`, `tip_dogadjaja_id`, `datum`, `pocetak`, `kraj`, `opis`, `zauzet`, `napomena`, `korisnik_id`, `created_at`, `vaznost`) VALUES
+INSERT INTO `termini` (`id`, `sala_id`, `tip_dogadjaja_id`, `datum`, `pocetak`, `kraj`, `opis`, `zauzet`, `napomena`, `korisnik_id`, `created_at`, `vaznost`) VALUES
 	(9, 1, 1, '2020-02-25', '10:00:00', '22:00:00', 'Probni događaj I (rođendan)', 0, 'Važnost 3 dana', 1, '2020-02-24 09:02:13', '2020-02-27'),
 	(10, 2, 3, '2020-02-29', '08:00:00', '23:59:00', 'Test dodavanja ugovora', 1, '', 1, '2020-02-25 22:56:27', '2020-03-03');
 /*!40000 ALTER TABLE `termini` ENABLE KEYS */;
 
--- Dumping structure for table termini.tipovi_dogadjaja
 DROP TABLE IF EXISTS `tipovi_dogadjaja`;
 CREATE TABLE IF NOT EXISTS `tipovi_dogadjaja` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -310,16 +407,15 @@ CREATE TABLE IF NOT EXISTS `tipovi_dogadjaja` (
   CONSTRAINT `FK_s_tip_dogadjaja_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.tipovi_dogadjaja: ~4 rows (approximately)
+DELETE FROM `tipovi_dogadjaja`;
 /*!40000 ALTER TABLE `tipovi_dogadjaja` DISABLE KEYS */;
-INSERT IGNORE INTO `tipovi_dogadjaja` (`id`, `tip`, `multi_ugovori`, `korisnik_id`, `created_at`) VALUES
+INSERT INTO `tipovi_dogadjaja` (`id`, `tip`, `multi_ugovori`, `korisnik_id`, `created_at`) VALUES
 	(1, 'Proslava rođendana', 1, 1, '2020-02-24 08:39:28'),
 	(2, 'Svadba', 0, 1, '2020-02-24 08:39:28'),
 	(3, 'Simpozijum', 1, 1, '2020-02-24 08:39:28'),
 	(4, 'Konferencija', 1, 1, '2020-02-24 08:39:28');
 /*!40000 ALTER TABLE `tipovi_dogadjaja` ENABLE KEYS */;
 
--- Dumping structure for table termini.ugovori
 DROP TABLE IF EXISTS `ugovori`;
 CREATE TABLE IF NOT EXISTS `ugovori` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -382,8 +478,12 @@ CREATE TABLE IF NOT EXISTS `ugovori` (
   `posebni_zahtevi_opis` text COLLATE utf8mb4_unicode_ci,
   `posebni_zahtevi_iznos` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
   `iznos_meni` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
-  `iznos_sobe` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
   `iznos_dodatno` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
+  `iznos_sobe` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
+  `aneks_broj_mesta` smallint(5) unsigned NOT NULL,
+  `aneks_iznos_meni` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
+  `aneks_iznos_dodatno` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
+  `aneks_iznos_sobe` decimal(15,2) unsigned NOT NULL DEFAULT '0.00',
   `napomena` text COLLATE utf8mb4_unicode_ci,
   `korisnik_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -412,16 +512,16 @@ CREATE TABLE IF NOT EXISTS `ugovori` (
   CONSTRAINT `FK_ugovori_komintenti_9` FOREIGN KEY (`animator_kom`) REFERENCES `komintenti` (`id`),
   CONSTRAINT `FK_ugovori_korisnici` FOREIGN KEY (`korisnik_id`) REFERENCES `korisnici` (`id`),
   CONSTRAINT `FK_ugovori_termini` FOREIGN KEY (`termin_id`) REFERENCES `termini` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.ugovori: ~2 rows (approximately)
+DELETE FROM `ugovori`;
 /*!40000 ALTER TABLE `ugovori` DISABLE KEYS */;
-INSERT IGNORE INTO `ugovori` (`id`, `termin_id`, `broj_ugovora`, `datum`, `broj_mesta`, `broj_stolova`, `broj_mesta_po_stolu`, `prezime`, `ime`, `telefon`, `email`, `fizicko_pravno`, `naziv_firme`, `mb_firme`, `pib_firme`, `mesto_firme`, `adresa_firme`, `banka_firme`, `racun_firme`, `muzika_chk`, `muzika_kom`, `muzika_opis`, `muzika_iznos`, `fotograf_chk`, `fotograf_kom`, `fotograf_opis`, `fotograf_iznos`, `torta_chk`, `torta_kom`, `torta_opis`, `torta_iznos`, `dekoracija_chk`, `dekoracija_kom`, `dekoracija_opis`, `dekoracija_iznos`, `kokteli_chk`, `kokteli_kom`, `kokteli_opis`, `kokteli_iznos`, `slatki_sto_chk`, `slatki_sto_kom`, `slatki_sto_opis`, `slatki_sto_iznos`, `vocni_sto_chk`, `vocni_sto_kom`, `vocni_sto_opis`, `vocni_sto_iznos`, `animator_chk`, `animator_kom`, `animator_opis`, `animator_iznos`, `trubaci_chk`, `trubaci_kom`, `trubaci_opis`, `trubaci_iznos`, `posebni_zahtevi_chk`, `posebni_zahtevi_kom`, `posebni_zahtevi_opis`, `posebni_zahtevi_iznos`, `iznos_meni`, `iznos_sobe`, `iznos_dodatno`, `napomena`, `korisnik_id`, `created_at`) VALUES
-	(1, 9, '01/2020', '2020-02-24', 150, 15, 10, 'Petar', 'Petrović', '03444567', 'pera@ptt.us', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 150000.00, 0.00, 0.00, 'Prvi ugovor za testiranje', 1, '2020-02-24 09:13:39'),
-	(5, 10, '', '2020-02-26', 180, 15, 12, 'Canic', 'Nenad', '065 555 999', 'chana@test.com', 1, 'ChaShaOne', '9876543210', '0123456789', 'Kragujevac', 'Crvenog krsta 122', 'Banca Intesa', '160-0000000000001-99', 1, 5, '', 1000.00, 1, 1, '', 5000.00, 1, 5, 'Organizator', 1000.00, 1, 3, '', 6000.00, 0, 5, '', 0.00, 0, 5, '', 0.00, 0, 5, '', 0.00, 1, 5, '', 3000.00, 0, 5, '', 0.00, 1, 5, 'nesto posebno', 5000.00, 473000.00, 25000.00, 21000.00, 'nap', 1, '2020-02-25 23:25:30');
+INSERT INTO `ugovori` (`id`, `termin_id`, `broj_ugovora`, `datum`, `broj_mesta`, `broj_stolova`, `broj_mesta_po_stolu`, `prezime`, `ime`, `telefon`, `email`, `fizicko_pravno`, `naziv_firme`, `mb_firme`, `pib_firme`, `mesto_firme`, `adresa_firme`, `banka_firme`, `racun_firme`, `muzika_chk`, `muzika_kom`, `muzika_opis`, `muzika_iznos`, `fotograf_chk`, `fotograf_kom`, `fotograf_opis`, `fotograf_iznos`, `torta_chk`, `torta_kom`, `torta_opis`, `torta_iznos`, `dekoracija_chk`, `dekoracija_kom`, `dekoracija_opis`, `dekoracija_iznos`, `kokteli_chk`, `kokteli_kom`, `kokteli_opis`, `kokteli_iznos`, `slatki_sto_chk`, `slatki_sto_kom`, `slatki_sto_opis`, `slatki_sto_iznos`, `vocni_sto_chk`, `vocni_sto_kom`, `vocni_sto_opis`, `vocni_sto_iznos`, `animator_chk`, `animator_kom`, `animator_opis`, `animator_iznos`, `trubaci_chk`, `trubaci_kom`, `trubaci_opis`, `trubaci_iznos`, `posebni_zahtevi_chk`, `posebni_zahtevi_kom`, `posebni_zahtevi_opis`, `posebni_zahtevi_iznos`, `iznos_meni`, `iznos_dodatno`, `iznos_sobe`, `aneks_broj_mesta`, `aneks_iznos_meni`, `aneks_iznos_dodatno`, `aneks_iznos_sobe`, `napomena`, `korisnik_id`, `created_at`) VALUES
+	(1, 9, '01/2020', '2020-02-24', 150, 15, 10, 'Petar', 'Petrović', '03444567', 'pera@ptt.us', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 0, NULL, NULL, 0.00, 150000.00, 0.00, 0.00, 0, 0.00, 0.00, 0.00, 'Prvi ugovor za testiranje', 1, '2020-02-24 09:13:39'),
+	(5, 10, '', '2020-02-26', 180, 15, 12, 'Canic', 'Nenad', '065 555 999', 'chana@test.com', 1, 'ChaShaOne', '9876543210', '0123456789', 'Kragujevac', 'Crvenog krsta 122', 'Banca Intesa', '160-0000000000001-99', 1, 1, '', 1000.00, 1, 5, '', 5000.00, 1, 1, 'Organizator', 1000.00, 1, 3, '', 6000.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 1, 1, '', 3000.00, 0, 1, '', 0.00, 1, 1, 'nesto posebno', 5000.00, 473800.00, 25000.00, 25000.00, 180, 473000.00, 25000.00, 25000.00, 'nap', 1, '2020-02-25 23:25:30'),
+	(6, 10, '335/2020', '2020-03-12', 20, 2, 10, 'Peric', 'Pera', '', '', 0, '', '', '', '', '', '', '', 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 0, 1, '', 0.00, 38000.00, 0.00, 0.00, 0, 0.00, 0.00, 0.00, '', 0, '2020-03-12 12:01:42');
 /*!40000 ALTER TABLE `ugovori` ENABLE KEYS */;
 
--- Dumping structure for table termini.ugovor_meni
 DROP TABLE IF EXISTS `ugovor_meni`;
 CREATE TABLE IF NOT EXISTS `ugovor_meni` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -436,18 +536,18 @@ CREATE TABLE IF NOT EXISTS `ugovor_meni` (
   KEY `FK_ugovor_meni_meniji` (`meni_id`),
   CONSTRAINT `FK_ugovor_meni_meniji` FOREIGN KEY (`meni_id`) REFERENCES `meniji` (`id`),
   CONSTRAINT `FK_ugovor_meni_ugovori` FOREIGN KEY (`ugovor_id`) REFERENCES `ugovori` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table termini.ugovor_meni: ~3 rows (approximately)
+DELETE FROM `ugovor_meni`;
 /*!40000 ALTER TABLE `ugovor_meni` DISABLE KEYS */;
-INSERT IGNORE INTO `ugovor_meni` (`id`, `ugovor_id`, `meni_id`, `komada`, `popust`, `cena_sa_popustom`, `iznos`) VALUES
+INSERT INTO `ugovor_meni` (`id`, `ugovor_id`, `meni_id`, `komada`, `popust`, `cena_sa_popustom`, `iznos`) VALUES
 	(1, 1, 1, 150, 100.00, 0.00, 0.00),
 	(5, 5, 1, 100, 200.00, 2800.00, 280000.00),
 	(6, 5, 2, 70, -100.00, 2100.00, 147000.00),
-	(7, 5, 3, 20, 200.00, 2300.00, 46000.00);
+	(7, 5, 3, 20, 200.00, 2300.00, 46000.00),
+	(8, 6, 2, 20, 100.00, 1900.00, 38000.00);
 /*!40000 ALTER TABLE `ugovor_meni` ENABLE KEYS */;
 
--- Dumping structure for table termini.ugovor_soba
 DROP TABLE IF EXISTS `ugovor_soba`;
 CREATE TABLE IF NOT EXISTS `ugovor_soba` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -465,26 +565,25 @@ CREATE TABLE IF NOT EXISTS `ugovor_soba` (
   CONSTRAINT `FK_ugovor_soba_ugovori` FOREIGN KEY (`ugovor_id`) REFERENCES `ugovori` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table termini.ugovor_soba: ~0 rows (approximately)
+DELETE FROM `ugovor_soba`;
 /*!40000 ALTER TABLE `ugovor_soba` DISABLE KEYS */;
-INSERT IGNORE INTO `ugovor_soba` (`id`, `ugovor_id`, `soba_id`, `komada`, `popust`, `opis`, `cena_sa_popustom`, `iznos`) VALUES
+INSERT INTO `ugovor_soba` (`id`, `ugovor_id`, `soba_id`, `komada`, `popust`, `opis`, `cena_sa_popustom`, `iznos`) VALUES
 	(2, 5, 1, 5, 0.00, NULL, 1000.00, 5000.00),
 	(3, 5, 2, 10, 200.00, NULL, 1800.00, 18000.00);
 /*!40000 ALTER TABLE `ugovor_soba` ENABLE KEYS */;
 
--- Dumping structure for table termini.uplate
 DROP TABLE IF EXISTS `uplate`;
 CREATE TABLE IF NOT EXISTS `uplate` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ugovor_id` int(10) unsigned NOT NULL,
   `datum` datetime NOT NULL,
   `iznos` decimal(12,2) unsigned NOT NULL DEFAULT '0.00',
+  `svrha_placanja` enum('Troškovi proslave','Avans','Muzika','Fotograf','Torta','Dekoracija','Kokteli','Slatki sto','Voćni sto','Trubači','Animator','Posebni zahtevi','Ostalo') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Muzika',
   `nacin_placanja` enum('gotovina','kartica','ček','faktura') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'gotovina',
-  `svrha_placanja` enum('Muzika','Fotograf','Torta','Dekoracija','Kokteli','Slatki sto','Voćni sto','Trubači','Animator') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Muzika',
-  `opis` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `opis` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `uplatilac` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `korisnik_id` int(10) unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `kapara` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `FK_uplate_ugovori` (`ugovor_id`),
   KEY `FK_uplate_korisnici` (`korisnik_id`),
@@ -492,7 +591,7 @@ CREATE TABLE IF NOT EXISTS `uplate` (
   CONSTRAINT `FK_uplate_ugovori` FOREIGN KEY (`ugovor_id`) REFERENCES `ugovori` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table termini.uplate: ~0 rows (approximately)
+DELETE FROM `uplate`;
 /*!40000 ALTER TABLE `uplate` DISABLE KEYS */;
 /*!40000 ALTER TABLE `uplate` ENABLE KEYS */;
 

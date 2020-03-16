@@ -66,7 +66,7 @@
 	<tr>
 		<th class="text-success">{{ ugovor.ukupanIznos()|number_format() }}</th>
 		<td>{{ ugovor.iznos_meni|number_format() }}</td>
-		<td>{{ ugovor.iznos_dodatno|number_format() }}</td>
+		<td>{{ ugovor.ukupanIznosDodatno()|number_format() }}</td>
 		<td>{{ ugovor.iznos_sobe|number_format() }}</td>
 	</tr>
 	<tr>
@@ -357,153 +357,98 @@
 {# Kraj modala za brisanje sobe#}
 
 
-{# DODATNE USLUGE #}
-
+{# DODAVANJE DODATNE USLUGE #}
 <h3 class="text-info">Dodatne usluge</h3>
+<form id="forma-sobe" action="{{ path_for('ugovor.dopuna.soba') }}" method="POST" class="needs-validation" novalidate>
+	{{ csrf|raw }}
+	<input type="hidden" id="ugovor_id_dodatna" name="ugovor_id_dodatna" value="{{ ugovor.id }}">
+	<div class="form-row">
+
+		<div class="form-group col-md-3">
+        <select class="custom-select{{ errors.kategorija_id[0] ? ' is-invalid' : '' }}" id="kategorija_id" name="kategorija_id" required>
+          <option value="">Odaberite vrstu usluge ...</option>
+          {% for kat in kategorije %}
+              <option value="{{ kat.id }}" {{ old.kategorija_id == kat.id ? ' selected' : '' }}>{{ kat.naziv }}</option>
+          {% endfor %}
+        </select>
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.kategorija_id[0] ? : 'Obavezno polje' }}
+        </div>
+		</div>
+		<div class="col-md-3 form-group">
+        <select class="custom-select{{ errors.komitent_id[0] ? ' is-invalid' : '' }}" id="komitent_id" name="komitent_id" required>
+          <option value="">Odaberite komitenta ...</option>
+          {% for komi in komitenti %}
+              <option value="{{ komi.id }}" {{ old.komitent_id == komi.id ? ' selected' : '' }}>{{ komi.naziv }}</option>
+          {% endfor %}
+        </select>
+        <div class="valid-feedback">Odgovarajući podatak</div>
+        <div class="invalid-feedback">
+          {{ errors.komitent_id[0] ? : 'Obavezno polje' }}
+        </div>
+		</div>
+
+		<div class="col-md-2 form-group">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text">Status</span></div>
+				<input type="checkbox" name="status" id="status"
+              		class="form-control{{ errors.status[0] ? ' is-invalid' : '' }}"
+              {{ old.status == 1 ? ' checked' : '' }}>
+			</div>
+			<div class="valid-feedback">Odgovarajući podatak</div>
+			<div class="invalid-feedback">{{ errors.satus[0] ? : 'Obavezno polje' }}</div>
+		</div>
+
+		<div class="col-md-3 form-group">
+			<div class="input-group">
+				<div class="input-group-prepend"><span class="input-group-text">Cena (iznos)</span></div>
+				<input type="text" value="0" class="form-control" name="cena" id="cena_dodatnih" min="0" step="0.01"
+					required>
+			</div>
+			<div class="valid-feedback">Odgovarajući podatak</div>
+			<div class="invalid-feedback">{{ errors.popust[0] ? : 'Obavezno polje' }}</div>
+		</div>
+
+		<div class="col-md-1 text-right">
+			<button class="btn btn-info" type="submit" title="Dodaj meni">
+				<i class="fas fa-plus-square"></i> Dodaj
+			</button>
+		</div>
+	</div>
+</form>
 <div class="table-responsive mb-3">
 	<table class="table table-sm table-hover">
 		<thead class="thead-dark">
 			<tr>
 				<th class="w-5">#</th>
 				<th class="w-20">Usluga</th>
-				<th class="w-15">Komitent</th>
+				<th class="w-20">Komitent</th>
 				<th class="w-10 text-center">Status</th>
-				<th class="w-25">Opis</th>
+				<th class="w-20">Opis</th>
 				<th class="w-15 text-right">Iznos</th>
-				<th class="w-10"></th>
+				<th class="w-10 text-right text-warning">
+					<i class="fas fa-cogs"></i>
+				</th>
 			</tr>
 		</thead>
 		<tbody>
+			{% for udodatna in ugovor.dodatneUsluge() %}
 			<tr>
-				<th>1</th>
-				<td>Muzika</td>
-				<td>
-					{{ ugovor.komitent('muzika_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('muzika_kom').naziv }}
+				<td>{{ udodatna.id }}</td>
+				<td>{{ udodatna.komitent().kategorija().naziv }}</td>
+				<td>{{ udodatna.komitent.naziv }}</td>
+				<td class="text-center">{{ (udodatna.status == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}</td>
+				<td>{{ udodatna.opis }}</td>
+				<td class="text-right">{{ udodatna.cena|number_format() }}</td>
+				<td class="text-right">
+					<button class="btn btn-danger btn-sm otvori-brisanje-dodatne" data-toggle="modal"
+						data-target="#brisanjeDodatne" data-id="{{ udodatna.id }}" title="Brisanje odabrane dodatne usluge">
+						<i class="fas fa-trash-alt"></i>
+					</button>
 				</td>
-				<td class="text-center">
-					{{ (ugovor.muzika_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.muzika_opis }}</td>
-				<td class="text-right">{{ ugovor.muzika_iznos|number_format() }}</td>
-				<td></td>
 			</tr>
-			<tr>
-				<th>2</th>
-				<td>Fotograf</td>
-				<td>
-					{{ ugovor.komitent('fotograf_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('fotograf_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.fotograf_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.fotograf_opis }}</td>
-				<td class="text-right">{{ ugovor.fotograf_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<th>3</th>
-				<td>Torta</td>
-				<td>
-					{{ ugovor.komitent('torta_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('torta_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.torta_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.torta_opis }}</td>
-				<td class="text-right">{{ ugovor.torta_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<th>4</th>
-				<td>Dekoracija</td>
-				<td>
-					{{ ugovor.komitent('dekoracija_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('dekoracija_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.dekoracija_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.dekoracija_opis }}</td>
-				<td class="text-right">{{ ugovor.dekoracija_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<th>5</th>
-				<td>Kokteli</td>
-				<td>
-					{{ ugovor.komitent('kokteli_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('kokteli_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.kokteli_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.kokteli_opis }}</td>
-				<td class="text-right">{{ ugovor.kokteli_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<th>6</th>
-				<td>Slatki sto</td>
-				<td>
-					{{ ugovor.komitent('slatki_sto_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('slatki_sto_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.slatki_sto_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.slatki_sto_opis }}</td>
-				<td class="text-right">{{ ugovor.slatki_sto_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<th>7</th>
-				<td>Voćni sto</td>
-				<td>
-					{{ ugovor.komitent('vocni_sto_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('vocni_sto_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.vocni_sto_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.vocni_sto_opis }}</td>
-				<td class="text-right">{{ ugovor.vocni_sto_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<th>8</th>
-				<td>Animator</td>
-				<td>
-					{{ ugovor.komitent('animator_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('animator_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.animator_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.animator_opis }}</td>
-				<td class="text-right">{{ ugovor.animator_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<th>9</th>
-				<td>Trubači</td>
-				<td>
-					{{ ugovor.komitent('trubaci_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('trubaci_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.trubaci_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.trubaci_opis }}</td>
-				<td class="text-right">{{ ugovor.trubaci_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
-			<tr>
-				<th>10</th>
-				<td>Posebni zahtevi</td>
-				<td>
-					{{ ugovor.komitent('posebni_zahtevi_kom').naziv == 'Bez komitenta' ? '' : ugovor.komitent('posebni_zahtevi_kom').naziv }}
-				</td>
-				<td class="text-center">
-					{{ (ugovor.posebni_zahtevi_chk == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}
-				</td>
-				<td>{{ ugovor.posebni_zahtevi_opis }}</td>
-				<td class="text-right">{{ ugovor.posebni_zahtevi_iznos|number_format() }}</td>
-				<td></td>
-			</tr>
+			{% endfor %}
 		</tbody>
 		<tfoot>
 			<tr class="bg-light">

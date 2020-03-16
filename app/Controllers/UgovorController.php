@@ -10,6 +10,7 @@ use App\Models\Soba;
 use App\Models\SobaUgovor;
 use App\Models\MeniUgovor;
 use App\Models\Komitent;
+use App\Models\Kategorija;
 
 class UgovorController extends Controller
 {
@@ -478,7 +479,7 @@ class UgovorController extends Controller
             return $response->withRedirect($this->router->pathFor('ugovor.sobe.lista', ['id' => $$id_ugovora]));
         }
     }
-    //Sobe privremeno!!!
+
     public function getUgovorDopuna($request, $response, $args)
     {
         $id = (int) $args['id'];
@@ -486,10 +487,14 @@ class UgovorController extends Controller
         $ugovor = $model_ugovor->find($id);
         $model_meni = new Meni();
         $model_soba = new Soba();
+        $model_kategorija = new Kategorija();
+        $model_komitent = new Komitent();
         $meniji = $model_meni->all();
         $sobe = $model_soba->all();
+        $kategorije = $model_kategorija->all();
+        $komitenti = $model_komitent->all();
 
-        $this->render($response, 'ugovor/dopuna.twig', compact('ugovor', 'meniji', 'sobe'));
+        $this->render($response, 'ugovor/dopuna.twig', compact('ugovor', 'meniji', 'sobe', 'kategorije', 'komitenti'));
     }
 
     public function postUgovorDopunaMeni($request, $response)

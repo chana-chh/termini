@@ -13,6 +13,11 @@ class Komitent extends Model
         return $this->belongsTo('App\Models\Kategorija', 'kategorija_id');
     }
 
+    public function dodatneUsluge()
+    {
+        return $this->hasMany('App\Models\DodatnaUsluga', 'komitent_id');
+    }
+
     public function sveKategorije()
     {
         return $this->enumOrSetList('kategorija');
@@ -20,7 +25,7 @@ class Komitent extends Model
 
     public function stavkeZaKategoriju($kat)
     {
-        $sql = "SELECT * FROM {$this->table()} WHERE kategorija = '{$kat}'";
+        $sql = "SELECT * FROM {$this->table()} WHERE kategorija_id = 1";
         return $this->fetch($sql);
     }
 }
