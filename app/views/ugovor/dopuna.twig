@@ -356,14 +356,12 @@
 </div>
 {# Kraj modala za brisanje sobe#}
 
-
 {# DODAVANJE DODATNE USLUGE #}
 <h3 class="text-info">Dodatne usluge</h3>
-<form id="forma-sobe" action="{{ path_for('ugovor.dopuna.soba') }}" method="POST" class="needs-validation" novalidate>
+<form id="forma-dodatne" action="{{ path_for('ugovor.dopuna.dodatne') }}" method="POST" class="needs-validation" novalidate>
 	{{ csrf|raw }}
 	<input type="hidden" id="ugovor_id_dodatna" name="ugovor_id_dodatna" value="{{ ugovor.id }}">
 	<div class="form-row">
-
 		<div class="form-group col-md-3">
         <select class="custom-select{{ errors.kategorija_id[0] ? ' is-invalid' : '' }}" id="kategorija_id" name="kategorija_id" required>
           <option value="">Odaberite vrstu usluge ...</option>
@@ -377,10 +375,13 @@
         </div>
 		</div>
 		<div class="col-md-3 form-group">
-        <select class="custom-select{{ errors.komitent_id[0] ? ' is-invalid' : '' }}" id="komitent_id" name="komitent_id" required>
-          <option value="">Odaberite komitenta ...</option>
+        <select class="custom-select{{ errors.komitent_id[0] ? ' is-invalid' : '' }} komitent_select" id="komitent_id" name="komitent_id" required>
+          <option data-kat="0" value="">Odaberite komitenta ...</option>
           {% for komi in komitenti %}
-              <option value="{{ komi.id }}" {{ old.komitent_id == komi.id ? ' selected' : '' }}>{{ komi.naziv }}</option>
+             <option data-kat="{{ komi.kategorija_id }}"
+              value="{{ komi.id }}" {{ old.komitent_id == komi.id ? ' selected' : '' }}>
+              {{ komi.naziv }}
+          	</option>
           {% endfor %}
         </select>
         <div class="valid-feedback">Odgovarajući podatak</div>
@@ -411,6 +412,15 @@
 		</div>
 
 		<div class="col-md-1 text-right">
+		</div>
+	</div>
+	<div class="form-row mb-3">
+        <div class="input-group col-md-11">
+        <div class="input-group-prepend"><span class="input-group-text">Opis</span></div>
+          <textarea class="form-control" name="opis" id="opis"
+            rows="1">{{ old.opis ?  : ugovor.opis }}</textarea>
+        </div>
+        <div class="col-md-1 text-right">
 			<button class="btn btn-info" type="submit" title="Dodaj meni">
 				<i class="fas fa-plus-square"></i> Dodaj
 			</button>
@@ -463,6 +473,42 @@
 		</tfoot>
 	</table>
 </div>
+
+{# Modal za brisanje dodatnih usluga #}
+<div id="brisanjeDodatne" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title text-danger">Upozorenje!</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h4>Da li želite trajno da obrišete dodatnu uslugu?</h4>
+				<p class="text-danger">* Ova akcija je nepovratna!</p>
+				<form id="brisanje-dodatne" action="{{ path_for('dodatne.dopuna.brisanje') }}" method="POST">
+					{{ csrf|raw }}
+					<input type="hidden" id="idBrisanjeDodatne" name="idBrisanjeDodatne">
+					<input type="hidden" id="ugovor_iddodatne" name="ugovor_iddodatne" value="{{ ugovor.id }}">
+					<hr style="margin-top: 30px;">
+
+					<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+						<div class="form-group">
+							<button id="btn-brisanje-dodatne" type="submit" class="btn btn-danger">
+								<i class="fas fa-trash-alt"></i>&emsp;Obriši
+							</button>
+							<a class="btn btn-secondary" data-dismiss="modal">
+								<i class="fas fa-ban"></i>&emsp;Otkaži
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{# Kraj modala za brisanje dodatnih usluga#}
 {% endblock sadrzaj %}
 {% block traka %}
 <div class="card border-dark mb-3">
@@ -552,6 +598,11 @@
 		$(".otvori-brisanje-sobe").on("click", function () {
 			var id = $(this).data("id");
 			$("#idBrisanjeSobe").val(id);
+		});
+
+		$(".otvori-brisanje-dodatne").on("click", function () {
+			var id = $(this).data("id");
+			$("#idBrisanjeDodatne").val(id);
 		});
 
 		$(document).on('click', '.otvori-uplatu', function () {

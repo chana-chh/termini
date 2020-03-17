@@ -115,13 +115,15 @@ $app->group('', function () {
     $this->post('/termin/ugovori/brisanje', '\App\Controllers\UgovorController:postUgovorBrisanje')->setName('termin.ugovor.brisanje');
     $this->get('/termin/ugovori/detalj/{id}', '\App\Controllers\UgovorController:getUgovorDetalj')->setName('termin.ugovor.detalj.get');
     $this->get('/termin/ugovori/uplate/{id}', '\App\Controllers\UgovorController:getUgovorUplateDetalj')->setName('ugovor.uplate.lista');
-    $this->get('/termin/ugovori/sobe/{id}', '\App\Controllers\UgovorController:getUgovorSobe')->setName('ugovor.sobe.lista');
-    $this->post('/termin/ugovori/sobe/dodavanje', '\App\Controllers\UgovorController:postSobaUgovorDodavanje')->setName('ugovor.sobe.dodavanje');
+    // $this->get('/termin/ugovori/sobe/{id}', '\App\Controllers\UgovorController:getUgovorSobe')->setName('ugovor.sobe.lista');
+    // $this->post('/termin/ugovori/sobe/dodavanje', '\App\Controllers\UgovorController:postSobaUgovorDodavanje')->setName('ugovor.sobe.dodavanje');
     $this->get('/termin/ugovori/dopuna/{id}', '\App\Controllers\UgovorController:getUgovorDopuna')->setName('ugovor.dopuna.get');
     $this->post('/termin/ugovori/dopuna/meni', '\App\Controllers\UgovorController:postUgovorDopunaMeni')->setName('ugovor.dopuna.meni');
     $this->post('/termin/ugovori/dopuna/meni/brisanje', '\App\Controllers\UgovorController:postDopunaMeniBrisanje')->setName('meni.dopuna.brisanje');
     $this->post('/termin/ugovori/dopuna/soba', '\App\Controllers\UgovorController:postUgovorDopunaSoba')->setName('ugovor.dopuna.soba');
     $this->post('/termin/ugovori/dopuna/soba/brisanje', '\App\Controllers\UgovorController:postDopunaSobaBrisanje')->setName('soba.dopuna.brisanje');
+    $this->post('/termin/ugovori/dopuna/dodatne', '\App\Controllers\UgovorController:postDodatneUgovorDodavanje')->setName('ugovor.dopuna.dodatne');
+    $this->post('/termin/ugovori/dopuna/dodatne/brisanje', '\App\Controllers\UgovorController:postDopunaDodatneBrisanje')->setName('dodatne.dopuna.brisanje');
     $this->post('/termin/ugovori/dopuna/aneks', '\App\Controllers\UgovorController:postUgovorDopunaAneks')->setName('ugovor.dopuna.aneks');
     $this->post('/termin/obavestenje', '\App\Controllers\HomeController:postTerminObavestenje')->setName('termin.obavestenje');
     $this->post('/termin/ukloni/vaznost', '\App\Controllers\HomeController:postUkloniVaznost')->setName('termin.ukloni.vaznost');
