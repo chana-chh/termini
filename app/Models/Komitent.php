@@ -17,15 +17,4 @@ class Komitent extends Model
     {
         return $this->hasMany('App\Models\DodatnaUsluga', 'komitent_id');
     }
-
-    public function sveKategorije()
-    {
-        return $this->enumOrSetList('kategorija');
-    }
-
-    public function stavkeZaKategoriju($kat)
-    {
-        $sql = "SELECT * FROM {$this->table()} WHERE kategorija_id = 1";
-        return $this->fetch($sql);
-    }
 }

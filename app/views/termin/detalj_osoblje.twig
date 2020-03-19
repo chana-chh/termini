@@ -43,10 +43,30 @@ naslov %}
 </div>
 
 <div class="row">
-  <div class="col">
-    <h3 class="text-primary p-4">
+  <div class="col align-self-center">
+    <h3 class="text-primary p-4 text-center">
       <i class="fas fa-users"></i> Ukupan broj zvanica: {{ termin.popunjenaMesta() }}
     </h3>
+  </div>
+    <div class="col">
+    <h3 class="text-primary p-4">
+      <i class="fas fa-birthday-cake"></i> Pregled dodatnih usluga po ugovorima
+    </h3>
+    {% for ugovor in ugovori %}
+  <h4>Ugovor - 
+      <strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
+      <small class="font-italic">(od {{ ugovor.datum|date() }})</small></h4>
+      <div class="row mt-3">
+        <div class="col-md-4">
+      <ul>
+        {% for udodatna in ugovor.dodatneUsluge() %}
+        <li><strong>{{ udodatna.komitent().kategorija().naziv }}</strong>&emsp;{{ udodatna.komitent.naziv }}</li>
+        {% endfor %}
+      </ul>
+      </div>
+      </div>
+      <hr style="border-top: 1px dotted #8c8b8b">
+{% endfor %}
   </div>
 </div>
 <hr>
@@ -74,27 +94,5 @@ naslov %}
   {% endfor %}
   </div>
   {% endfor %}
-{% endfor %}
-<hr style="border-top: 1px dotted #8c8b8b">
-{% for ugovor in ugovori %}
-  <h4>Ugovor - 
-      <strong class="text-info">{{ ugovor.broj_ugovora }}</strong>
-      <small class="font-italic">(od {{ ugovor.datum|date() }})</small></h4>
-      <div class="row mt-3">
-        <div class="col-md-4">
-      <ul class="list-group">
-        <li class="list-group-item list-group-item-info"><strong>Muzika:</strong>&emsp;{{ ugovor.komitent('muzika_kom') }}, {{ ugovor.muzika_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Fotograf:</strong>&emsp;{{ ugovor.komitent('fotograf_kom') }}, {{ ugovor.fotograf_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Torta:</strong>&emsp;{{ ugovor.komitent('torta_kom') }}, {{ ugovor.torta_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Dekoracije:</strong>&emsp;{{ ugovor.komitent('dekoracija_kom') }}, {{ ugovor.dekoracija_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Koktel:</strong>&emsp;{{ ugovor.komitent('kokteli_kom') }}, {{ ugovor.kokteli_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Slatki sto:</strong>&emsp;{{ ugovor.komitent('slatki_sto_kom') }}, {{ ugovor.slatki_sto_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Voćni sto:</strong>&emsp;{{ ugovor.komitent('vocni_sto_kom') }}, {{ ugovor.vocni_sto_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Animator:</strong>&emsp;{{ ugovor.komitent('animator_kom') }}, {{ ugovor.animator_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Trubači:</strong>&emsp;{{ ugovor.komitent('trubaci_kom') }}, {{ ugovor.trubaci_opis }}</li>
-        <li class="list-group-item list-group-item-info"><strong>Posebni zahtevi:</strong>&emsp;{{ ugovor.posebni_zahtevi }}</li>
-      </ul>
-      </div>
-      </div>
 {% endfor %}
 {% endblock naslov %}

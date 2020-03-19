@@ -92,7 +92,13 @@
 <table class="table mb-0">
 	<tr>
 		<th class="w-20">Meni</th>
-		<td class="w-70">{{ ugovor.meni.naziv }}</td>
+		<td class="w-70">
+			{% for um in ugovor.meniUgovor() %}
+			<ul>
+				<li>{{ um.meni().naziv }}</li>
+			</ul>
+			{% endfor %}
+		</td>
 		<td>
 		</td>
 	</tr>
@@ -142,18 +148,18 @@
 	</tr>
 	{% endif %}
 	<tr class="bg-light">
-		<th><strong>Cena</strong></th>
-		<td>{{ ugovor.iznos|number_format }}</td>
+		<th><strong>Cena menija</strong></th>
+		<td>{{ ugovor.iznos_meni|number_format }}</td>
 		<td></td>
 	</tr>
 	<tr class="bg-light">
-		<th><strong>Cena usluga</strong></th>
-		<td>{{ ugovor.cenaUsluga()|number_format }}</td>
+		<th><strong>Cena soba</strong></th>
+		<td>{{ ugovor.iznos_sobe|number_format }}</td>
 		<td></td>
 	</tr>
-	<tr>
-		<th><strong>Posebni zahtevi</strong></th>
-		<td>{{ ugovor.posebni_zahtevi }}</td>
+	<tr class="bg-light">
+		<th><strong>Cena dodatnih usluga</strong></th>
+		<td>{{ ugovor.ukupanIznosDodatno()|number_format }}</td>
 		<td></td>
 	</tr>
 	<tr>

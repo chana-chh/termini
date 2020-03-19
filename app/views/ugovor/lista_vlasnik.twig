@@ -113,7 +113,7 @@
       <td><strong>{{ ugovor.broj_ugovora }}</strong></td>
       <td><small><a href="{{path_for('vlasnik.termin', { id: ugovor.termin.id })}}">
         ({{ ugovor.termin().datum|date('d.m.Y') }}) {{ ugovor.termin().opis }}</a></small></td>
-      <td class="text-info"><strong>{{ ugovor.iznos | number_format(2, '.', ',') }}</strong></td>
+      <td class="text-info"><strong>{{ ugovor.ukupanIznos()|number_format() }}</strong></td>
       <td class="text-success"><strong>{{ ugovor.kapara | number_format(2, '.', ',') }}</strong></td>
       <td>{{ ugovor.ime }} {{ ugovor.prezime }}</td>
       <td>{{ ugovor.telefon }}</td>
