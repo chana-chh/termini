@@ -94,15 +94,14 @@
   <thead class="thead-dark">
     <tr>
       <th class="w-5" scope="col">ID</th>
-      <th class="w-8" scope="col">Broj</th>
-      <th class="w-12" scope="col">Termin</th>
+      <th class="w-10" scope="col">Broj</th>
+      <th class="w-10" scope="col">Datum</th>
+      <th class="w-15" scope="col">Termin</th>
       <th class="w-10" scope="col">Iznos</th>
-      <th class="w-10" scope="col">Kapara</th>
-      <th class="w-10" scope="col">Ime i prezime</th>
+      <th class="w-15" scope="col">Ime/naziv</th>
       <th class="w-10" scope="col">Telefon</th>
       <th class="w-10" scope="col">E-mail</th>
       <th class="w-10" scope="col">Mesta</th>
-      <th class="w-10" scope="col">Datum</th>
       <th class="w-5" scope="col" style="text-align:right;"><i class="fas fa-cogs text-warning"></i></th>
     </tr>
   </thead>
@@ -111,15 +110,24 @@
     <tr>
       <th scope="row" class="text-danger">{{ ugovor.id }}</th>
       <td><strong>{{ ugovor.broj_ugovora }}</strong></td>
-      <td><small><a href="{{path_for('vlasnik.termin', { id: ugovor.termin.id })}}">
-        ({{ ugovor.termin().datum|date('d.m.Y') }}) {{ ugovor.termin().opis }}</a></small></td>
+      <td>{{ ugovor.datum|date('d.m.Y') }}</td>
+      <td><small><a href="{{path_for('termin.detalj.get', { id: ugovor.termin.id })}}">
+            ({{ ugovor.termin().datum|date('d.m.Y') }})
+          </a><br>
+          {{ ugovor.termin().opis }}</small></td>
       <td class="text-info"><strong>{{ ugovor.ukupanIznos()|number_format() }}</strong></td>
-      <td class="text-success"><strong>{{ ugovor.kapara | number_format(2, '.', ',') }}</strong></td>
-      <td>{{ ugovor.ime }} {{ ugovor.prezime }}</td>
+      <td>{{ ugovor.ime }} {{ ugovor.prezime }}
+          {% if ugovor.naziv_firme %}
+          <br>
+          <span class="font-italic text-primary">{{ugovor.naziv_firme}}</span>
+          {% endif %}
+          {% if ugovor.adresa_firme %}
+          <span>- {{ugovor.adresa_firme}}</span>
+          {% endif %}
+      </td>
       <td>{{ ugovor.telefon }}</td>
       <td><a href="mailto:{{ ugovor.email }}">{{ ugovor.email }}</a></td>
       <td>{{ ugovor.broj_mesta }} ({{ ugovor.broj_stolova }}/{{ ugovor.broj_mesta_po_stolu }})</td>
-      <td>{{ ugovor.datum|date('d.m.Y') }}</td>
       <td style="text-align:right;">
         <div class="btn-group btn-group-sm">
           <a class="btn btn-success btn-sm" href="{{ path_for('vlasnik.ugovor.detalj', { id: ugovor.id }) }}" title="Detaljni pregled odabranog ugovora"><i

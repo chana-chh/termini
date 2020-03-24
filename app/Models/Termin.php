@@ -76,11 +76,22 @@ class Termin extends Model
     {
         return (int) ($this->sala()->max_kapacitet_stolova - $this->popunjeniStolovi());
     }
-
+    
+    //Privremeno izmenjeno dok ne odlucimo kako ce se racunati !!!
     public function cenaTermina()
     {
-        $sql = "SELECT SUM(iznos_meni + iznos_sobe + iznos_dodatno) AS cena FROM ugovori WHERE termin_id = {$this->id};";
-        return (int) $this->fetch($sql)[0]->cena;
+        $dodatne = 0;
+        $meni_sobe = 0;
+        $ukupno = 0;
+        //meni i sobe
+        $sql = "SELECT SUM(iznos_meni + iznos_sobe) AS cena FROM ugovori WHERE termin_id = {$this->id};";
+        $meni_sobe = $this->fetch($sql)[0]->cena;
+        //dodatne usluge
+        foreach ($this->ugovori() as $ugovor) {
+            $dodatne =+ $ugovor->ukupanIznosDodatno();
+        }
+        $ukupno = $dodatne + $meni_sobe;
+        return (int) $ukupno;
     }
 
     public function status()

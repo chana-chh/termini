@@ -100,8 +100,8 @@
         <th class="w-10">Broj</th>
         <th class="w-10">Datum</th>
         <th class="w-10">Termin</th>
-        <th class="w-5 text-right">Iznos</th>
-        <th class="w-20">Ime/naziv</th>
+        <th class="w-10">Iznos</th>
+        <th class="w-15">Ime/naziv</th>
         <th class="w-10">Telefon</th>
         <th class="w-10">E-mail</th>
         <th class="w-10">Mesta</th>
@@ -115,15 +115,18 @@
         <td><strong>{{ ugovor.broj_ugovora }}</strong></td>
         <td>{{ ugovor.datum|date() }}</td>
         <td>
+          <small>
           <a href="{{path_for('termin.detalj.get', { id: ugovor.termin.id })}}">
             ({{ ugovor.termin().datum|date('d.m.Y') }})
           </a><br>
           {{ ugovor.termin().opis }}
+          </small>
         </td>
-        <td class="text-right">{{ ugovor.ukupanIznos()|number_format() }}</td>
+        <td class="text-info"><strong>{{ ugovor.ukupanIznos()|number_format() }}</strong></td>
         <td>{{ ugovor.ime }} {{ ugovor.prezime }}
           {% if ugovor.naziv_firme %}
-          <span>, {{ugovor.naziv_firme}}</span>
+          <br>
+          <span class="font-italic text-primary">{{ugovor.naziv_firme}}</span>
           {% endif %}
           {% if ugovor.adresa_firme %}
           <span>- {{ugovor.adresa_firme}}</span>
