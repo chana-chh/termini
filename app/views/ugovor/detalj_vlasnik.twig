@@ -147,21 +147,6 @@
 		<td></td>
 	</tr>
 	{% endif %}
-	<tr class="bg-light">
-		<th><strong>Cena menija</strong></th>
-		<td>{{ ugovor.iznos_meni|number_format }}</td>
-		<td></td>
-	</tr>
-	<tr class="bg-light">
-		<th><strong>Cena soba</strong></th>
-		<td>{{ ugovor.iznos_sobe|number_format }}</td>
-		<td></td>
-	</tr>
-	<tr class="bg-light">
-		<th><strong>Cena dodatnih usluga</strong></th>
-		<td>{{ ugovor.ukupanIznosDodatno()|number_format }}</td>
-		<td></td>
-	</tr>
 	<tr>
 		<th><strong>Napomena</strong></th>
 		<td>{{ ugovor.napomena }}</td>
@@ -171,6 +156,30 @@
 
 {% endblock sadrzaj %}
 {% block traka %}
+<div class="card border-dark mb-2">
+    <div class="card-header">
+		Finansijski podaci
+	</div>
+    <div class="card-body text-dark">
+<table class="table">
+	<tr>
+		<th><h4>Cena menija</h4></th>
+		<td><h4>{{ ugovor.iznos_meni|number_format }}</h4></td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><h4>Cena soba</h4></th>
+		<td><h4>{{ ugovor.iznos_sobe|number_format }}</h4></td>
+		<td></td>
+	</tr>
+	<tr>
+		<th><h4>Cena dodatnih usluga</h4></th>
+		<td><h4>{{ ugovor.ukupanIznosDodatno()|number_format }}</h4></td>
+		<td></td>
+	</tr>
+</table>
+</div>
+</div>
 	<div class="card border-dark mb-2">
     <div class="card-header">
 		Dodatne usluge
