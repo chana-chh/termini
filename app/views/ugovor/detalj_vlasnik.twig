@@ -163,18 +163,18 @@
     <div class="card-body text-dark">
 <table class="table">
 	<tr>
-		<th><h4>Cena menija</h4></th>
-		<td><h4>{{ ugovor.iznos_meni|number_format }}</h4></td>
+		<th><h5>Cena menija</h5></th>
+		<td><h5 class="text-primary text-right">{{ ugovor.iznos_meni|number_format }}</h5></td>
 		<td></td>
 	</tr>
 	<tr>
-		<th><h4>Cena soba</h4></th>
-		<td><h4>{{ ugovor.iznos_sobe|number_format }}</h4></td>
+		<th><h5>Cena soba</h5></th>
+		<td><h5 class="text-primary text-right">{{ ugovor.iznos_sobe|number_format }}</h5></td>
 		<td></td>
 	</tr>
 	<tr>
-		<th><h4>Cena dodatnih usluga</h4></th>
-		<td><h4>{{ ugovor.ukupanIznosDodatno()|number_format }}</h4></td>
+		<th><h5>Cena dodatnih usluga</h5></th>
+		<td><h5 class="text-primary text-right">{{ ugovor.ukupanIznosDodatno()|number_format }}</h5></td>
 		<td></td>
 	</tr>
 </table>

@@ -17,4 +17,9 @@ class DodatnaUsluga extends Model
     {
         return $this->belongsTo('App\Models\Komitent', 'komitent_id');
     }
+
+    public function korisnik()
+    {
+        return $this->belongsTo('App\Models\Korisnik', 'korisnik_id');
+    }
 }

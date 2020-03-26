@@ -86,10 +86,18 @@
 		{{ ugovor.termin.kraj|date("H:i") }}
 	</h4>
 	<table class="table table-sm mb-0">
-		<tr>
-			<th class="w-30">Meni</th>
-			<td class="w-70">{{ ugovor.meni.naziv }}</td>
-		</tr>
+	<tr>
+		<th class="w-20">Meni</th>
+		<td class="w-70">
+			{% for um in ugovor.meniUgovor() %}
+			<ul>
+				<li>{{ um.meni().naziv }}</li>
+			</ul>
+			{% endfor %}
+		</td>
+		<td>
+		</td>
+	</tr>
 		<tr>
 			<th>
 				<strong>Ime i prezime</strong>
@@ -176,7 +184,6 @@
 				<td></td>
 				<td></td>
 				<td></td>
-				<td></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -224,67 +231,79 @@
 </div>
 </div>
 
-<div class="card border-dark mb-3">
-<div class="card-header">
-	Dodatne usluge
-</div>
-<div class="card-body text-dark">
-	<div class="row">
-		<div class="col">
-			<table class="table table-sm table-striped mb-0">
-				<thead>
-					<tr>
-						<th class="w-10">#</th>
-						<th class="w-40">Usluga</th>
-						<th class="w-50 text-right">Iznos</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th>1</th>
-						<td>Muzika</td>
-						<td class="text-success text-right">{{ ugovor.muzika_iznos | number_format(2, '.', ',') }}</td>
-					</tr>
-					<tr>
-						<th>2</th>
-						<td>Fotograf</td>
-						<td class="text-success text-right">{{ ugovor.fotograf_iznos | number_format(2, '.', ',') }}</td>
-					</tr>
-					<tr>
-						<th>3</th>
-						<td>Torta</td>
-						<td class="text-success text-right">{{ ugovor.torta_iznos | number_format(2, '.', ',') }}</td>
-					</tr>
-					<tr>
-						<th>4</th>
-						<td>Dekoracija</td>
-						<td class="text-success text-right">{{ ugovor.dekoracija_iznos | number_format(2, '.', ',') }}</td>
-					</tr>
-					<tr>
-						<th>5</th>
-						<td>Kokteli</td>
-						<td class="text-success text-right">{{ ugovor.kokteli_iznos | number_format(2, '.', ',') }}</td>
-					</tr>
-					<tr>
-						<th>6</th>
-						<td>Slatki sto</td>
-						<td class="text-success text-right">{{ ugovor.slatki_sto_iznos | number_format(2, '.', ',') }}</td>
-					</tr>
-					<tr>
-						<th>7</th>
-						<td>Voćni sto</td>
-						<td class="text-success text-right">{{ ugovor.vocni_sto_iznos | number_format(2, '.', ',') }}</td>
-					</tr>
-					<tr>
-						<th>8</th>
-						<td>Posebni zahtevi</td>
-						<td class="text-success text-right">{{ ugovor.posebni_zahtevi_iznos | number_format(2, '.', ',') }}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+<div class="card border-dark mb-2">
+	<div class="card-header">
+		Dodatne usluge
+	</div>
+    <div class="card-body text-dark">
+      <div class="row">
+      	<div class="col">
+      		<table class="table table-sm table-striped mb-0" style="font-size: 0.875rem;">
+      			<thead class="thead-dark">
+			<tr>
+				<th class="w-5">#</th>
+				<th class="w-40">Usluga</th>
+				<th class="w-40">Komitent</th>
+				<th class="w-15 text-right">Iznos</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for udodatna in ugovor.dodatneUsluge() %}
+			<tr>
+				<td>{{ udodatna.id }}</td>
+				<td>{{ udodatna.komitent().kategorija().naziv }}</td>
+				<td>{{ udodatna.komitent.naziv }}</td>
+				<td class="text-right">{{ udodatna.cena|number_format() }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		<tfoot>
+			<tr class="bg-light">
+				<td></td>
+				<td></td>
+				<td></td>
+				<td class="text-right text-primary">{{ ugovor.ukupanIznosDodatno()|number_format() }}</td>
+			</tr>
+		</tfoot>
+  				</table>
+  			</div>
+  		</div>
 	</div>
 </div>
+<div class="card border-dark mb-2">
+	<div class="card-header">
+		Sobe
+	</div>
+    <div class="card-body text-dark">
+      <div class="row">
+      	<div class="col">
+      		<table class="table table-sm table-striped mb-0" style="font-size: 0.875rem;">
+      			<thead class="thead-dark">
+			<tr>
+				<th class="w-40">Soba</th>
+				<th class="w-30 text-right">Komada</th>
+				<th class="w-30 text-right">Iznos</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for us in ugovor.sobaUgovor() %}
+			<tr>
+				<td>{{ us.soba().naziv }}</td>
+				<td class="text-right">{{ us.komada|number_format(0) }}</td>
+				<td class="text-right">{{ us.iznos|number_format() }}</td>
+			</tr>
+			{% endfor %}
+		<tfoot>
+			<tr class="bg-light">
+				<td></td>
+				<td></td>
+				<td class="text-right text-primary">{{ ugovor.ukupanIznosSoba()|number_format() }}</td>
+			</tr>
+		</tfoot>
+  				</table>
+  			</div>
+  		</div>
+	</div>
 </div>
 {% endblock traka %}
 {% block skripta %}

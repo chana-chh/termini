@@ -427,12 +427,16 @@ class UgovorController extends Controller
         $id_ugovora = $data['ugovor_id'];
         unset($data['ugovor_id_dodatna']);
         unset($data['kategorija_id']);
+        $data['korisnik_id'] = $this->auth->user()->id;
 
         $validation_rules = [
             'ugovor_id' => [
                 'required' => true,
             ],
             'komitent_id' => [
+                'required' => true
+            ],
+            'korisnik_id' => [
                 'required' => true
             ],
             'status' => [
