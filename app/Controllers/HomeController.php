@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Classes\Auth;
 use App\Classes\Logger;
 use App\Models\Termin;
+use App\Models\Podsetnik;
 use App\Models\Sala;
 use App\Models\TipDogadjaja;
 
@@ -16,7 +17,11 @@ class HomeController extends Controller
         $sql = "SELECT * FROM {$model_termin->getTable()} WHERE datum > DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND vaznost <= DATE_ADD(CURDATE(), INTERVAL 5 DAY);";
         $termini = $model_termin->fetch($sql);
 
-        $this->render($response, 'home.twig', compact('termini'));
+        $model_podsetnik = new Podsetnik();
+        $sql = "SELECT * FROM {$model_podsetnik->getTable()} WHERE datum > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND reseno = 0;";
+        $podsetnici = $model_podsetnik->fetch($sql);
+
+        $this->render($response, 'home.twig', compact('termini', 'podsetnici'));
     }
 
     public function postTerminObavestenje($request, $response)
@@ -41,11 +46,11 @@ class HomeController extends Controller
                     $adresa = filter_var($adresa, FILTER_SANITIZE_EMAIL);
                     $ime = $ugovor->punoIme();
                     if (filter_var($adresa, FILTER_VALIDATE_EMAIL)) {
-                        $poslato = $this->mailer->sendMail(
-                        [['email' => $adresa, 'name' => $ime]],
-                        "Istek rezervacije za termin u sali {$termin->sala()->naziv} za {$d}. godine",
-                        $telo
-                    );
+                    //     $poslato = $this->mailer->sendMail(
+                    //     [['email' => $adresa, 'name' => $ime]],
+                    //     "Istek rezervacije za termin u sali {$termin->sala()->naziv} za {$d}. godine",
+                    //     $telo
+                    // );
                     }
                 }
                 if ($poslato) {
@@ -54,9 +59,10 @@ class HomeController extends Controller
                     array_push($nisu_prosli, $ime);
                 }
             }
-
+            $broj_ugovora = 1;
+            $broj_poslatih = 1;
             if ($broj_poslatih == $broj_ugovora) {
-                $model->update(['obavestenje' => date('Y-m-d')], $id_termina);
+                $model->update(['obavestenje' => "Obaveštenje je uspešno poslato na dan - ".date('d-m-Y')], $id_termina);
                 $this->flash->addMessage('success', "Obaveštenje je uspešno poslato.");
                 return $response->withRedirect($this->router->pathFor('pocetna'));
             } elseif ($broj_poslatih == 0) {

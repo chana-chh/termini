@@ -33,7 +33,7 @@
         <td><strong><a href="{{ path_for('termin.detalj.get', { id: termin.id }) }}" title="Detaljni pregled odabranog termina">{{ termin.sala().naziv }}</a></strong></td>
         <td>{{ termin.datum|date() }}</td>
         <td class="{{ date(termin.vaznost) <  date() ? "text-danger" : "text-primary" }}"><strong>{{ termin.vaznost|date() }}</strong></td>
-        <td class="text-center">{{ termin.obavestenje !=  null ?  termin.obavestenje : "" }}</td>
+        <td class="text-center {{ termin.obavestenje !=  null ?  "text-primary" : "text-danger" }}">{{ termin.obavestenje !=  null ?  termin.obavestenje : "Obaveštenje još nije poslato!" }}</td>
         <td class="font-italic">{{ termin.opis|length > 50 ? termin.opis|slice(0, 50) ~ ' ...' : termin.opis  }}</td>
         <td style="text-align:right;">
           <div class="btn-group btn-group-sm">
@@ -163,9 +163,27 @@
 {# Kraj modala za brisanje termina #}
 {% endblock sadrzaj %}
 {% block traka %}
-	<div class="col text-right">
-		<h4>Podsetnici</h4>
-	</div>
+    <h4><i class="fas fa-bell text-primary"></i>&emsp;Podsetnici</h4>
+    <hr>
+{% for podsetnik in podsetnici %}
+  {% if loop.index is even %}
+    <div class="row bg-light">
+  {% else %}
+    <div class="row">
+  {% endif %}
+      <div class="col-2 text-right">
+        <h2><span class="badge badge-secondary">{{ podsetnik.datum|date("d") }}</span></h2>
+        <h4>{{ podsetnik.datum|date("F") }}</h4>
+      </div>
+      <div class="col-10">
+        <p class="text-uppercase"><strong>{{ podsetnik.tekst }}</strong></p>
+        <ul class="list-inline">
+            <li class="list-inline-item"><i class="fas fa-calendar text-primary"></i>&emsp;{{ podsetnik.datum|date() }}</li>
+            <li class="list-inline-item"><i class="fas fa-user text-primary"></i>&emsp;{{ podsetnik.korisnik.imePrezime() }}</li>
+        </ul>
+      </div>
+    </div>
+{% endfor %}
 {% endblock traka %}
 {% block skripta %}
 <script>
