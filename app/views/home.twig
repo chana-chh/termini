@@ -6,6 +6,37 @@
 			<hr>
 		</div>
 	</div>
+  <div class="row mt-5">
+  <div class="col-4">
+  <div class="card border-info mb-3">
+  <div class="card-header">Broj nečega</div>
+  <div class="card-body text-info">
+    <h5 class="card-title">1000</h5>
+    <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+  </div>
+</div>
+</div>
+
+  <div class="col-4">
+  <div class="card border-info mb-3">
+  <div class="card-header">Broj nečega</div>
+  <div class="card-body text-info">
+    <h5 class="card-title">1000</h5>
+    <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+  </div>
+</div>
+</div>
+
+  <div class="col-4">
+  <div class="card border-info mb-3">
+  <div class="card-header">Broj nečega</div>
+  <div class="card-body text-info">
+    <h5 class="card-title">1000</h5>
+    <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+  </div>
+</div>
+</div>
+</div>
 {% endblock naslov %}
 {% block sadrzaj %}
 <div class="row">
@@ -163,11 +194,12 @@
 {# Kraj modala za brisanje termina #}
 {% endblock sadrzaj %}
 {% block traka %}
+<div class="card card-body bg-light">
     <h4><i class="fas fa-bell text-primary"></i>&emsp;Podsetnici</h4>
     <hr>
 {% for podsetnik in podsetnici %}
   {% if loop.index is even %}
-    <div class="row bg-light">
+    <div class="row bg-white">
   {% else %}
     <div class="row">
   {% endif %}
@@ -175,19 +207,57 @@
         <h2><span class="badge badge-secondary">{{ podsetnik.datum|date("d") }}</span></h2>
         <h4>{{ podsetnik.datum|date("F") }}</h4>
       </div>
-      <div class="col-10">
+      <div class="col-8">
         <p class="text-uppercase"><strong>{{ podsetnik.tekst }}</strong></p>
         <ul class="list-inline">
-            <li class="list-inline-item"><i class="fas fa-calendar text-primary"></i>&emsp;{{ podsetnik.datum|date() }}</li>
-            <li class="list-inline-item"><i class="fas fa-user text-primary"></i>&emsp;{{ podsetnik.korisnik.imePrezime() }}</li>
+            <li class="list-inline-item"><i class="fas fa-calendar text-secondary"></i>&emsp;{{ podsetnik.datum|date() }}</li>
+            <li class="list-inline-item"><i class="fas fa-user text-secondary"></i>&emsp;{{ podsetnik.korisnik.imePrezime() }}</li>
         </ul>
+      </div>
+      <div class="col-1">
+        <div class="form-check">
+          <input class="form-check-input cb-podsetnik" name="cb-podsetnik" type="checkbox" id="cbp-{{podsetnik.id}}"
+                data-id="{{podsetnik.id}}" {{ podsetnik.reseno == 1 ? ' checked' : '' }}>
+        </div>
       </div>
     </div>
 {% endfor %}
+</div>
 {% endblock traka %}
 {% block skripta %}
 <script>
   $(document).ready(function () {
+
+    var podsetnici = document.querySelectorAll(".cb-podsetnik");
+
+    podsetnici.forEach(item => {
+      item.addEventListener('click', event => {
+        event.stopPropagation();
+        const id_podsetnika = item.getAttribute("data-id");
+
+        $.post(
+          "{{ path_for('podsetnik.reseno.post') }}",
+          {
+            id: id_podsetnika,
+            csrf_name: document.querySelector(".csrf_name").value,
+            csrf_value: document.querySelector(".csrf_value").value
+          },
+          function (data) {
+            data = JSON.parse(data);
+            const csrfNames = document.querySelectorAll(".csrf_name");
+            const csrfValues = document.querySelectorAll(".csrf_value");
+            csrfNames.forEach(name => {
+              name.value = data.csrf_name;
+            });
+            csrfValues.forEach(val => {
+              val.value = data.csrf_value;
+            });
+          }
+        );
+        location.reload();
+      });
+    });
+
 $(".otvori-obavestenje").on("click", function () {
       var id = $(this).data("id");
       $("#idTermina").val(id);
