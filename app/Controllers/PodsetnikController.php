@@ -3,9 +3,19 @@
 namespace App\Controllers;
 
 use App\Models\Podsetnik;
+use App\Models\Korisnik;
 
 class PodsetnikController extends Controller
 {
+    public function getPodsetnikLista($request, $response, $args)
+    {
+        $id = (int) $args['korisnik_id'];
+        $model_korisnik = new Korisnik();
+        $korisnik = $model_korisnik->find($id);
+
+        $this->render($response, 'podsetnik/lista.twig', compact('korisnik'));
+    }
+
     public function postPodsetnikDodavanje($request, $response)
     {
         $data = $this->data();
@@ -42,12 +52,12 @@ class PodsetnikController extends Controller
         $model = new Podsetnik();
         $podsetnik = $model->find($id);
         $reseno = 0;
-        if($podsetnik->reseno == 0){
+        if ($podsetnik->reseno == 0) {
             $reseno = 1;
         }
         $model->update(['reseno' => $reseno], $id);
         $podsetnik1 = $model->find($id);
-        $this->log($this::IZMENA,$podsetnik1,'datum',$podsetnik);
+        $this->log($this::IZMENA, $podsetnik1, 'datum', $podsetnik);
 
         return json_encode($data);
     }

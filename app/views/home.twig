@@ -1,48 +1,49 @@
 {% extends "templates/app.twig" %}
 {% block naslov %}
-	<div class="row mt-5">
-		<div class="col text-center">
-			<h4><img src="{{ base_url() }}/img/logo.png" alt="logo HK" height="100px">&emsp;Sistem za zakazivanje i pomoć u organizovanju događaja</h4>
-			<hr>
-		</div>
-	</div>
-  <div class="row mt-5">
-  <div class="col-4">
-  <div class="card border-info mb-3">
-  <div class="card-header">Broj nečega</div>
-  <div class="card-body text-info">
-    <h5 class="card-title">1000</h5>
-    <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+<div class="row mt-5">
+  <div class="col text-center">
+    <h4><img src="{{ base_url() }}/img/logo.png" alt="logo HK" height="100px">&emsp;Sistem za zakazivanje i pomoć u
+      organizovanju događaja</h4>
+    <hr>
   </div>
 </div>
-</div>
+<div class="row mt-5">
+  <div class="col-4">
+    <div class="card border-info mb-3">
+      <div class="card-header">Broj nečega</div>
+      <div class="card-body text-info">
+        <h5 class="card-title">1000</h5>
+        <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+      </div>
+    </div>
+  </div>
 
   <div class="col-4">
-  <div class="card border-info mb-3">
-  <div class="card-header">Broj nečega</div>
-  <div class="card-body text-info">
-    <h5 class="card-title">1000</h5>
-    <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+    <div class="card border-info mb-3">
+      <div class="card-header">Broj nečega</div>
+      <div class="card-body text-info">
+        <h5 class="card-title">1000</h5>
+        <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+      </div>
+    </div>
   </div>
-</div>
-</div>
 
   <div class="col-4">
-  <div class="card border-info mb-3">
-  <div class="card-header">Broj nečega</div>
-  <div class="card-body text-info">
-    <h5 class="card-title">1000</h5>
-    <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+    <div class="card border-info mb-3">
+      <div class="card-header">Broj nečega</div>
+      <div class="card-body text-info">
+        <h5 class="card-title">1000</h5>
+        <p class="card-text">Opis ... Lorem ipsum dolor sit amet consectetuer</p>
+      </div>
+    </div>
   </div>
-</div>
-</div>
 </div>
 {% endblock naslov %}
 {% block sadrzaj %}
 <div class="row">
-	<div class="col text-center">
-			<h4>Pregled rezervacija kojima uskoro ističe važnost ili je već istekla</h4>
-	</div>
+  <div class="col text-center">
+    <h4>Pregled rezervacija kojima uskoro ističe važnost ili je već istekla</h4>
+  </div>
 </div>
 <div class="table-responsive mt-2" style="font-size: 0.75rem">
   <table class="table">
@@ -61,26 +62,28 @@
       {% for termin in termini %}
       <tr>
         <th scope="row" class="text-danger">{{ termin.id }}</th>
-        <td><strong><a href="{{ path_for('termin.detalj.get', { id: termin.id }) }}" title="Detaljni pregled odabranog termina">{{ termin.sala().naziv }}</a></strong></td>
+        <td><strong><a href="{{ path_for('termin.detalj.get', { id: termin.id }) }}"
+              title="Detaljni pregled odabranog termina">{{ termin.sala().naziv }}</a></strong></td>
         <td>{{ termin.datum|date() }}</td>
-        <td class="{{ date(termin.vaznost) <  date() ? "text-danger" : "text-primary" }}"><strong>{{ termin.vaznost|date() }}</strong></td>
-        <td class="text-center {{ termin.obavestenje !=  null ?  "text-primary" : "text-danger" }}">{{ termin.obavestenje !=  null ?  termin.obavestenje : "Obaveštenje još nije poslato!" }}</td>
+        <td class="{{ date(termin.vaznost) <  date() ? "text-danger" : "text-primary" }}">
+          <strong>{{ termin.vaznost|date() }}</strong></td>
+        <td class="text-center {{ termin.obavestenje !=  null ?  "text-primary" : "text-danger" }}">
+          {{ termin.obavestenje !=  null ?  termin.obavestenje : "Obaveštenje još nije poslato!" }}</td>
         <td class="font-italic">{{ termin.opis|length > 50 ? termin.opis|slice(0, 50) ~ ' ...' : termin.opis  }}</td>
         <td style="text-align:right;">
           <div class="btn-group btn-group-sm">
             {% if termin.obavestenje ==  null %}
             <button class="btn btn-primary btn-sm otvori-obavestenje" data-toggle="modal"
-            data-target="#slanjeObavestenja" data-id="{{ termin.id }}" 
-            title="Pošalji upozorenje o otkazu rezervacije">
-            <i class="fas fa-envelope"></i></button>
+              data-target="#slanjeObavestenja" data-id="{{ termin.id }}"
+              title="Pošalji upozorenje o otkazu rezervacije">
+              <i class="fas fa-envelope"></i></button>
             {% endif %}
-            <button class="btn btn-success btn-sm otvori-vaznost" data-toggle="modal"
-            data-target="#ukloniVaznost" data-id="{{ termin.id }}" 
-            title="Poništi važnost">
-            <i class="fas fa-minus"></i></button>
+            <button class="btn btn-success btn-sm otvori-vaznost" data-toggle="modal" data-target="#ukloniVaznost"
+              data-id="{{ termin.id }}" title="Poništi važnost">
+              <i class="fas fa-minus"></i></button>
             <button class="btn btn-danger btn-sm otvori-brisanje" data-toggle="modal" data-target="#brisanjeModal"
-            data-id="{{ termin.id }}" title="Brisanje odabranog termina">
-            <i class="fas fa-trash-alt"></i>
+              data-id="{{ termin.id }}" title="Brisanje odabranog termina">
+              <i class="fas fa-trash-alt"></i>
             </button>
           </div>
         </td>
@@ -178,101 +181,74 @@
 
           <div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
             <div class="form-group">
-                  <button class="btn btn-danger" type="submit" id="modal-obrisi-termin">
-          <i class="fas fa-trash-alt"></i> Obriši
-        </button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          <i class="fas fa-ban"></i> Otkaži
-        </button>
+              <button class="btn btn-danger" type="submit" id="modal-obrisi-termin">
+                <i class="fas fa-trash-alt"></i> Obriši
+              </button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                <i class="fas fa-ban"></i> Otkaži
+              </button>
         </form>
-                    </div>
-          </div>
       </div>
     </div>
   </div>
+</div>
+</div>
 </div>
 {# Kraj modala za brisanje termina #}
 {% endblock sadrzaj %}
 {% block traka %}
 <div class="card card-body bg-light">
-    <h4><i class="fas fa-bell text-primary"></i>&emsp;Podsetnici</h4>
-    <hr>
-{% for podsetnik in podsetnici %}
-  {% if loop.index is even %}
-    <div class="row bg-white">
-  {% else %}
-    <div class="row">
-  {% endif %}
-      <div class="col-2 text-right">
-        <h2><span class="badge badge-secondary">{{ podsetnik.datum|date("d") }}</span></h2>
-        <h4>{{ podsetnik.datum|date("F") }}</h4>
-      </div>
-      <div class="col-8">
-        <p class="text-uppercase"><strong>{{ podsetnik.tekst }}</strong></p>
-        <ul class="list-inline">
-            <li class="list-inline-item"><i class="fas fa-calendar text-secondary"></i>&emsp;{{ podsetnik.datum|date() }}</li>
-            <li class="list-inline-item"><i class="fas fa-user text-secondary"></i>&emsp;{{ podsetnik.korisnik.imePrezime() }}</li>
-        </ul>
-      </div>
-      <div class="col-1">
-        <div class="form-check">
-          <input class="form-check-input cb-podsetnik" name="cb-podsetnik" type="checkbox" id="cbp-{{podsetnik.id}}"
-                data-id="{{podsetnik.id}}" {{ podsetnik.reseno == 1 ? ' checked' : '' }}>
-        </div>
-      </div>
+  <h4><i class="fas fa-bell text-primary"></i>&emsp;Podsetnici</h4>
+  <hr>
+  {% for podsetnik in podsetnici %}
+  <div class="row">
+    <div class="col-3 border-right">
+      <h4>
+        <a href="{{ path_for('termin.ugovor.detalj.get', { id: podsetnik.ugovor_id }) }}" class="text-decoration-none">
+          <span class="badge badge-primary">{{ podsetnik.datum|date("d") }}</span>
+        </a>
+      </h4>
+      <h5>
+        <a href="{{ path_for('termin.ugovor.detalj.get', { id: podsetnik.ugovor_id }) }}" class="text-decoration-none">
+          {{ podsetnik.datum|date("F") }}
+        </a>
+      </h5>
     </div>
-{% endfor %}
+
+    <div class="col-9">
+      <p class="text-uppercase"><strong>{{ podsetnik.tekst }}</strong></p>
+      <ul class="list-inline">
+        <li class="list-inline-item"><small><i class="fas fa-calendar text-secondary"></i>
+            {{ podsetnik.datum|date() }}</small>
+        </li>
+        <li class="list-inline-item"><small><i class="fas fa-user text-secondary"></i>
+            {{ podsetnik.korisnik.imePrezime() }}</small></li>
+      </ul>
+    </div>
+  </div>
+  <hr>
+  {% endfor %}
 </div>
 {% endblock traka %}
 {% block skripta %}
 <script>
   $(document).ready(function () {
 
-    var podsetnici = document.querySelectorAll(".cb-podsetnik");
-
-    podsetnici.forEach(item => {
-      item.addEventListener('click', event => {
-        event.stopPropagation();
-        const id_podsetnika = item.getAttribute("data-id");
-
-        $.post(
-          "{{ path_for('podsetnik.reseno.post') }}",
-          {
-            id: id_podsetnika,
-            csrf_name: document.querySelector(".csrf_name").value,
-            csrf_value: document.querySelector(".csrf_value").value
-          },
-          function (data) {
-            data = JSON.parse(data);
-            const csrfNames = document.querySelectorAll(".csrf_name");
-            const csrfValues = document.querySelectorAll(".csrf_value");
-            csrfNames.forEach(name => {
-              name.value = data.csrf_name;
-            });
-            csrfValues.forEach(val => {
-              val.value = data.csrf_value;
-            });
-          }
-        );
-        location.reload();
-      });
-    });
-
-$(".otvori-obavestenje").on("click", function () {
+    $(".otvori-obavestenje").on("click", function () {
       var id = $(this).data("id");
       $("#idTermina").val(id);
     });
 
-$(".otvori-vaznost").on("click", function () {
+    $(".otvori-vaznost").on("click", function () {
       var id = $(this).data("id");
       $("#idTerminaVaznost").val(id);
     });
 
-$(".otvori-brisanje").on("click", function () {
+    $(".otvori-brisanje").on("click", function () {
       var id = $(this).data("id");
       $("#modal_termin_brisanje_id").val(id);
     });
 
-});
+  });
 </script>
 {% endblock skripta %}

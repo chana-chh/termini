@@ -18,7 +18,7 @@ class HomeController extends Controller
         $termini = $model_termin->fetch($sql);
 
         $model_podsetnik = new Podsetnik();
-        $sql = "SELECT * FROM {$model_podsetnik->getTable()} WHERE datum > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND reseno = 0;";
+        $sql = "SELECT * FROM {$model_podsetnik->getTable()} WHERE datum > DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND reseno = 0 AND ugovor_id IS NOT NULL ORDER BY datum ASC;";
         $podsetnici = $model_podsetnik->fetch($sql);
 
         $this->render($response, 'home.twig', compact('termini', 'podsetnici'));

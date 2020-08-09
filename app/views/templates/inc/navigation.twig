@@ -39,6 +39,8 @@
         <a class="nav-link" href="{{ path_for('osoblje.kalendar') }}"><i class="fas fa-calendar-alt"></i> Kalendar</a>
       </li>
       {% endif %}
+
+
       {% if auth.user.nivo == 200 %}
       <li class="nav-item">
         <a class="nav-link" href="{{ path_for('kalendar') }}"><i class="fas fa-calendar-alt"></i> Termini</a>
@@ -55,6 +57,9 @@
         <a class="nav-link" href="{{ path_for('meni') }}"><i class="fas fa-drumstick-bite"></i> Meni</a>
       </li>
       {% endif %}
+
+
+
       {% if auth.user.nivo == 0 %}
       {# meni za admina #}
       {# osoblje #}
@@ -155,6 +160,7 @@
       </li>
       {% endif %}
       {% endif %}
+
       {% if auth.logged %}
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -162,8 +168,11 @@
           <i class="fas fa-user"></i> {{ auth.user.imePrezime }}
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{{ path_for('odjava') }}">Odjava</a>
+          <a class="dropdown-item" href="{{ path_for('podsetnik.lista', {korisnik_id:auth.user.id}) }}">Podsetnici</a>
+          <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ path_for('promena') }}">Promena lozinke</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item text-danger" href="{{ path_for('odjava') }}">Odjava</a>
         </div>
       </li>
       {% else %}

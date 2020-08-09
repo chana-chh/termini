@@ -13,6 +13,15 @@ Da li korisnik vidi sve ili samo svoje podsetnike?
 
 Dokumenta koja se dodaju mogu da vide i neprijavljeni !!!!!!!!!!!!!!!!
 
+# NEW
+
+- Koji nivoi korisnika mogu da dodaju podsetnike (zakazivaci i admin)
+- Da li raspored za osoblje vide zakazivaci i admin
+- Regulisati aneks ugovora preko promene broja gostiju, menija ...
+- Zakljucavanje ugovora/termina
+
+
+
 
 # TODO
 

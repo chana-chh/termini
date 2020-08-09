@@ -71,4 +71,9 @@ class Korisnik extends Model
     {
         return $this->hasMany('App\Models\Uplata', 'korisnik_id');
     }
+
+    public function podsetnici()
+    {
+        return $this->hasMany('App\Models\Podsetnik', 'korisnik_id');
+    }
 }

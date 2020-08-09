@@ -1,0 +1,164 @@
+{% extends "templates/app.twig" %}
+{% block stil %} {% endblock stil %}
+{% block naslov %}
+<h1>
+	<i class="fas fa-bell text-secondary"></i>
+	<strong class="text-info">{{ korisnik.imePrezime }}</strong> -
+	Podsetnici
+</h1>
+<hr>
+{% endblock naslov %}
+{% block sadrzaj %}
+<table class="table table-sm table-hover">
+	<thead class="thead-dark">
+		<tr>
+			<th class="w-20">Datum</th>
+			<th class="w-50">Tekst</th>
+			<th class="w-10 text-center">Rešeno</th>
+			<th class="w-20 text-right text-warning">
+				<i class="fas fa-cogs"></i>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for pod in korisnik.podsetnici() %}
+		<tr>
+			<td>{{ pod.datum|date() }}</td>
+			<td>{{ pod.tekst|nl2br }}</td>
+			<td class="text-center">
+				<div class="form-check">
+					<input class="form-check-input cb-podsetnik" type="checkbox" id="cbp-{{pod.id}}"
+						data-id="{{pod.id}}" {{ pod.reseno == 1 ? ' checked' : '' }}>
+				</div>
+			</td>
+			<td class="text-right">
+				{# SREDITI OVE DUGMICE - odraditi izmenu i brisanje #}
+				<div class="btn-group btn-group-sm">
+					<button class="btn btn-warning btn-sm">
+						<i class="fas fa-edit"></i>
+					</button>
+					<button class="btn btn-danger btn-sm">
+						<i class="fas fa-trash-alt"></i>
+					</button>
+				</div>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock sadrzaj %}
+{% block traka %}
+traka
+{% endblock traka %}
+{% block skripta %}
+<script>
+	$(document).ready(function () {
+
+		var podsetnici = document.querySelectorAll(".cb-podsetnik");
+
+		podsetnici.forEach(item => {
+			item.addEventListener('click', event => {
+				event.stopPropagation();
+				const id_podsetnika = item.getAttribute("data-id");
+
+				$.post(
+					"{{ path_for('podsetnik.reseno.post') }}",
+					{
+						id: id_podsetnika,
+						csrf_name: document.querySelector(".csrf_name").value,
+						csrf_value: document.querySelector(".csrf_value").value
+					},
+					function (data) {
+						data = JSON.parse(data);
+						const csrfNames = document.querySelectorAll(".csrf_name");
+						const csrfValues = document.querySelectorAll(".csrf_value");
+						csrfNames.forEach(name => {
+							name.value = data.csrf_name;
+						});
+						csrfValues.forEach(val => {
+							val.value = data.csrf_value;
+						});
+					}
+				);
+			});
+		});
+
+		$(".otvori-brisanje-dokumenta").on("click", function () {
+			var id = $(this).data("id");
+			$("#modal_dokument_id").val(id);
+		});
+
+		$(document).on('click', '.otvori-uplatu', function () {
+			var id = $(this).data("id");
+			$('#idUgovora').val(id);
+		});
+
+		$("#dokument").on("change", function () {
+			$("#file-label").text(this.files[0].name);
+		});
+
+		$("#otkazi-validation").on("click", function () {
+			$("#dokument-forma").removeClass("was-validated");
+		});
+
+		$("#otkazi-validation-p").on("click", function () {
+			$("#podsetnik-forma").removeClass("was-validated");
+		});
+
+	});
+
+	$(document).on('click', '.otvori-izmenu-dokumenta', function () {
+
+		var csrfName = $(".csrf_name").val();
+		var csrfValue = $(".csrf_value").val();
+		var id = $(this).data("id");
+
+		var csrfAndData = {
+			"csrf_name": csrfName,
+			"csrf_value": csrfValue,
+			"id": id
+		};
+
+		var ruta = ["{{ path_for('dokument.detalj') }}"];
+
+		$.ajax({
+			url: ruta,
+			type: "POST",
+			data: csrfAndData,
+			success: function (data) {
+				$(".csrf_name").val(data.cname);
+				$(".csrf_value").val(data.cvalue);
+				$("#idIzmenaDokumenta").val(data.dokument.id);
+				$("#opisModal").val(data.dokument.opis);
+			}
+		});
+
+	});
+
+	(function () {
+		"use strict";
+		window.addEventListener(
+			"load",
+			function () {
+				// Fetch all the forms we want to apply custom Bootstrap validation styles to
+				var forms = document.getElementsByClassName("needs-validation");
+				// Loop over them and prevent submission
+				var validation = Array.prototype.filter.call(forms, function (form) {
+					form.addEventListener(
+						"submit",
+						function (event) {
+							if (form.checkValidity() === false) {
+								event.preventDefault();
+								event.stopPropagation();
+							}
+							form.classList.add("was-validated");
+						},
+						false
+					);
+				});
+			},
+			false
+		);
+	})();
+</script>
+{% endblock skripta %}

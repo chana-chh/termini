@@ -10,7 +10,10 @@ class Podsetnik extends Model
 
     public function ugovor()
     {
-        return $this->belongsTo('App\Models\Ugovor', 'ugovor_id');
+        if ($this->ugovor_id !== null) {
+            return $this->belongsTo('App\Models\Ugovor', 'ugovor_id');
+        }
+        return null;
     }
 
     public function korisnik()

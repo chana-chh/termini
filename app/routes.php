@@ -127,12 +127,31 @@ $app->group('', function () {
     $this->post('/termin/ugovori/dopuna/aneks', '\App\Controllers\UgovorController:postUgovorDopunaAneks')->setName('ugovor.dopuna.aneks');
     $this->post('/termin/obavestenje', '\App\Controllers\HomeController:postTerminObavestenje')->setName('termin.obavestenje');
     $this->post('/termin/ukloni/vaznost', '\App\Controllers\HomeController:postUkloniVaznost')->setName('termin.ukloni.vaznost');
+
+
+
+
+
+
+
+
+
     // Podsetnici
+    $this->get('/podsetnik/lista/{korisnik_id}', '\App\Controllers\PodsetnikController:getPodsetnikLista')->setName('podsetnik.lista');
     $this->post('/termin/podsetnik/dodavanje', '\App\Controllers\PodsetnikController:postPodsetnikDodavanje')->setName('podsetnik.dodavanje');
     $this->post('/termin/podsetnik/brisanje', '\App\Controllers\PodsetnikController:postPodsetnikiBrisanje')->setName('podsetnik.brisanje');
     $this->post('/termin/podsetnik/detalj', '\App\Controllers\PodsetnikController:postPodsetnikDetalj')->setName('podsetnik.detalj');
     $this->post('/termin/podsetnik/izmena', '\App\Controllers\PodsetnikController:postPodsetnikIzmena')->setName('podsetnik.izmena');
     $this->post('/termin/podsetnik/reseno', '\App\Controllers\PodsetnikController:postPodsetnikReseno')->setName('podsetnik.reseno.post');
+
+
+
+
+
+
+
+
+
 
     // Stampa ugovora
     $this->get('/ugovori/stampa/fizicka/single/{id}', '\App\Controllers\StampaController:getUgovorStampaFizickaSingle')->setName('ugovori.stampa.fizicka.single');
