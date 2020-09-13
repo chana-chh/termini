@@ -63,6 +63,11 @@ class Controller
         return $data;
     }
 
+    protected function referer()
+    {
+        return $this->request->getServerParam("HTTP_REFERER");
+    }
+
     protected function dataId($id = 'id')
     {
         return (int) $this->request->getParam($id);

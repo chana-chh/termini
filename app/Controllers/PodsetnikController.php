@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Podsetnik;
 use App\Models\Korisnik;
+use App\Classes\Logger;
 
 class PodsetnikController extends Controller
 {
@@ -33,14 +34,14 @@ class PodsetnikController extends Controller
 
         if ($this->validator->hasErrors()) {
             $this->flash->addMessage('danger', 'Došlo je do greške prilikom dodavanja podsetnika.');
-            return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => $data['ugovor_id']]));
+            return $response->withRedirect($this->referer());
         } else {
             $model = new Podsetnik();
             $model->insert($data);
             $podsetnik = $model->find($model->lastId());
             $this->log($this::DODAVANJE, $podsetnik, ['datum']);
             $this->flash->addMessage('success', 'Podsetnik je uspešno dodat.');
-            return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => $data['ugovor_id']]));
+            return $response->withRedirect($this->referer());
         }
     }
 
@@ -62,23 +63,19 @@ class PodsetnikController extends Controller
         return json_encode($data);
     }
 
-    /*
     public function postPodsetnikiBrisanje($request, $response)
     {
-        $id = (int)$request->getParam('modal_dokument_id');
-        $ugovor_id = (int)$request->getParam('modal_dokument_ugovor_id');
-        $modelDokument = new Dokument();
-        $dok = $modelDokument->find($id);
-        $tmp = explode('/', $dok->link);
-        $file = DIR . 'pub' . DS . 'doc' . DS . end($tmp);
-        $success = $modelDokument->deleteOne($id);
+        $id = (int)$request->getParam('podsetnik_id');
+        $ugovor_id = (int)$request->getParam('ugovor_id');
+        $modelPodsetnik = new Podsetnik();
+        $pod = $modelPodsetnik->find($id);
+        $success = $modelPodsetnik->deleteOne($id);
         if ($success) {
-            unlink($file);
-            $this->flash->addMessage('success', "Dokument je uspešno obrisan.");
-            return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => $ugovor_id]));
+            $this->flash->addMessage('success', "Podsetnik je uspešno obrisan.");
+            return $response->withRedirect($this->referer());
         } else {
-            $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja dokumenta.");
-            return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => $ugovor_id]));
+            $this->flash->addMessage('danger', "Došlo je do greške prilikom brisanja podsetnika.");
+            return $response->withRedirect($this->referer());
         }
     }
 
@@ -88,43 +85,39 @@ class PodsetnikController extends Controller
         $cName = $this->csrf->getTokenName();
         $cValue = $this->csrf->getTokenValue();
         $id = $data['id'];
-        $modelDokument = new Dokument();
-        $dokument = $modelDokument->find($id);
-        $ar = ["cname" => $cName, "cvalue"=>$cValue, "dokument"=>$dokument];
+        $modelPodsetnik = new Podsetnik();
+        $podsetnik = $modelPodsetnik->find($id);
+        $ar = ["cname" => $cName, "cvalue"=>$cValue, "podsetnik"=>$podsetnik];
         return $response->withJson($ar);
     }
 
     public function postPodsetnikIzmena($request, $response)
     {
         $data = $request->getParams();
-        $id = $data['idIzmenaDokumenta'];
-        $ugovor_id = $data['idUgovorDokumenta'];
-        unset($data['idUgovorDokumenta']);
-        unset($data['idIzmenaDokumenta']);
+        $id = $data['podsetnik_id'];
+        $ugovor_id = $data['ugovor_id'];
+        unset($data['ugovor_id']);
+        unset($data['podsetnik_id']);
         unset($data['csrf_name']);
         unset($data['csrf_value']);
 
-        $datam = ["opis"=>$data['opisModal']];
-
         $validation_rules = [
-            'opis' => [
-                'required' => true
-            ]
-        ];
+                    'datum' => ['required' => true],
+                    'tekst' => ['required' => true],
+                ];
 
-        $this->validator->validate($datam, $validation_rules);
+        $this->validator->validate($data, $validation_rules);
 
         if ($this->validator->hasErrors()) {
-            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka dokumenta.');
-            return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => $ugovor_id]));
+            $this->flash->addMessage('danger', 'Došlo je do greške prilikom izmene podataka podsetnika.');
+            return $response->withRedirect($this->referer());
         } else {
-            $this->flash->addMessage('success', 'Podaci o dokumentu su uspešno izmenjeni.');
-            $modelDokument = new Dokument();
-            $modelDokument->update($datam, $id);
-            $dokument = $modelDokument->find($id);
-            $this->log(Logger::IZMENA, $dokument, 'opis');
-            return $response->withRedirect($this->router->pathFor('termin.ugovor.detalj.get', ['id' => $ugovor_id]));
+            $this->flash->addMessage('success', 'Podaci o podsetniku su uspešno izmenjeni.');
+            $modelPodsetnik = new Podsetnik();
+            $modelPodsetnik->update($data, $id);
+            $podsetnik = $modelPodsetnik->find($id);
+            $this->log(Logger::IZMENA, $podsetnik, 'datum');
+            return $response->withRedirect($this->referer());
         }
     }
-    */
 }

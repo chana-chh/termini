@@ -123,8 +123,9 @@
 				<td class="text-right">{{ um.cena_sa_popustom|number_format() }}</td>
 				<td class="text-right">{{ um.iznos|number_format() }}</td>
 				<td class="text-right">
-					<a class="btn btn-success btn-sm" style="font-size: 0.8em; padding: 0px 3px 0px 3px;" href="{{ path_for('meni.detalj', { id: um.meni().id }) }}"
-              		title="Detaljni pregled odabranog menija"><i class="fas fa-eye"></i></a>
+					<a class="btn btn-success btn-sm" style="font-size: 0.8em; padding: 0px 3px 0px 3px;"
+						href="{{ path_for('meni.detalj', { id: um.meni().id }) }}"
+						title="Detaljni pregled odabranog menija"><i class="fas fa-eye"></i></a>
 				</td>
 			</tr>
 			{% endfor %}
@@ -200,7 +201,8 @@
 				<td>{{ udodatna.id }}</td>
 				<td>{{ udodatna.komitent().kategorija().naziv }}</td>
 				<td>{{ udodatna.komitent.naziv }}</td>
-				<td class="text-center">{{ (udodatna.status == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}</td>
+				<td class="text-center">
+					{{ (udodatna.status == 1) ? '<i class=\"fas fa-check text-success\"></i>' : '' }}</td>
 				<td>{{ udodatna.opis }}</td>
 				<td class="text-right">{{ udodatna.cena|number_format() }}</td>
 			</tr>
@@ -298,6 +300,92 @@
 	</div>
 </div>
 {# Kraj modala za izmenu dokumenta #}
+{# Modal za brisanje podsetnika #}
+<div id="brisanjePodsetnika" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title text-danger">Upozorenje!</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h4>Da li želite trajno da obrišete podsetnik?</h4>
+				<p class="text-danger">* Ova akcija je nepovratna!</p>
+				<form id="brisanje-podsetnika" action="{{ path_for('podsetnik.brisanje') }}" method="POST">
+					{{ csrf|raw }}
+					<input type="hidden" id="modal_podsetnik_id" name="podsetnik_id">
+					<input type="hidden" id="modal_podsetnik_ugovor_id" name="ugovor_id" value="{{ugovor.id}}">
+					<hr style="margin-top: 30px;">
+					<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+						<div class="form-group">
+							<button id="btn-brisanje-podsetnika-obrisi" type="submit" class="btn btn-danger">
+								<i class="fas fa-trash-alt"></i>&emsp;Obriši
+							</button>
+							<a class="btn btn-secondary" data-dismiss="modal">
+								<i class="fas fa-ban"></i>&emsp;Otkaži
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{# Kraj modala za brisanje podsetnika #}
+{# Modal za izmenu podsetnika #}
+<div id="izmenaPodsetnika" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title text-danger">Izmeni podsetnik</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="izmena-podsetnika" action="{{ path_for('podsetnik.izmena') }}" method="POST"
+					class="needs-validation" novalidate>
+					{{ csrf|raw }}
+					<input type="hidden" id="idIzmenaPodsetnika" name="podsetnik_id">
+					<input type="hidden" id="idUgovorPodsetnika" name="ugovor_id" value="{{ ugovor.id }}">
+					<div class="form-group">
+						<label for="podsetnik-datum-modal">Datum</label>
+						<input type="date" value="{{ old.datum ? : '' }}"
+							class="form-control{{ errors.datum[0] ? ' is-invalid' : '' }}" name="datum"
+							id="podsetnik-datum-modal" required>
+						<div class="valid-feedback">Odgovarajući podatak</div>
+						<div class="invalid-feedback">
+							{{ errors.datum[0] ? : 'Obavezno polje' }}
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col">
+							<label for="podsetnik-tekst-modal">Tekst podsetnika</label>
+							<textarea class="form-control{{ errors.tekst[0] ? ' is-invalid' : '' }}" name="tekst" id="podsetnik-tekst-modal" rows="3"
+								required>{{ old.tekst ?  : '' }}</textarea>
+							<div class="valid-feedback">Odgovarajući podatak</div>
+							<div class="invalid-feedback">{{ errors.tekst[0] ? : 'Obavezno polje' }}</div>
+						</div>
+					</div>
+					<hr style="margin-top: 30px;">
+					<div class="row justify-content-end" style="margin-top: 30px; padding: 10px;">
+						<div class="form-group">
+							<button id="btn-izmeni-dokument" type="submit" class="btn btn-warning">
+								<i class="fas fa-save"></i>&emsp;Snimi
+							</button>
+							<a class="btn btn-secondary" data-dismiss="modal">
+								<i class="fas fa-ban"></i>&emsp;Otkaži
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{# Kraj modala za izmenu podsetnika #}
 {% endblock sadrzaj %}
 {% block traka %}
 <div class="card border-dark mb-3">
@@ -370,12 +458,15 @@
 						</div>
 					</td>
 					<td class="text-right">
-						{# SREDITI OVE DUGMICE - odraditi izmenu i brisanje #}
 						<div class="btn-group btn-group-sm">
-							<button class="btn btn-warning btn-sm">
+							<button class="btn btn-warning btn-sm otvori-izmenu-podsetnika" data-toggle="modal"
+								data-target="#izmenaPodsetnika" data-id="{{ pod.id }}"
+								title="Izmena podataka podsetnika">
 								<i class="fas fa-edit"></i>
 							</button>
-							<button class="btn btn-danger btn-sm">
+							<button class="btn btn-danger btn-sm otvori-brisanje-podsetnika" data-toggle="modal"
+								data-target="#brisanjePodsetnika" data-id="{{ pod.id }}"
+								title="Brisanje odabranog podsetnika">
 								<i class="fas fa-trash-alt"></i>
 							</button>
 						</div>
@@ -486,7 +577,6 @@
 			item.addEventListener('click', event => {
 				event.stopPropagation();
 				const id_podsetnika = item.getAttribute("data-id");
-
 				$.post(
 					"{{ path_for('podsetnik.reseno.post') }}",
 					{
@@ -512,6 +602,11 @@
 		$(".otvori-brisanje-dokumenta").on("click", function () {
 			var id = $(this).data("id");
 			$("#modal_dokument_id").val(id);
+		});
+
+		$(".otvori-brisanje-podsetnika").on("click", function () {
+			var id = $(this).data("id");
+			$("#modal_podsetnik_id").val(id);
 		});
 
 		$(document).on('click', '.otvori-uplatu', function () {
@@ -558,7 +653,34 @@
 				$("#opisModal").val(data.dokument.opis);
 			}
 		});
+	});
 
+	$(document).on('click', '.otvori-izmenu-podsetnika', function () {
+
+		var csrfName = $(".csrf_name").val();
+		var csrfValue = $(".csrf_value").val();
+		var id = $(this).data("id");
+
+		var csrfAndData = {
+			"csrf_name": csrfName,
+			"csrf_value": csrfValue,
+			"id": id
+		};
+
+		var ruta = ["{{ path_for('podsetnik.detalj') }}"];
+
+		$.ajax({
+			url: ruta,
+			type: "POST",
+			data: csrfAndData,
+			success: function (data) {
+				$(".csrf_name").val(data.cname);
+				$(".csrf_value").val(data.cvalue);
+				$("#idIzmenaPodsetnika").val(data.podsetnik.id);
+				$("#podsetnik-datum-modal").val(data.podsetnik.datum);
+				$("#podsetnik-tekst-modal").val(data.podsetnik.tekst);
+			}
+		});
 	});
 
 	(function () {
